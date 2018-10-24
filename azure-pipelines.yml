@@ -6,6 +6,11 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
+variables:
+  Major: '0'
+  Minor: '1'
+  Patch: '0'
+
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
@@ -19,3 +24,7 @@ steps:
   inputs:
     command: pack
     packagesToPack: '**/*.csproj'
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
