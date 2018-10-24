@@ -31,7 +31,6 @@ steps:
     solution: '$(Parameters.solution)'
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
-    restoreNugetPackages: true  
 
 - task: NuGetCommand@2
   inputs:
