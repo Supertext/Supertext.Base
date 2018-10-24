@@ -24,6 +24,9 @@ steps:
   displayName: 'Run a multi-line script'
 
 - task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.4.1'
+  inputs:
+    versionSpec: 4.4.1
 
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
