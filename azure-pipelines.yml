@@ -28,10 +28,11 @@ steps:
   inputs:
     versionSpec: 4.4.1
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(solution)'
+    command: 'restore'
+    projects: '**/*.csproj'
 
 - task: VSBuild@1
   displayName: 'Build solution **\*.sln'
