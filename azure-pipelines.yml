@@ -10,6 +10,9 @@ variables:
   Major: '0'
   Minor: '1'
   Patch: '0'
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
 - script: echo Hello, world!
@@ -20,15 +23,17 @@ steps:
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
 
+- task: NuGetToolInstaller@0
+
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(Parameters.solution)'
+    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   displayName: 'Build solution **\*.sln'
   inputs:
-    solution: '**\*.sln'
+    solution: '$(solution)'
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 
