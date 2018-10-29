@@ -32,7 +32,6 @@ steps:
   displayName: 'NuGet restore'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
 
 - task: VSBuild@1
   displayName: 'Build solution **\*.sln'
