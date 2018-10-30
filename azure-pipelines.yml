@@ -27,11 +27,6 @@ steps:
   displayName: 'Use NuGet 4.4.1'
   inputs:
     versionSpec: 4.4.1
-
-#- task: DotNetCoreCLI@2
-#  displayName: 'NuGet restore'
-#  inputs:
-#    command: 'restore'
     
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
@@ -67,7 +62,7 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: pack
-    packagesToPack: '**/*.csproj'
+    packagesToPack: '**/*.csproj;!**\*.Test.csproj'
     configuration: Release
     versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
