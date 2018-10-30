@@ -1,9 +1,9 @@
-assembly-versioning-scheme: MajorMinorPatchTag
+assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
 branches:
   develop:
     mode: ContinuousDelivery
-    tag: CI-
+    tag: CI
   master:
     tag: ''
 ignore:
