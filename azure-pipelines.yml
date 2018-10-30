@@ -62,7 +62,7 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: pack
-    packagesToPack: '**/*.csproj;!**\*.Test.csproj'
+    packagesToPack: '**/*.csproj;!**\*.Test.csproj;!**\*.Tests.csproj;!**\*.Specs.csproj'
     configuration: Release
     versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
