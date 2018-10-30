@@ -15,24 +15,15 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
 - task: NuGetToolInstaller@0
   displayName: 'Use NuGet 4.4.1'
   inputs:
     versionSpec: 4.4.1
-
-- task: DotNetCoreCLI@2
+    
+- task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+    restoreSolution: '$(solution)'
 
 - task: VSBuild@1
   displayName: 'Build solution **\*.sln'
@@ -63,9 +54,8 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: pack
-    packagesToPack: '**/*.csproj'
+    packagesToPack: '**/*.csproj;!**\*.Test.csproj;!**\*.Tests.csproj;!**\*.Specs.csproj'
     configuration: Release
-    versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
     minorVersion: '$(Minor)'
     patchVersion: '$(Patch)'
