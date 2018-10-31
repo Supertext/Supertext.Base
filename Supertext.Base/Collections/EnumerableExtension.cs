@@ -38,7 +38,7 @@ namespace Supertext.Base.Collections
         /// <param name="action">must not be null</param>
         public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
-            Validate.NotNull(action, "action");
+            Validate.NotNull(action, nameof(action));
 
             if (enumerable == null)
             {
@@ -76,7 +76,7 @@ namespace Supertext.Base.Collections
         /// <returns>true, if enumerable is empty, null or predicate doesn't match</returns>
         public static bool None<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
         {
-            Validate.NotNull(predicate, "action");
+            Validate.NotNull(predicate, nameof(predicate));
 
             if (enumerable == null)
             {
@@ -91,8 +91,8 @@ namespace Supertext.Base.Collections
         /// </summary>
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            Validate.NotNull(source, "source");
-            Validate.NotNull(keySelector, "keySelector");
+            Validate.NotNull(source, nameof(source));
+            Validate.NotNull(keySelector, nameof(keySelector));
 
             var seenKeys = new HashSet<TKey>();
             return source.Where(element => seenKeys.Add(keySelector(element)));

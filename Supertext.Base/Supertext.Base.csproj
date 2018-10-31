@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Supertext</Company>
-    <Authors />
+    <Authors>Supertext</Authors>
   </PropertyGroup>
 
   <ItemGroup>

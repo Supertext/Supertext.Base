@@ -7,7 +7,7 @@ namespace Supertext.Base.Common
         private T _value;
 
         private Option(T value)
-        {            
+        {
             _value = value;
             IsSome = true;
         }
