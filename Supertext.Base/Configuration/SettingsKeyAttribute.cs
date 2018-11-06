@@ -2,7 +2,7 @@
 
 namespace Supertext.Base.Configuration
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class SettingsKeyAttribute : Attribute
     {
         public string AppSettingsKey { get; }
