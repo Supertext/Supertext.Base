@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Contains components which are bound to the database access layer.</Description>
   </PropertyGroup>
 
 </Project>
