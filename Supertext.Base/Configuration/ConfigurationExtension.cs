@@ -14,7 +14,7 @@ namespace Supertext.Base.Configuration
         public static void RegisterConfigurationsWithAppConfigValues(this ContainerBuilder builder, params Assembly[] assemblies)
         {
             Validate.NotNull(assemblies, nameof(assemblies));
-            
+
             foreach (var assembly in assemblies)
             {
                 var configTypes = assembly.GetTypes().Where(type => type.GetTypeInfo().IsAssignableTo<IConfiguration>()).ToList();
@@ -39,10 +39,10 @@ namespace Supertext.Base.Configuration
             var properties = configInstance.GetType().GetProperties();
             foreach (var propertyInfo in properties)
             {
-                var settingKeys = propertyInfo.GetCustomAttributes<SettingsKeyAttribute>().ToList();
-                if (settingKeys.Any())
+                var settingKey = propertyInfo.GetCustomAttributes<SettingsKeyAttribute>().SingleOrDefault();
+                if (settingKey != null)
                 {
-                    settingKeys.ForEach(key => SetValueIfSome(propertyInfo, configInstance, configurationManager, key));
+                    SetValueIfSome(propertyInfo, configInstance, configurationManager, settingKey);
                     continue;
                 }
 
