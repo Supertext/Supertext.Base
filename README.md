@@ -1,21 +1,43 @@
 [![Build Status](https://supertext.visualstudio.com/Supertext/_apis/build/status/Supertext.Base%20Release)](https://supertext.visualstudio.com/Supertext/_build/latest?definitionId=18)
+
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+Supertext.Base contains a collection of useful utilities and helpers. 
+
+With evolution of the libraray it is meant, that there will be several topic specific libraries like:
+* Supertext.Base.Dal - Contains data access relevant components
+* Supertext.Base.Net - Contains components for network accessing reasons
+
+## Testing 
+*.Test projects should contain Unit Tests only which are fast
+*.Specs projects should contain Integration tests whose execution time us probably longer
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Each commit at the develp branch will trigger a CI pipeline build. The build runs all unit tests. After the successful pass of build and test, 
+a Nuget package will be packed and released. These Nuget packages are available as Prerelease packages and can be tried by loading them via the feed https://supertext.pkgs.visualstudio.com/_packaging/internal/nuget/v3/index.json
+Consideration: Prerelease references should not be checked in any consuming project.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+# Versioning
+The Supertext.Base are versioned after the Semantic Verioning principle (see [SemVer](https://semver.org/)).
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+Given a version number MAJOR.MINOR.PATCH, increment the:
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://www.visualstudio.com/en-us/docs/git/create-a-readme). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+1. MAJOR version when you make incompatible API changes,
+2. MINOR version when you add functionality in a backwards-compatible manner, and
+3. PATCH version when you make backwards-compatible bug fixes.
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+## GitVersion
+With Supertext.Base GitVersion is a helper to increments versions automatically according to the existing version and available tags.
+Further infos under [GitVersion](https://gitversion.readthedocs.io/en/latest/).
+
+# Release procedure
+Steps in order to release the Supertext.Base libraries:
+1. Initiate the release with a pull request from develop to master
+2. After the pull request has been approved, it needs to be merged into the master branch.
+3. Discuss and coordinate an upcoming release with your team mates.
+4. Set a new Tag at the master branch according to the SemVer principle. 
+5. Queue a new build with the "Supertext.Base release" pipeline.
+	The package will be released with before the tagged number as package version. It will be available under the same [feed](https://supertext.pkgs.visualstudio.com/_packaging/internal/nuget/v3/index.json).
+
+# Feedback
+Feedback and suggestions are always welcome :-)
