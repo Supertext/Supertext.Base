@@ -1,4 +1,4 @@
-[![Build Status](https://supertext.visualstudio.com/Supertext/_apis/build/status/Supertext.Base)](https://supertext.visualstudio.com/Supertext/_build/latest?definitionId=14)
+[![Build Status](https://supertext.visualstudio.com/Supertext/_apis/build/status/Supertext.Base%20Release)](https://supertext.visualstudio.com/Supertext/_build/latest?definitionId=18)
 
 # Introduction 
 Supertext.Base contains a collection of useful utilities and helpers. 
