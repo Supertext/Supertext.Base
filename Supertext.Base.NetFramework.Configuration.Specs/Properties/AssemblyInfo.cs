@@ -2,18 +2,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Supertext.Base.Specs")]
+[assembly: AssemblyTitle("Supertext.Base.NetFramework.Configuration.Specs")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Supertext.Base.Specs")]
+[assembly: AssemblyProduct("Supertext.Base.NetFramework.Configuration.Specs")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("c934db76-41af-48b8-9bb6-0d121e42fcc4")]
+[assembly: Guid("22949f50-88ad-4ac0-8c61-7f11155de7f5")]
 
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]

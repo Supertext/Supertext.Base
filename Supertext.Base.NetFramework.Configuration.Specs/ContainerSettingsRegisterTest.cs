@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Configuration;
-using Supertext.Base.NetFramework.Configuration;
 
-namespace Supertext.Base.Specs.Configuration
+namespace Supertext.Base.NetFramework.Configuration.Specs
 {
     [TestClass]
     public class ContainerSettingsRegisterTest
@@ -15,7 +13,6 @@ namespace Supertext.Base.Specs.Configuration
         public void Setup()
         {
             _builder = new ContainerBuilder();
-            _builder.RegisterModule<ConfigurationModule>();
         }
 
         [TestMethod]

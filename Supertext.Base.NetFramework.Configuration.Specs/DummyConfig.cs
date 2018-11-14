@@ -1,6 +1,6 @@
 ﻿using Supertext.Base.Configuration;
 
-namespace Supertext.Base.Specs.Configuration
+namespace Supertext.Base.NetFramework.Configuration.Specs
 {
     public class DummyConfig : IConfiguration
     {

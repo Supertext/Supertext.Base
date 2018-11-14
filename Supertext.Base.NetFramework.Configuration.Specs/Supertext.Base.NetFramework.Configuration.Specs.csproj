@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C934DB76-41AF-48B8-9BB6-0D121E42FCC4}</ProjectGuid>
+    <ProjectGuid>{22949F50-88AD-4AC0-8C61-7F11155DE7F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Supertext.Base.Specs</RootNamespace>
-    <AssemblyName>Supertext.Base.Specs</AssemblyName>
+    <RootNamespace>Supertext.Base.NetFramework.Configuration.Specs</RootNamespace>
+    <AssemblyName>Supertext.Base.NetFramework.Configuration.Specs</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -42,8 +42,8 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions, Version=5.4.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.4.2\lib\net47\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=5.5.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.5.0\lib\net47\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -58,8 +58,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ContainerSettingsRegisterTest.cs" />
-    <Compile Include="Configuration\DummyConfig.cs" />
+    <Compile Include="ContainerSettingsRegisterTest.cs" />
+    <Compile Include="DummyConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.NetFramework.Configuration\Supertext.Base.NetFramework.Configuration.csproj">
-      <Project>{4EE555FE-8E07-4EB7-8C01-E08320F7DBE1}</Project>
+      <Project>{4ee555fe-8e07-4eb7-8c01-e08320f7dbe1}</Project>
       <Name>Supertext.Base.NetFramework.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj">

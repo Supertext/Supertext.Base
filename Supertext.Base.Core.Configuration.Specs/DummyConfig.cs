@@ -1,0 +1,14 @@
+﻿using Supertext.Base.Configuration;
+
+namespace Supertext.Base.Core.Configuration.Specs
+{
+    [ConfigSection("TestConfig")]
+    public class DummyConfig : IConfiguration
+    {
+        public int SomeInt { get; set; }
+
+        public string Value { get; set; }
+
+        public double DoubleValue { get; set; }
+    }
+}
