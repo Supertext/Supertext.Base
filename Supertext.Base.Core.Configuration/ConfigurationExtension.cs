@@ -19,10 +19,10 @@ namespace Supertext.Base.Core.Configuration
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(t => t.GetTypeInfo().IsAssignableTo<Base.Configuration.IConfiguration>())
                 .AsSelf()
-                .OnActivated(setting => SettingActivated(setting, configuration));
+                .OnActivating(setting => SettingActivating(setting, configuration));
         }
 
-        private static void SettingActivated(IActivatedEventArgs<object> obj, IConfiguration configuration)
+        private static void SettingActivating(IActivatingEventArgs<object> obj, IConfiguration configuration)
         {
             var section = obj.Instance.GetType().GetCustomAttribute<ConfigSectionAttribute>();
             if (section != null)
