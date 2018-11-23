@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Supertext.Base.Common;
 using Supertext.Base.Factory;
 
 namespace Supertext.Base.Modules
@@ -7,6 +8,8 @@ namespace Supertext.Base.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
+
             RegisterFactories(builder);
         }
 
