@@ -1,12 +1,11 @@
-﻿using Supertext.Base.Collections;
+﻿using Supertext.Base.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Linq;
 
 
-namespace Supertext.Base.Test.Collections
+namespace Supertext.Base.Test.Extensions
 {
     using FluentAssertions;
 
@@ -14,7 +13,7 @@ namespace Supertext.Base.Test.Collections
 
 
     [TestClass]
-    public class EnumerableExtensionTest
+    public class EnumerableExtensionsTests
     {
         private ICollection<string> _testee;
 

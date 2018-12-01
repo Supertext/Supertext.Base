@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Supertext.Base.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Supertext.Base.Common;
 
 
-namespace Supertext.Base.Collections
+namespace Supertext.Base.Extensions
 {
-    public static class EnumerableExtension
+    public static class EnumerableExtensions
     {
         /// <summary>
         /// if enumerable is null or Count == 0, true is returned
