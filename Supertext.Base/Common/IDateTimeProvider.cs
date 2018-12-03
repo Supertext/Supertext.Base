@@ -7,5 +7,6 @@ namespace Supertext.Base.Common
         DateTime Now { get; }
         DateTime UtcNow { get; }
         DateTime Today { get; }
+        DateTime UtcToday { get; }
     }
 }

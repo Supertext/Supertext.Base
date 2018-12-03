@@ -4,7 +4,7 @@ namespace Supertext.Base.Common
 {
     public struct Option<T>
     {
-        private T _value;
+        private readonly T _value;
 
         private Option(T value)
         {
