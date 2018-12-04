@@ -1,0 +1,459 @@
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Exceptions;
+using Supertext.Base.Extensions;
+using System;
+using System.Linq;
+
+
+namespace Supertext.Base.Test.Extensions
+{
+    [TestClass]
+    public class AttributeExtensionsTests
+    {
+        [TestClassAttr("my-test-value")]
+        [NonInheritedTestClassAttr("my-test-value")]
+        private class MyTestClass
+        {
+            [TestMethodAttr("my-test-method-value")]
+            [NonInheritedTestMethodAttr("my-test-method-value")]
+            public virtual int MyMethod()
+            {
+                return 0;
+            }
+
+
+            [TestMethodAttr("another-test-method-value")]
+            [NonInheritedTestMethodAttr("another-test-method-value")]
+            public virtual int AnotherMethod(int i, string s)
+            {
+                return 0;
+            }
+        }
+
+
+        private class MyDerivedClass : MyTestClass
+        {
+            public override int MyMethod()
+            {
+                return 1;
+            }
+
+
+            public override int AnotherMethod(int i, string s)
+            {
+                return 1;
+            }
+        }
+
+
+        [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+        private class TestClassAttrAttribute : Attribute
+        {
+            public string TestValue { get; }
+
+
+            public TestClassAttrAttribute(string testValue)
+            {
+                TestValue = testValue;
+            }
+        }
+
+
+        [AttributeUsage(AttributeTargets.Method, Inherited = true)]
+        private class TestMethodAttrAttribute : Attribute
+        {
+            public string TestValue { get; }
+
+
+            public TestMethodAttrAttribute(string testValue)
+            {
+                TestValue = testValue;
+            }
+        }
+
+
+        [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+        private class NonInheritedTestClassAttrAttribute : Attribute
+        {
+            public string TestValue { get; }
+
+
+            public NonInheritedTestClassAttrAttribute(string testValue)
+            {
+                TestValue = testValue;
+            }
+        }
+
+
+        [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+        private class NonInheritedTestMethodAttrAttribute : Attribute
+        {
+            public string TestValue { get; }
+
+
+            public NonInheritedTestMethodAttrAttribute(string testValue)
+            {
+                TestValue = testValue;
+            }
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Class_Level_Returns_Expected_Value()
+        {
+            // Arrange
+
+            // Act
+            var result = typeof(MyTestClass).GetAttributeValues((TestClassAttrAttribute attr) => attr.TestValue);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Class_Level_Returns_Expected_Value_From_Derived_Class()
+        {
+            // Arrange
+
+            // Act
+            var result = typeof(MyDerivedClass).GetAttributeValues((TestClassAttrAttribute attr) => attr.TestValue, true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Class_Level_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
+        {
+            // first prove that the attribute is obtainable on the base class
+
+            // Act
+            var result = typeof(MyTestClass).GetAttributeValues((NonInheritedTestClassAttrAttribute attr) => attr.TestValue, true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-value");
+
+
+            // now prove that the attribute is unobtainable on the derived class
+
+            // Act
+            try
+            {
+                typeof(MyDerivedClass).GetAttributeValues((NonInheritedTestClassAttrAttribute attr) => attr.TestValue, true).ToList();
+            }
+            catch (AttributeNotFoundException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Returns_Expected_Value()
+        {
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.MyMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-method-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Returns_Expected_Value_From_Derived_Class()
+        {
+            // Arrange
+            var type = typeof(MyDerivedClass);
+            const string methodName = nameof(MyDerivedClass.MyMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-method-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
+        {
+            // first prove that the attribute is obtainable on the base class
+
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.MyMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 (NonInheritedTestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-method-value");
+
+
+            // now prove that the attribute is unobtainable on the derived class
+
+            // Act
+            try
+            {
+                typeof(MyDerivedClass).GetAttributeValues(methodName,
+                                                          (NonInheritedTestMethodAttrAttribute attr) => attr.TestValue,
+                                                          true)
+                                      .ToList();
+            }
+            catch (AttributeNotFoundException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_From_Derived_Class_With_Attribute_Inheritance_But_Specified_To_Ignore_Inheritance()
+        {
+            // first prove that the attribute is obtainable on the base class
+
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.MyMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 false);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("my-test-method-value");
+
+
+            // now prove that the attribute is unobtainable on the derived class
+
+            // Act
+            try
+            {
+                typeof(MyDerivedClass).GetAttributeValues(nameof(MyDerivedClass.MyMethod),
+                                                          (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                          false,
+                                                          false)
+                                      .ToList();
+            }
+            catch (AttributeNotFoundException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_When_Specifying_No_Param_Types_For_Method_With_Params()
+        {
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.AnotherMethod);
+
+            // Act
+            try
+            {
+                type.GetAttributeValues(methodName,
+                                        new Type[0],
+                                        (TestMethodAttrAttribute attr) => attr.TestValue)
+                    .ToList();
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_When_Specifying_Invalid_Param_Type_For_Method_With_Params()
+        {
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.AnotherMethod);
+
+            // Act
+            try
+            {
+                type.GetAttributeValues(methodName,
+                                        new[] {typeof(long)},
+                                        (TestMethodAttrAttribute attr) => attr.TestValue)
+                    .ToList();
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_When_Specifying_Param_Types_Returns_Expected_Value()
+        {
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.AnotherMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 new[] {typeof(int), typeof(string)},
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("another-test-method-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Returns_Expected_Value_From_Derived_Class()
+        {
+            // Arrange
+            var type = typeof(MyDerivedClass);
+            const string methodName = nameof(MyDerivedClass.AnotherMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 new[] {typeof(int), typeof(string)},
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("another-test-method-value");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
+        {
+            // first prove that the attribute is obtainable on the base class
+
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.AnotherMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 new[] {typeof(int), typeof(string)},
+                                                 (NonInheritedTestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("another-test-method-value");
+
+
+            // now prove that the attribute is unobtainable on the derived class
+
+            // Act
+            try
+            {
+                typeof(MyDerivedClass).GetAttributeValues(methodName,
+                                                          new[] {typeof(int), typeof(string)},
+                                                          (NonInheritedTestMethodAttrAttribute attr) => attr.TestValue,
+                                                          true)
+                                      .ToList();
+            }
+            catch (AttributeNotFoundException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Throws_Expected_Excpn_From_Derived_Class_With_Attribute_Inheritance_But_Specified_To_Ignore_Inheritance()
+        {
+            // first prove that the attribute is obtainable on the base class
+
+            // Arrange
+            var type = typeof(MyTestClass);
+            const string methodName = nameof(MyTestClass.AnotherMethod);
+
+            // Act
+            var result = type.GetAttributeValues(methodName,
+                                                 new[] {typeof(int), typeof(string)},
+                                                 (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                 false,
+                                                 false);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result.First().Should().Be("another-test-method-value");
+
+
+            // now prove that the attribute is unobtainable on the derived class
+
+            // Act
+            try
+            {
+                typeof(MyDerivedClass).GetAttributeValues(methodName,
+                                                          new[] {typeof(int), typeof(string)},
+                                                          (TestMethodAttrAttribute attr) => attr.TestValue,
+                                                          false,
+                                                          false).ToList();
+            }
+            catch (AttributeNotFoundException)
+            {
+                return;
+            }
+
+            // Assert
+            Assert.Fail("The expected exception was not thrown.");
+        }
+    }
+}
