@@ -8,18 +8,27 @@ namespace Supertext.Base.Test.Extensions
     [TestClass]
     public class StringBuilderExtensionsTests
     {
+        private System.Text.StringBuilder _testee;
+
+
+        [TestInitialize]
+        public void TestMethodInit()
+        {
+            _testee = new System.Text.StringBuilder();
+            _testee.Append("first-string");
+            _testee.Append("second-string");
+            _testee.Append("third-string");
+            _testee.Append("fourth-string");
+        }
+
+
         [TestMethod]
         public void IndexOf_Returns_Expected_Index_With_startIndex_Ommitted()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("second-string");
+            var result = _testee.IndexOf("second-string");
 
             // Assert
             result.Should().Be(12);
@@ -30,14 +39,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Expected_Index_With_startIndex_Specified()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("second-string", 5);
+            var result = _testee.IndexOf("second-string", 5);
 
             // Assert
             result.Should().Be(12);
@@ -48,14 +52,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Minus1_For_Unrecognised_String()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("fifth-string");
+            var result = _testee.IndexOf("fifth-string");
 
             // Assert
             result.Should().Be(-1);
@@ -66,14 +65,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Minus1_For_Recognised_String_Before_startIndex()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("second-string", 20);
+            var result = _testee.IndexOf("second-string", 20);
 
             // Assert
             result.Should().Be(-1);
@@ -84,14 +78,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Expected_Index_With_startIndex_Ommitted_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("SECOND-STRING",
+            var result = _testee.IndexOf("SECOND-STRING",
                                     0,
                                     true);
 
@@ -104,14 +93,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Expected_Index_With_startIndex_Specified_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("SECOND-STRING",
+            var result = _testee.IndexOf("SECOND-STRING",
                                     5,
                                     true);
 
@@ -124,14 +108,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Minus1_For_Unrecognised_String_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("FIFTH-STRING",
+            var result = _testee.IndexOf("FIFTH-STRING",
                                     0,
                                     true);
 
@@ -144,14 +123,9 @@ namespace Supertext.Base.Test.Extensions
         public void IndexOf_Returns_Minus1_For_Recognised_String_Before_startIndex_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.IndexOf("SECOND-STRING",
+            var result = _testee.IndexOf("SECOND-STRING",
                                     20,
                                     true);
 
@@ -164,14 +138,9 @@ namespace Supertext.Base.Test.Extensions
         public void Contains_Returns_TRUE_For_Recognised_String()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.Contains("second-string");
+            var result = _testee.Contains("second-string");
 
             // Assert
             result.Should().Be(true);
@@ -182,14 +151,9 @@ namespace Supertext.Base.Test.Extensions
         public void Contains_Returns_FALSE_For_Unrecognised_String()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.Contains("fifth-string");
+            var result = _testee.Contains("fifth-string");
 
             // Assert
             result.Should().Be(false);
@@ -200,14 +164,9 @@ namespace Supertext.Base.Test.Extensions
         public void Contains_Returns_TRUE_For_Recognised_String_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.Contains("SECOND-STRING", true);
+            var result = _testee.Contains("SECOND-STRING", true);
 
             // Assert
             result.Should().Be(true);
@@ -218,14 +177,9 @@ namespace Supertext.Base.Test.Extensions
         public void Contains_Returns_FALSE_For_Unrecognised_String_ignoreCase()
         {
             // Arrange
-            var sb = new System.Text.StringBuilder();
-            sb.Append("first-string");
-            sb.Append("second-string");
-            sb.Append("third-string");
-            sb.Append("fourth-string");
 
             // Act
-            var result = sb.Contains("FIFTH-STRING", true);
+            var result = _testee.Contains("FIFTH-STRING", true);
 
             // Assert
             result.Should().Be(false);
