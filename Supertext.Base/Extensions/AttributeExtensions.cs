@@ -139,7 +139,7 @@ namespace Supertext.Base.Extensions
         {
             var attrs = type.GetCustomAttributes(typeof(TAttribute), inherit) as TAttribute[];
 
-            if (attrs == null || !attrs.Any())
+            if (attrs.IsNullOrEmpty())
             {
                 throw new AttributeNotFoundException(type.GetTypeInfo(), typeof(TAttribute).Name);
             }
