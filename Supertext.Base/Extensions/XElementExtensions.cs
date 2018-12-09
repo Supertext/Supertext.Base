@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Xml.Linq;
 
 
@@ -48,6 +49,57 @@ namespace Supertext.Base.Extensions
             }
 
             return defaultValue;
+        }
+
+        /// <summary>
+        /// Returns an <c>XElement</c> containing the same elements and attributes as the specified <c>XElement</c> but with all namespaces removed.
+        /// </summary>
+        /// <param name="document">An XML document containing the namespaces to be removed.</param>
+        /// <returns>An <c>XElement</c> without namespaces.</returns>
+        public static XElement RemoveAllNamespaces(this XElement document)
+        {
+            var namespaces = document.Attributes()
+                                     .Where(attr => attr.IsNamespaceDeclaration)
+                                     .Select(attr => attr.Name.LocalName)
+                                     .ToList();
+
+            var strContent = new System.Text.StringBuilder(document.ToString());
+            foreach (var ns in namespaces)
+            {
+                strContent = strContent.Replace($"<{ns}:", "<")
+                                       .Replace($"</{ns}:", "</");
+            }
+
+            var xElmnt = XElement.Parse(strContent.ToString());
+            foreach (var ns in namespaces)
+            {
+                xElmnt.Attributes()
+                        .FirstOrDefault(attr => attr.IsNamespaceDeclaration && attr.Name.LocalName == ns)
+                        ?.Remove();
+            }
+
+            return xElmnt;
+
+            /*
+            XElement RemoveAllNamespaces_Recursive(XElement xmlDocument)
+            {
+                if (!xmlDocument.HasElements)
+                {
+                    var xElement = new XElement(xmlDocument.Name.LocalName) {Value = xmlDocument.Value};
+
+                    foreach (var attribute in xmlDocument.Attributes())
+                    {
+                        xElement.Add(attribute);
+                    }
+
+                    return xElement;
+                }
+
+                return new XElement(xmlDocument.Name.LocalName, xmlDocument.Elements().Select(RemoveAllNamespaces));
+            }
+
+            return RemoveAllNamespaces_Recursive(document);
+            */
         }
     }
 }

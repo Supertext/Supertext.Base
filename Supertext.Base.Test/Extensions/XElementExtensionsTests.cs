@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Extensions;
 using System;
+using System.Linq;
 using System.Xml.Linq;
 
 
@@ -216,6 +217,24 @@ namespace Supertext.Base.Test.Extensions
 
             // Assert
             Assert.Fail("The expected exception was not thrown.");
+        }
+
+
+        [TestMethod]
+        public void RemoveAllNamespaces_Returns_Expected()
+        {
+            // Arrange
+            var resouces = new Base.Resources.EmbeddedResource();
+            var xmlContents = resouces.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xElmnt = XElement.Parse(xmlContents);
+
+            // Act
+            var modifiedXelmnnt = xElmnt.RemoveAllNamespaces();
+
+            // Assert
+            modifiedXelmnnt.Should().NotBeNull();
+            modifiedXelmnnt.ToString().Should().NotContain("ps:");
+            modifiedXelmnnt.Attributes().Count(attr => attr.IsNamespaceDeclaration).Should().Be(0);
         }
     }
 }

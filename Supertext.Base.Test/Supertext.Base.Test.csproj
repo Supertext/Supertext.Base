@@ -65,6 +65,7 @@
     <Compile Include="Resources\EmbeddedTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Extensions\TestFiles\Xml_with_namespace.sdlproj" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
