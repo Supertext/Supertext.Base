@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Linq;
+using Supertext.Base.Common;
 
 
 namespace Supertext.Base.Extensions
@@ -58,6 +59,8 @@ namespace Supertext.Base.Extensions
         /// <returns>An <c>XElement</c> without namespaces.</returns>
         public static XElement RemoveAllNamespaces(this XElement document)
         {
+            Validate.NotNull(document, nameof(document));
+
             var namespaces = document.Attributes()
                                      .Where(attr => attr.IsNamespaceDeclaration)
                                      .Select(attr => attr.Name.LocalName)
