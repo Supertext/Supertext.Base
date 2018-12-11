@@ -50,13 +50,5 @@ namespace Supertext.Base.Test.Collections
 
             items.Should().Contain(new List<string> { item1, item2 });
         }
-
-        [TestMethod]
-        public void None_CollectionIsEmpty_IsNone()
-        {
-            var result = _testee.None();
-
-            result.Should().BeTrue();
-        }
     }
 }

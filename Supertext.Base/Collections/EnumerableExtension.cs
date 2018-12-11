@@ -52,41 +52,6 @@ namespace Supertext.Base.Collections
         }
 
         /// <summary>
-        /// Better readable version of Enumerable.Any() = false
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="enumerable">can be null</param>
-        /// <returns>true, if enumerable is empty or null</returns>
-        public static bool None<T>(this IEnumerable<T> enumerable)
-        {
-            if (enumerable == null)
-            {
-                return true;
-            }
-
-            return !enumerable.Any();
-        }
-
-        /// <summary>
-        /// Better readable version of Enumerable.Any() = false
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="enumerable">can be null</param>
-        /// <param name="predicate">must not be null</param>
-        /// <returns>true, if enumerable is empty, null or predicate doesn't match</returns>
-        public static bool None<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
-        {
-            Validate.NotNull(predicate, nameof(predicate));
-
-            if (enumerable == null)
-            {
-                return true;
-            }
-
-            return !enumerable.Any(predicate);
-        }
-
-        /// <summary>
         /// Distinct by specific property
         /// </summary>
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
@@ -108,17 +73,19 @@ namespace Supertext.Base.Collections
         /// <returns>true, if at least one item of collection2 exists in collection1</returns>
         public static bool ContainsAny<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
-            if (collection1.IsEmpty())
+            var enumerable = collection1 as T[] ?? collection1.ToArray();
+            if (enumerable.IsEmpty())
             {
                 return false;
             }
 
-            if (collection2.IsEmpty())
+            var collection3 = collection2 as T[] ?? collection2.ToArray();
+            if (collection3.IsEmpty())
             {
                 return false;
             }
 
-            return collection1.Any(collection2.Contains);
+            return enumerable.Any(collection3.Contains);
         }
     }
 }
