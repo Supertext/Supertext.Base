@@ -17,6 +17,8 @@ namespace Supertext.Base.Modules
         {
             builder.RegisterGeneric(typeof(AutofacFactory<>)).As(typeof(IFactory<>));
             builder.RegisterGeneric(typeof(AutofacFactory<,>)).As(typeof(IFactory<,>));
+            builder.RegisterGeneric(typeof(AutofacFactory<,,>)).As(typeof(IFactory<,,>));
+            builder.RegisterGeneric(typeof(AutofacFactory<,,,>)).As(typeof(IFactory<,,,>));
         }
     }
 }
