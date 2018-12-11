@@ -224,17 +224,17 @@ namespace Supertext.Base.Test.Extensions
         public void RemoveAllNamespaces_Returns_Expected()
         {
             // Arrange
-            var resouces = new Base.Resources.EmbeddedResource();
-            var xmlContents = resouces.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var resources = new Base.Resources.EmbeddedResource();
+            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
             var xElmnt = XElement.Parse(xmlContents);
 
             // Act
-            var modifiedXelmnnt = xElmnt.RemoveAllNamespaces();
+            var modifiedXElmnt = xElmnt.RemoveAllNamespaces();
 
             // Assert
-            modifiedXelmnnt.Should().NotBeNull();
-            modifiedXelmnnt.ToString().Should().NotContain("ps:");
-            modifiedXelmnnt.Attributes().Count(attr => attr.IsNamespaceDeclaration).Should().Be(0);
+            modifiedXElmnt.Should().NotBeNull();
+            modifiedXElmnt.ToString().Should().NotContain("ps:");
+            modifiedXElmnt.Attributes().Count(attr => attr.IsNamespaceDeclaration).Should().Be(0);
         }
     }
 }
