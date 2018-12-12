@@ -221,7 +221,33 @@ namespace Supertext.Base.Test.Extensions
 
 
         [TestMethod]
-        public void RemoveAllNamespaces_Returns_Expected()
+        public void RemoveAllNamespaces_Returns_Expected_When_Passed_XDocument()
+        {
+            // Arrange
+            var resources = new Base.Resources.EmbeddedResource();
+            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xElmnt = XDocument.Parse(xmlContents);
+
+            void AssertHasDeclaration(XDocument xElmntAssert)
+            {
+                xElmntAssert.Document.Declaration.Should().NotBeNull();
+            }
+
+            // Act
+            AssertHasDeclaration(xElmnt);
+            AssertHasNamespaces(xElmnt.Root);
+            var modifiedXElmnt = xElmnt.RemoveAllNamespaces();
+
+            // Assert
+            AssertHasDeclaration(xElmnt);
+            modifiedXElmnt.Root.Should().NotBeNull();
+            AssertNoNamespaces(modifiedXElmnt.Root);
+            AssertNoXmlnsAttr(modifiedXElmnt.Root);
+        }
+
+
+        [TestMethod]
+        public void RemoveAllNamespaces_Returns_Expected_When_Passed_XElement()
         {
             // Arrange
             var resources = new Base.Resources.EmbeddedResource();
@@ -229,12 +255,46 @@ namespace Supertext.Base.Test.Extensions
             var xElmnt = XElement.Parse(xmlContents);
 
             // Act
+            AssertHasNamespaces(xElmnt);
             var modifiedXElmnt = xElmnt.RemoveAllNamespaces();
 
             // Assert
             modifiedXElmnt.Should().NotBeNull();
-            modifiedXElmnt.ToString().Should().NotContain("ps:");
-            modifiedXElmnt.Attributes().Count(attr => attr.IsNamespaceDeclaration).Should().Be(0);
+            AssertNoNamespaces(modifiedXElmnt);
+            AssertNoXmlnsAttr(modifiedXElmnt);
+        }
+
+        private static void AssertHasNamespaces(XElement xElmntAssert)
+        {
+            xElmntAssert.Name.ToString().Should().NotBe(xElmntAssert.Name.LocalName);
+            xElmntAssert.Name.Namespace.NamespaceName.Should().NotBe(String.Empty);
+
+            foreach (var xChildElmntAssert in xElmntAssert.Elements())
+            {
+                AssertHasNamespaces(xChildElmntAssert);
+            }
+        }
+
+        private static void AssertNoNamespaces(XElement xElmntAssert)
+        {
+            xElmntAssert.Name.ToString().Should().Be(xElmntAssert.Name.LocalName);
+            xElmntAssert.Name.Namespace.NamespaceName.Should().Be(String.Empty);
+
+            foreach (var xChildElmntAssert in xElmntAssert.Elements())
+            {
+                AssertNoNamespaces(xChildElmntAssert);
+            }
+        }
+
+        private static void AssertNoXmlnsAttr(XElement xElmntAssert)
+        {
+            xElmntAssert.Attributes().Where(attr => attr.IsNamespaceDeclaration).Should().BeEmpty();
+            xElmntAssert.Attributes().Where(attr => attr.Name.LocalName.StartsWith("xmlns")).Should().BeEmpty();
+
+            foreach (var xChildElmntAssert in xElmntAssert.Elements())
+            {
+                AssertNoXmlnsAttr(xChildElmntAssert);
+            }
         }
     }
 }

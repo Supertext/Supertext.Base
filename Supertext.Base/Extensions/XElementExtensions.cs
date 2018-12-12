@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Supertext.Base.Common;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Linq;
-using Supertext.Base.Common;
 
 
 namespace Supertext.Base.Extensions
@@ -53,56 +53,46 @@ namespace Supertext.Base.Extensions
         }
 
         /// <summary>
-        /// Returns an <c>XElement</c> containing the same elements and attributes as the specified <c>XElement</c> but with all namespaces removed.
+        /// Returns an <c>XContainer</c> containing the same elements and attributes as the specified <c>XContainer</c> but with all namespaces removed.
         /// </summary>
-        /// <param name="document">An XML document containing the namespaces to be removed.</param>
-        /// <returns>An <c>XElement</c> without namespaces.</returns>
-        public static XElement RemoveAllNamespaces(this XElement document)
+        /// <param name="xContainer">An <c>XElement</c> or <c>XDocument</c> containing the namespaces to be removed.</param>
+        /// <returns>An instance of the same type as <see cref="xContainer"/>.</returns>
+        public static T RemoveAllNamespaces<T>(this T xContainer) where T : XContainer
         {
-            Validate.NotNull(document, nameof(document));
+            Validate.NotNull(xContainer, nameof(xContainer));
 
-            var namespaces = document.Attributes()
-                                     .Where(attr => attr.IsNamespaceDeclaration)
-                                     .Select(attr => attr.Name.LocalName)
-                                     .ToList();
-
-            var strContent = new System.Text.StringBuilder(document.ToString());
-            foreach (var ns in namespaces)
+            XElement RemoveAllNamespacesRecursive(XElement xmlDocument)
             {
-                strContent = strContent.Replace($"<{ns}:", "<")
-                                       .Replace($"</{ns}:", "</");
-            }
+                object value = null;
 
-            var xElmnt = XElement.Parse(strContent.ToString());
-            foreach (var ns in namespaces)
-            {
-                xElmnt.Attributes()
-                        .FirstOrDefault(attr => attr.IsNamespaceDeclaration && attr.Name.LocalName == ns)
-                        ?.Remove();
-            }
-
-            return xElmnt;
-
-            /*
-            XElement RemoveAllNamespaces_Recursive(XElement xmlDocument)
-            {
-                if (!xmlDocument.HasElements)
+                if (xmlDocument.HasElements)
                 {
-                    var xElement = new XElement(xmlDocument.Name.LocalName) {Value = xmlDocument.Value};
-
-                    foreach (var attribute in xmlDocument.Attributes())
-                    {
-                        xElement.Add(attribute);
-                    }
-
-                    return xElement;
+                    value = xmlDocument.Elements().Select(RemoveAllNamespacesRecursive);
+                }
+                else if (!String.IsNullOrWhiteSpace(xmlDocument.Value))
+                {
+                    value = xmlDocument.Value;
                 }
 
-                return new XElement(xmlDocument.Name.LocalName, xmlDocument.Elements().Select(RemoveAllNamespaces));
+                return new XElement(xmlDocument.Name.LocalName,
+                                    xmlDocument.Attributes().Where(attr => !attr.IsNamespaceDeclaration),
+                                    value);
             }
 
-            return RemoveAllNamespaces_Recursive(document);
-            */
+            var container = xContainer as XDocument;
+            if (container != null)
+            {
+                return new XDocument(container.Declaration,
+                                     RemoveAllNamespacesRecursive(container.Root)) as T;
+            }
+
+            var element = xContainer as XElement;
+            if (element != null)
+            {
+                return RemoveAllNamespacesRecursive(element) as T;
+            }
+
+            throw new ArgumentException($"Unhandled implementation of XContainer: {xContainer.GetType().Name}", nameof(xContainer));
         }
     }
 }
