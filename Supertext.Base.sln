@@ -13,9 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.NetFramework
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Core.Configuration", "Supertext.Base.Core.Configuration\Supertext.Base.Core.Configuration.csproj", "{7D2FA472-E37C-4E34-8F7B-9275B3CFC6F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Core.Configuration.Specs", "Supertext.Base.Core.Configuration.Specs\Supertext.Base.Core.Configuration.Specs.csproj", "{FF933854-7BE1-487A-B181-55392E92E2BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Core.Configuration.Specs", "Supertext.Base.Core.Configuration.Specs\Supertext.Base.Core.Configuration.Specs.csproj", "{FF933854-7BE1-487A-B181-55392E92E2BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.NetFramework.Configuration.Specs", "Supertext.Base.NetFramework.Configuration.Specs\Supertext.Base.NetFramework.Configuration.Specs.csproj", "{22949F50-88AD-4AC0-8C61-7F11155DE7F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.IO", "Supertext.Base.IO\Supertext.Base.IO.csproj", "{51C4E24F-C2B6-44D7-9D87-2FD97E9963EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{22949F50-88AD-4AC0-8C61-7F11155DE7F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22949F50-88AD-4AC0-8C61-7F11155DE7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22949F50-88AD-4AC0-8C61-7F11155DE7F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51C4E24F-C2B6-44D7-9D87-2FD97E9963EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51C4E24F-C2B6-44D7-9D87-2FD97E9963EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51C4E24F-C2B6-44D7-9D87-2FD97E9963EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51C4E24F-C2B6-44D7-9D87-2FD97E9963EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
