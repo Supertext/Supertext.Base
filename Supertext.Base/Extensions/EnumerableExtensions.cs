@@ -85,7 +85,6 @@ namespace Supertext.Base.Extensions
         /// <returns>
         /// <c>true</c> if the IEnumerable is null or empty; otherwise, <c>false</c>.
         /// </returns>
-        [JetBrains.Annotations.ContractAnnotation("enumerable:null => true")]
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
         {
             switch (enumerable)
