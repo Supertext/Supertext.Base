@@ -5,7 +5,6 @@ using Supertext.Base.Extensions;
 using System;
 using System.Linq;
 
-
 namespace Supertext.Base.Test.Extensions
 {
     [TestClass]
@@ -31,7 +30,6 @@ namespace Supertext.Base.Test.Extensions
             }
         }
 
-
         private class MyDerivedClass : MyTestClass
         {
             public override int MyMethod()
@@ -46,7 +44,6 @@ namespace Supertext.Base.Test.Extensions
             }
         }
 
-
         [AttributeUsage(AttributeTargets.Class, Inherited = true)]
         private class TestClassAttrAttribute : Attribute
         {
@@ -58,7 +55,6 @@ namespace Supertext.Base.Test.Extensions
                 TestValue = testValue;
             }
         }
-
 
         [AttributeUsage(AttributeTargets.Method, Inherited = true)]
         private class TestMethodAttrAttribute : Attribute
@@ -72,7 +68,6 @@ namespace Supertext.Base.Test.Extensions
             }
         }
 
-
         [AttributeUsage(AttributeTargets.Class, Inherited = false)]
         private class NonInheritedTestClassAttrAttribute : Attribute
         {
@@ -84,7 +79,6 @@ namespace Supertext.Base.Test.Extensions
                 TestValue = testValue;
             }
         }
-
 
         [AttributeUsage(AttributeTargets.Method, Inherited = false)]
         private class NonInheritedTestMethodAttrAttribute : Attribute
@@ -98,6 +92,88 @@ namespace Supertext.Base.Test.Extensions
             }
         }
 
+        [AttributeUsage(AttributeTargets.Field)]
+        private class TestEnumAttribute : Attribute
+        {
+            public string StringValue { get; }
+
+            public TestEnumAttribute(string stringValue)
+            {
+                StringValue = stringValue;
+            }
+        }
+
+        [AttributeUsage(AttributeTargets.Field)]
+        private class TestMissingEnumAttribute : Attribute
+        { }
+
+        private enum TestEnum
+        {
+            [TestEnum("test-value-1")]
+            TestValue1,
+
+            TestValue2
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_On_Enum_Returns_Expected_Value()
+        {
+            // Arrange
+            const TestEnum testEnum = TestEnum.TestValue1;
+
+            // Act
+            var val = testEnum.GetAttributeOfType<TestEnumAttribute>();
+
+            // Assert
+            val.StringValue.Should().Be("test-value-1");
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_Missing_On_Enum_Returns_Null()
+        {
+            // Arrange
+            const TestEnum testEnum = TestEnum.TestValue1;
+
+            // Act
+            var val = testEnum.GetAttributeOfType<TestMissingEnumAttribute>();
+
+            // Assert
+            val.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_With_Specifier_On_Enum_Returns_Expected_Value()
+        {
+            // Arrange
+            const TestEnum testEnum = TestEnum.TestValue1;
+
+            // Act
+            var val = testEnum.GetAttributeOfType<TestEnumAttribute, string>(f => f.StringValue);
+
+            // Assert
+            val.Should().Be("test-value-1");
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_With_Specifier_On_Enum_Throws_Expected_Exception()
+        {
+            // Arrange
+            const TestEnum testEnum = TestEnum.TestValue2;
+
+            // Act
+            try
+            {
+                testEnum.GetAttributeOfType<TestEnumAttribute, string>(f => f.StringValue);
+            }
+            catch (Exception exception)
+            {
+                // Assert
+                exception.Message.Should().Be("The enum is not decorated with the specified attribute.");
+                return;
+            }
+
+            Assert.Fail("The expected exception was not thrown.");
+        }
 
         [TestMethod]
         public void GetAttributeValues_At_Class_Level_Returns_Expected_Value()
@@ -113,7 +189,6 @@ namespace Supertext.Base.Test.Extensions
             result.First().Should().Be("my-test-value");
         }
 
-
         [TestMethod]
         public void GetAttributeValues_At_Class_Level_Returns_Expected_Value_From_Derived_Class()
         {
@@ -127,7 +202,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().HaveCount(1);
             result.First().Should().Be("my-test-value");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Class_Level_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
@@ -159,7 +233,6 @@ namespace Supertext.Base.Test.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Returns_Expected_Value()
         {
@@ -176,7 +249,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().HaveCount(1);
             result.First().Should().Be("my-test-method-value");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Returns_Expected_Value_From_Derived_Class()
@@ -196,7 +268,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().HaveCount(1);
             result.First().Should().Be("my-test-method-value");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
@@ -237,7 +308,6 @@ namespace Supertext.Base.Test.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_From_Derived_Class_With_Attribute_Inheritance_But_Specified_To_Ignore_Inheritance()
@@ -280,7 +350,6 @@ namespace Supertext.Base.Test.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_When_Specifying_No_Param_Types_For_Method_With_Params()
         {
@@ -304,7 +373,6 @@ namespace Supertext.Base.Test.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_Throws_Expected_Excpn_When_Specifying_Invalid_Param_Type_For_Method_With_Params()
@@ -330,7 +398,6 @@ namespace Supertext.Base.Test.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_When_Specifying_Param_Types_Returns_Expected_Value()
         {
@@ -348,7 +415,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().HaveCount(1);
             result.First().Should().Be("another-test-method-value");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Returns_Expected_Value_From_Derived_Class()
@@ -369,7 +435,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().HaveCount(1);
             result.First().Should().Be("another-test-method-value");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Throws_Expected_Excpn_From_Derived_Class_Without_Attribute_Inheritance()
@@ -412,7 +477,6 @@ namespace Supertext.Base.Test.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
 
         [TestMethod]
         public void GetAttributeValues_At_Method_Level_When_Specifying_Type_Throws_Expected_Excpn_From_Derived_Class_With_Attribute_Inheritance_But_Specified_To_Ignore_Inheritance()

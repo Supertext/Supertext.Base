@@ -1,14 +1,58 @@
 ﻿using Supertext.Base.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-
 
 namespace Supertext.Base.Extensions
 {
     public static class AttributeExtensions
     {
+        /// <summary>
+        /// Gets an attribute on an enum field value
+        /// </summary>
+        /// <typeparam name="T">The type of the attribute you want to retrieve</typeparam>
+        /// <param name="enumVal">The enum value</param>
+        /// <returns>The attribute of type <see cref="T"/> that exists on the enum value</returns>
+        /// <seealso cref="GetAttributeOfType{T, TValue}"/>
+        /// <example>string desc = myEnumVariable.GetAttributeOfType{DescriptionAttribute}().Description;</example>
+        public static T GetAttributeOfType<T>(this Enum enumVal) where T : Attribute
+        {
+            var type = enumVal.GetType();
+            var memInfo = type.GetMember(enumVal.ToString());
+            var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
+            return attributes.Length > 0
+                       ? (T) attributes[0]
+                       : null;
+        }
+
+        /// <summary>
+        /// Gets an attribute on an enum field value
+        /// </summary>
+        /// <typeparam name="TAttribute">The type of the attribute you want to retrieve</typeparam>
+        /// <typeparam name="TValue">The expected return type.</typeparam>
+        /// <param name="enumVal">The enum value.</param>
+        /// <param name="valueSelector">A function indicating which property to select.</param>
+        /// <returns>The attribute of type <see cref="TAttribute"/> that exists on the enum value.</returns>
+        /// <seealso cref="GetAttributeOfType{T}"/>
+        /// <example>string desc = myEnumVariable.GetAttributeOfType{DescriptionAttribute}(attr => attr.Description);</example>
+        public static TValue GetAttributeOfType<TAttribute, TValue>(this Enum enumVal, Func<TAttribute, TValue> valueSelector) where TAttribute : Attribute
+        {
+            var type = enumVal.GetType();
+            var memInfo = type.GetMember(enumVal.ToString());
+            var attributes = memInfo[0].GetCustomAttributes(typeof(TAttribute), false);
+
+            if (attributes.Length > 0)
+            {
+                return valueSelector((TAttribute) attributes[0]);
+            }
+
+            throw new Exception("The enum is not decorated with the specified attribute.");
+        }
+
         /// <summary>
         /// Returns the values of attributes for a class.
         /// </summary>
@@ -30,7 +74,6 @@ namespace Supertext.Base.Extensions
                 yield return valueSelector(attr);
             }
         }
-
 
         /// <summary>
         /// Returns the values of method attributes for any method in a class.
@@ -82,7 +125,6 @@ namespace Supertext.Base.Extensions
             }
         }
 
-
         /// <summary>
         /// Returns the values of method attributes for any method in a class.
         /// </summary>
@@ -133,7 +175,6 @@ namespace Supertext.Base.Extensions
                 yield return valueSelector(attr);
             }
         }
-
 
         private static IEnumerable<TAttribute> GetClassLevelAttributes<TAttribute>(this Type type, bool inherit = false) where TAttribute : Attribute
         {
