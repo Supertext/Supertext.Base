@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Autofac;
 using Autofac.Core;
 using Supertext.Base.Common;
 using Supertext.Base.Exceptions;
+using Supertext.Base.Modularity;
 
+[assembly: InternalsVisibleTo("Supertext.Base.Specs")]
 namespace Supertext.Base.Factory
 {
     internal sealed class AutofacKeyFactory<TKey, T> : IKeyFactory<TKey, T>

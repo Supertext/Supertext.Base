@@ -1,4 +1,4 @@
-﻿namespace Supertext.Base.Factory
+﻿namespace Supertext.Base.Modularity
 {
     internal enum DefaultKeyRegistrationType
     {
