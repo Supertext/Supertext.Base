@@ -51,10 +51,10 @@ namespace Supertext.Base.NetFramework.Configuration
 
         private static bool SettingConnectionStringWhenAvailable(PropertyInfo propertyInfo, object configInstance)
         {
-            var connectionStringAttribute = propertyInfo.GetCustomAttributes<ConnectionStringKeyAttribute>().SingleOrDefault();
+            var connectionStringAttribute = propertyInfo.GetCustomAttributes<ConnectionStringNameAttribute>().SingleOrDefault();
             if (connectionStringAttribute != null)
             {
-                var connectionStringOption = GetConnectionStringValue(connectionStringAttribute.ConnectionStringKey);
+                var connectionStringOption = GetConnectionStringValue(connectionStringAttribute.ConnectionStringName);
                 if (connectionStringOption.IsSome)
                 {
                     propertyInfo.SetValue(configInstance, Convert(connectionStringOption.Value, propertyInfo.PropertyType));
