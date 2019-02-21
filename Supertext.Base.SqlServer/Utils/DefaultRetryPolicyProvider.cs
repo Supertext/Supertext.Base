@@ -9,7 +9,7 @@ namespace Supertext.Base.SqlServer.Utils
 
         public DefaultRetryPolicyProvider()
         {
-            _retryPolicyLazy  = new Lazy<RetryPolicy>(() => RetryManager.Instance.GetDefaultSqlConnectionRetryPolicy());
+            _retryPolicyLazy  = new Lazy<RetryPolicy>(() => RetryPolicy.DefaultProgressive);
         }
 
         public RetryPolicy RetryPolicy
