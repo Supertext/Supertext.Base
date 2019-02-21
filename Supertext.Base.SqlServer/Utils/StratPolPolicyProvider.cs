@@ -28,7 +28,7 @@ namespace Supertext.Base.SqlServer.Utils
             var strategy = new Incremental(defaultRetryStrategyName, 3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
             var strategies = new List<RetryStrategy> { strategy };
             var manager = new RetryManager(strategies, defaultRetryStrategyName);
-            RetryManager.SetDefault(manager);
+            RetryManager.SetDefault(manager, false);
             var retryPolicy = new RetryPolicy<SqlDatabaseTransientErrorDetectionStrategy>(strategy);
             retryPolicy.Retrying += (obj, eventArgs) => Log.Info($"Retrying, CurrentRetryCount = {eventArgs.CurrentRetryCount} , "
                                                                  + $"Delay = {eventArgs.Delay}, Exception = {eventArgs.LastException.Message}");

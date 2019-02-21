@@ -23,9 +23,10 @@ namespace Supertext.Base.SqlServer.Specs.Utils
             _builder.RegisterModule<SqlServerModule>();
             var container = _builder.Build();
 
-            var retryPolicy = container.Resolve<IRetryPolicyProvider>();
+            var policyProvider = container.Resolve<IRetryPolicyProvider>();
 
-            retryPolicy.Should().BeOfType<DefaultRetryPolicyProvider>();
+            policyProvider.Should().BeOfType<DefaultRetryPolicyProvider>();
+            policyProvider.RetryPolicy.Should().NotBeNull();
         }
 
         [TestMethod]
@@ -35,9 +36,10 @@ namespace Supertext.Base.SqlServer.Specs.Utils
             _builder.UseStratPolRetryPolicy();
             var container = _builder.Build();
 
-            var retryPolicy = container.Resolve<IRetryPolicyProvider>();
+            var policyProvider = container.Resolve<IRetryPolicyProvider>();
 
-            retryPolicy.Should().BeOfType<StratPolPolicyProvider>();
+            policyProvider.Should().BeOfType<StratPolPolicyProvider>();
+            policyProvider.RetryPolicy.Should().NotBeNull();
         }
 
         [TestMethod]
@@ -48,9 +50,10 @@ namespace Supertext.Base.SqlServer.Specs.Utils
 
             var container = _builder.Build();
 
-            var retryPolicy = container.Resolve<IRetryPolicyProvider>();
+            var policyProvider = container.Resolve<IRetryPolicyProvider>();
 
-            retryPolicy.Should().BeOfType<StratPolPolicyProvider>();
+            policyProvider.Should().BeOfType<StratPolPolicyProvider>();
+            policyProvider.RetryPolicy.Should().NotBeNull();
         }
     }
 }
