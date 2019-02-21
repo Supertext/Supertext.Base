@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -39,8 +40,29 @@ namespace Supertext.Base.NetFramework.Configuration
                     continue;
                 }
 
+                if (SettingConnectionStringWhenAvailable(propertyInfo, configInstance))
+                {
+                    continue;
+                }
+
                 SetValueIfSome(propertyInfo, configInstance, propertyInfo.Name);
             }
+        }
+
+        private static bool SettingConnectionStringWhenAvailable(PropertyInfo propertyInfo, object configInstance)
+        {
+            var connectionStringAttribute = propertyInfo.GetCustomAttributes<ConnectionStringKeyAttribute>().SingleOrDefault();
+            if (connectionStringAttribute != null)
+            {
+                var connectionStringOption = GetConnectionStringValue(connectionStringAttribute.ConnectionStringKey);
+                if (connectionStringOption.IsSome)
+                {
+                    propertyInfo.SetValue(configInstance, Convert(connectionStringOption.Value, propertyInfo.PropertyType));
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static void SetValueIfSome(PropertyInfo propertyInfo, object configInstance,
@@ -59,15 +81,29 @@ namespace Supertext.Base.NetFramework.Configuration
             return tc.ConvertFrom(value);
         }
 
-        public static Option<object> GetSettingsValue(string settingsKey)
+        private static Option<object> GetSettingsValue(string settingsKey)
         {
-            if (System.Configuration.ConfigurationManager.AppSettings.AllKeys.Any(key => key == settingsKey))
+            if (ConfigurationManager.AppSettings.AllKeys.Any(key => key == settingsKey))
             {
-                var value = System.Configuration.ConfigurationManager.AppSettings[settingsKey];
+                var value = ConfigurationManager.AppSettings[settingsKey];
                 return Option<object>.Some(value);
             }
 
             Console.WriteLine($"Key {settingsKey} not available");
+            return Option<object>.None();
+        }
+
+        private static Option<object> GetConnectionStringValue(string connectionStringKey)
+        {
+            foreach (ConnectionStringSettings connectionStringSettings in ConfigurationManager.ConnectionStrings)
+            {
+                if (connectionStringSettings.Name.ToLowerInvariant() == connectionStringKey.ToLowerInvariant())
+                {
+                    return Option<object>.Some(connectionStringSettings.ConnectionString);
+                }
+            }
+
+            Console.WriteLine($"Connection string with name {connectionStringKey} not available");
             return Option<object>.None();
         }
     }

@@ -10,5 +10,8 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
         public string Value { get; set; }
 
         public double DoubleValue { get; set; }
+
+        [ConnectionStringKey("Supertext")]
+        public string ConnectionString { get; set; }
     }
 }
