@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
-namespace Supertext.Base.SqlServer.Utils
+namespace Supertext.Base.Dal.SqlServer.Utils
 {
     internal class SqlConnectionFactory : ISqlConnectionFactory
     {

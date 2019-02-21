@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Supertext.Base.SqlServer\Supertext.Base.SqlServer.csproj" />
+    <ProjectReference Include="..\Supertext.Base.Dal.SqlServer\Supertext.Base.Dal.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

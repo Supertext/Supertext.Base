@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace Supertext.Base.SqlServer.Utils
+namespace Supertext.Base.Dal.SqlServer.Utils
 {
     public static class RetryPolicyExtension
     {

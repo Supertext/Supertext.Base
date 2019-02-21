@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.SqlServer.Modules;
-using Supertext.Base.SqlServer.Utils;
+using Supertext.Base.Dal.SqlServer.Modules;
+using Supertext.Base.Dal.SqlServer.Utils;
 
-namespace Supertext.Base.SqlServer.Specs.Utils
+namespace Supertext.Base.Dal.SqlServer.Specs.Utils
 {
     [TestClass]
     public class RetryPolicyProviderTest
