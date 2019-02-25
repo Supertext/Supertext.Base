@@ -5,12 +5,12 @@ using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
 namespace Supertext.Base.Dal.SqlServer.Utils
 {
-    internal class StratPolPolicyProvider : IRetryPolicyProvider
+    internal class StrategyPolicyProvider : IRetryPolicyProvider
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(StratPolPolicyProvider));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(StrategyPolicyProvider));
         private readonly Lazy<RetryPolicy> _retryPolicyLazy;
 
-        public StratPolPolicyProvider()
+        public StrategyPolicyProvider()
         {
             _retryPolicyLazy = new Lazy<RetryPolicy>(SetupRetryPolicy);
         }

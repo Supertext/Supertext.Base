@@ -9,8 +9,10 @@ namespace Supertext.Base.Dal.SqlServer.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DefaultRetryPolicyProvider>().As<IRetryPolicyProvider>().SingleInstance().PreserveExistingDefaults();
             builder.RegisterType<SqlConnectionFactory>().As<ISqlConnectionFactory>();
+
+            // Default Retry Policy provider
+            builder.RegisterType<StrategyPolicyProvider>().As<IRetryPolicyProvider>().SingleInstance();
         }
     }
 }

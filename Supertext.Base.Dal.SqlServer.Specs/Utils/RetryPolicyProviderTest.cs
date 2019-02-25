@@ -18,41 +18,14 @@ namespace Supertext.Base.Dal.SqlServer.Specs.Utils
         }
 
         [TestMethod]
-        public void ResolveIRetryPolicyProvider_SqlServerModuleIsRegistered_DefaultRetryPolicyIsProvided()
+        public void ResolveRetryPolicyProvider_SqlServerModuleIsRegistered_StrategyPolicyProviderIsResolved()
         {
             _builder.RegisterModule<SqlServerModule>();
             var container = _builder.Build();
 
             var policyProvider = container.Resolve<IRetryPolicyProvider>();
 
-            policyProvider.Should().BeOfType<DefaultRetryPolicyProvider>();
-            policyProvider.RetryPolicy.Should().NotBeNull();
-        }
-
-        [TestMethod]
-        public void ResolveIRetryPolicyProvider_SqlServerModuleIsRegisteredAndStratPolPolicyIsConfigured_StratPolRetryPolicyIsProvided()
-        {
-            _builder.RegisterModule<SqlServerModule>();
-            _builder.UseStratPolRetryPolicy();
-            var container = _builder.Build();
-
-            var policyProvider = container.Resolve<IRetryPolicyProvider>();
-
-            policyProvider.Should().BeOfType<StratPolPolicyProvider>();
-            policyProvider.RetryPolicy.Should().NotBeNull();
-        }
-
-        [TestMethod]
-        public void ResolveIRetryPolicyProvider_SqlServerModuleIsRegisteredAndStratPolPolicyIsConfiguredWithDifferentOrder_StratPolRetryPolicyIsProvided()
-        {
-            _builder.UseStratPolRetryPolicy();
-            _builder.RegisterModule<SqlServerModule>();
-
-            var container = _builder.Build();
-
-            var policyProvider = container.Resolve<IRetryPolicyProvider>();
-
-            policyProvider.Should().BeOfType<StratPolPolicyProvider>();
+            policyProvider.Should().BeOfType<StrategyPolicyProvider>();
             policyProvider.RetryPolicy.Should().NotBeNull();
         }
     }
