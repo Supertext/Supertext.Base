@@ -5,4 +5,12 @@
     <Description>Contains components which are bound to the database access layer.</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Dal.SqlServer\Supertext.Base.Dal.SqlServer.csproj" />
+  </ItemGroup>
+
 </Project>
