@@ -13,6 +13,8 @@ namespace Supertext.Base.Dal.SqlServer.Modules
 
             // Default Retry Policy provider
             builder.RegisterType<StrategyPolicyProvider>().As<IRetryPolicyProvider>().SingleInstance();
+
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
         }
     }
 }
