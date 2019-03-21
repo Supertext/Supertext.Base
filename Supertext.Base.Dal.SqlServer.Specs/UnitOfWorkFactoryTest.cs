@@ -1,10 +1,8 @@
 ﻿using System;
 using Autofac;
-using FakeItEasy;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Dal.SqlServer.Modules;
-using Supertext.Base.Factory;
 using Supertext.Base.Modules;
 
 namespace Supertext.Base.Dal.SqlServer.Specs
@@ -14,7 +12,6 @@ namespace Supertext.Base.Dal.SqlServer.Specs
     {
         private IUnitOfWorkFactory _testee;
         private ContainerBuilder _builder;
-        private IFactory<string, IUnitOfWork> _factory;
 
         [TestInitialize]
         public void TestInitialize()
@@ -23,8 +20,8 @@ namespace Supertext.Base.Dal.SqlServer.Specs
             _builder.RegisterModule<SqlServerModule>();
             _builder.RegisterModule<BaseModule>();
 
-             var container =  _builder.Build();
-             _testee = container.Resolve<IUnitOfWorkFactory>();
+            var container = _builder.Build();
+            _testee = container.Resolve<IUnitOfWorkFactory>();
         }
 
         [TestMethod]
