@@ -39,7 +39,11 @@ namespace Supertext.Base.Dal.SqlServer.Specs
         public async Task ExecuteWithinTransactionScopeAsync_WhenDBConnectionIsProvided_TransactionIsExecuted()
         {
             // Act
-            await _testee.ExecuteWithinTransactionScopeAsync(connection => { connection.Should().Be(_dbConnection); });
+            await _testee.ExecuteWithinTransactionScopeAsync(connection =>
+                                                             {
+                                                                 connection.Should().Be(_dbConnection);
+                                                                 return Task.CompletedTask;
+                                                             });
 
             // Assert
             A.CallTo(() => _sqlConnectionFactory.CreateOpenedReliableConnection(A<string>.Ignored)).MustHaveHappened();
@@ -60,7 +64,7 @@ namespace Supertext.Base.Dal.SqlServer.Specs
         {
             const string someValue = "a value";
 
-            var result = await _testee.ExecuteScalarAsync(connection =>someValue);
+            var result = await _testee.ExecuteScalarAsync(connection => Task.FromResult(someValue));
 
             result.Should().Be(someValue);
         }
