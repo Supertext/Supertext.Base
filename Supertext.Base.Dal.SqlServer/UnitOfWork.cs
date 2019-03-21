@@ -17,11 +17,14 @@ namespace Supertext.Base.Dal.SqlServer
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public TReturnValue ExecuteScalar<TReturnValue>(Func<IDbConnection, TReturnValue> action)
+        public TReturnValue ExecuteScalar<TReturnValue>(Func<IDbConnection, TReturnValue> func)
         {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var connection = _sqlConnectionFactory.CreateOpenedReliableConnection(_connectionString))
             {
-                return action(connection);
+                var result = func(connection);
+                scope.Complete();
+                return result;
             }
         }
 
