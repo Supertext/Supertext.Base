@@ -25,26 +25,30 @@ namespace Supertext.Base.Dal.SqlServer
             }
         }
 
-        public async Task<TReturnValue> ExecuteScalarAsync<TReturnValue>(Func<IDbConnection, TReturnValue> action)
+        public async Task<TReturnValue> ExecuteScalarAsync<TReturnValue>(Func<IDbConnection, Task<TReturnValue>> action)
         {
-            var result = ExecuteScalar(action);
-            return await Task.FromResult(result);
+            return await ExecuteScalar(action);
         }
 
         public void ExecuteWithinTransactionScope(Action<IDbConnection> action)
         {
+            ExecuteWithinTransactionScopeAsync(connection =>
+                                               {
+                                                   action(connection);
+                                                   return Task.CompletedTask;
+                                               })
+                .GetAwaiter()
+                .GetResult();
+        }
+
+        public async Task ExecuteWithinTransactionScopeAsync(Func<IDbConnection, Task> func)
+        {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var connection = _sqlConnectionFactory.CreateOpenedReliableConnection(_connectionString))
             {
-                action(connection);
+                await func(connection);
                 scope.Complete();
             }
-        }
-
-        public Task ExecuteWithinTransactionScopeAsync(Action<IDbConnection> action)
-        {
-            ExecuteWithinTransactionScope(action);
-            return Task.CompletedTask;
         }
     }
 }

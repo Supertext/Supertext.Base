@@ -6,12 +6,12 @@ namespace Supertext.Base.Dal
 {
     public interface IUnitOfWork
     {
-        TReturnValue ExecuteScalar<TReturnValue>(Func<IDbConnection, TReturnValue> action);
+        TReturnValue ExecuteScalar<TReturnValue>(Func<IDbConnection, TReturnValue> func);
 
-        Task<TReturnValue> ExecuteScalarAsync<TReturnValue>(Func<IDbConnection, TReturnValue> action);
+        Task<TReturnValue> ExecuteScalarAsync<TReturnValue>(Func<IDbConnection, Task<TReturnValue>>  func);
 
         void ExecuteWithinTransactionScope(Action<IDbConnection> action);
 
-        Task ExecuteWithinTransactionScopeAsync(Action<IDbConnection> action);
+        Task ExecuteWithinTransactionScopeAsync(Func<IDbConnection, Task> func);
     }
 }
