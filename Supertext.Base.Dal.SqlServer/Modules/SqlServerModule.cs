@@ -15,6 +15,7 @@ namespace Supertext.Base.Dal.SqlServer.Modules
             builder.RegisterType<StrategyPolicyProvider>().As<IRetryPolicyProvider>().SingleInstance();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
+            builder.RegisterType<UnitOfWorkFactory>().As<IUnitOfWorkFactory>();
         }
     }
 }

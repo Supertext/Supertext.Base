@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.Dal\Supertext.Base.Dal.csproj" />
+    <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 
 </Project>
