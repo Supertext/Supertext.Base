@@ -10,4 +10,9 @@
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Dal\Supertext.Base.Dal.csproj" />
+    <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
+  </ItemGroup>
+
 </Project>

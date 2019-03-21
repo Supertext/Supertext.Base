@@ -24,10 +24,10 @@ namespace Supertext.Base.NetFramework.Configuration
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(t => t.GetTypeInfo().IsAssignableTo<IConfiguration>())
                 .AsSelf()
-                .OnActivated(SetupValues);
+                .OnActivating(SetupValues);
         }
 
-        private static void SetupValues(IActivatedEventArgs<object> args)
+        private static void SetupValues(IActivatingEventArgs<object> args)
         {
             var configInstance = args.Instance;
             var properties = configInstance.GetType().GetProperties();

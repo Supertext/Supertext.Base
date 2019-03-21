@@ -5,4 +5,8 @@
     <Description>Contains components which are bound to the database access layer.</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+  </ItemGroup>
+
 </Project>
