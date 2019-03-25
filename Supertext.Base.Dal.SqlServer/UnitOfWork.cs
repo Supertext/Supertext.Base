@@ -27,7 +27,10 @@ namespace Supertext.Base.Dal.SqlServer
 
         public async Task<TReturnValue> ExecuteScalarAsync<TReturnValue>(Func<IDbConnection, Task<TReturnValue>> action)
         {
-            return await ExecuteScalar(action);
+            using (var connection = _sqlConnectionFactory.CreateOpenedReliableConnection(_connectionString))
+            {
+                return await action(connection).ConfigureAwait(false);
+            }
         }
 
         public void ExecuteWithinTransactionScope(Action<IDbConnection> action)
