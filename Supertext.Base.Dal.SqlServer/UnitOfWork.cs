@@ -49,7 +49,7 @@ namespace Supertext.Base.Dal.SqlServer
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var connection = _sqlConnectionFactory.CreateOpenedReliableConnection(_connectionString))
             {
-                await func(connection);
+                await func(connection).ConfigureAwait(false);
                 scope.Complete();
             }
         }
