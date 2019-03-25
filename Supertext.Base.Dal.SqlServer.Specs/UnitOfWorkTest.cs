@@ -39,14 +39,29 @@ namespace Supertext.Base.Dal.SqlServer.Specs
         public async Task ExecuteWithinTransactionScopeAsync_WhenDBConnectionIsProvided_TransactionIsExecuted()
         {
             // Act
-            await _testee.ExecuteWithinTransactionScopeAsync(connection =>
+            await _testee.ExecuteWithinTransactionScopeAsync(async connection =>
                                                              {
                                                                  connection.Should().Be(_dbConnection);
-                                                                 return Task.CompletedTask;
+                                                                 await Task.CompletedTask;
                                                              });
 
             // Assert
             A.CallTo(() => _sqlConnectionFactory.CreateOpenedReliableConnection(A<string>.Ignored)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public async Task ExecuteWithinTransactionScopeAsync_WhenDBConnectionIsProvidedAndResultIsProvided_ResultWillBeReturned()
+        {
+            const string expected = "return value";
+
+            var result = await _testee.ExecuteWithinTransactionScopeAsync(async connection =>
+                                                             {
+                                                                 connection.Should().Be(_dbConnection);
+                                                                 return await Task.FromResult(expected);
+                                                             });
+
+            A.CallTo(() => _sqlConnectionFactory.CreateOpenedReliableConnection(A<string>.Ignored)).MustHaveHappened();
+            result.Should().Be(expected);
         }
 
         [TestMethod]
@@ -60,11 +75,11 @@ namespace Supertext.Base.Dal.SqlServer.Specs
         }
 
         [TestMethod]
-        public async Task ExecuteScalar_QueryExecutedAsync_ExptectedValueReturned()
+        public async Task ExecuteScalarAsync_QueryExecutedAsync_ExptectedValueReturned()
         {
             const string someValue = "a value";
 
-            var result = await _testee.ExecuteScalarAsync(connection => Task.FromResult(someValue));
+            var result = await _testee.ExecuteScalarAsync(async connection => await Task.FromResult(someValue));
 
             result.Should().Be(someValue);
         }

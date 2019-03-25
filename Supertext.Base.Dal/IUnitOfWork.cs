@@ -12,6 +12,10 @@ namespace Supertext.Base.Dal
 
         void ExecuteWithinTransactionScope(Action<IDbConnection> action);
 
+        TReturnValue ExecuteWithinTransactionScope<TReturnValue>(Func<IDbConnection, TReturnValue> func);
+
         Task ExecuteWithinTransactionScopeAsync(Func<IDbConnection, Task> func);
+
+        Task<TReturnValue> ExecuteWithinTransactionScopeAsync<TReturnValue>(Func<IDbConnection, Task<TReturnValue>> func);
     }
 }
