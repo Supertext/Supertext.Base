@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Dal.SqlServer.ConnectionThrottling;
 using Supertext.Base.Dal.SqlServer.Utils;
 
 namespace Supertext.Base.Dal.SqlServer.Specs
@@ -19,8 +20,10 @@ namespace Supertext.Base.Dal.SqlServer.Specs
         {
             _dbConnection = A.Fake<IDbConnection>();
             _sqlConnectionFactory = A.Fake<ISqlConnectionFactory>();
+            var connectionThrottleGuard = A.Fake<IConnectionThrottleGuard>();
             _testee = new UnitOfWork("someConnectionString",
-                                     _sqlConnectionFactory);
+                                     _sqlConnectionFactory,
+                                     connectionThrottleGuard);
 
             A.CallTo(() => _sqlConnectionFactory.CreateOpenedReliableConnection(A<string>.Ignored)).Returns(_dbConnection);
         }

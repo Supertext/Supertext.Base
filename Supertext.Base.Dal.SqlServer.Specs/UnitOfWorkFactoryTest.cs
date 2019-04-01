@@ -8,7 +8,7 @@ using Supertext.Base.Modules;
 namespace Supertext.Base.Dal.SqlServer.Specs
 {
     [TestClass]
-    public class UnitOfWorkFactoryTest
+    public class ConnectionThrottleGuardTest
     {
         private IUnitOfWorkFactory _testee;
         private ContainerBuilder _builder;
