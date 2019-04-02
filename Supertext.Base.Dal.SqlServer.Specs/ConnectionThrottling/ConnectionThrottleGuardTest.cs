@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Dal.SqlServer.ConnectionThrottling;
 
@@ -11,7 +10,7 @@ namespace Supertext.Base.Dal.SqlServer.Specs.ConnectionThrottling
     [TestClass]
     public class ConnectionThrottleGuardTest
     {
-        private ConnectionThrottleGuard _testee;
+        private IConnectionThrottleGuard _testee;
 
         [TestInitialize]
         public void TestInitialize()
@@ -52,7 +51,6 @@ namespace Supertext.Base.Dal.SqlServer.Specs.ConnectionThrottling
             {
                 Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} started");
                 Thread.Sleep(500);
-                
             }
             Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} finished");
         }
@@ -64,7 +62,6 @@ namespace Supertext.Base.Dal.SqlServer.Specs.ConnectionThrottling
             {
                 Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} started");
                 await Task.Delay(500);
-
             }
             Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} finished");
         }
