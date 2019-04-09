@@ -7,6 +7,7 @@ namespace Supertext.Base.Dal.SqlServer.ConnectionThrottling
     internal class ConnectionThrottleGuard : IConnectionThrottleGuard
     {
         private readonly SemaphoreSlim _semaphore;
+        private bool _disposed;
 
         public ConnectionThrottleGuard(ThrottlingConfig throttlingConfig)
         {
@@ -27,7 +28,23 @@ namespace Supertext.Base.Dal.SqlServer.ConnectionThrottling
 
         public void Dispose()
         {
-            _semaphore?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _semaphore?.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

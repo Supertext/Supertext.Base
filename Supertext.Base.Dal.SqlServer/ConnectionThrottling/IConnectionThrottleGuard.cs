@@ -10,6 +10,7 @@ namespace Supertext.Base.Dal.SqlServer.ConnectionThrottling
         /// to the database are allowed.
         /// Max concurrent connection is configured in a config section called 'ConnectionThrottleGuard'
         /// with the property 'MaxCountOfConcurrentSqlConnections'.
+        /// The instance of IConnectionThrottleGuard is registered as single instance.
         /// </summary>
         /// <returns></returns>
         Task<IDisposable> ExecuteGuardedAsync();
@@ -19,6 +20,7 @@ namespace Supertext.Base.Dal.SqlServer.ConnectionThrottling
         /// to the database are allowed.
         /// Max concurrent connection is configured in a config section called 'ConnectionThrottleGuard'
         /// with the property 'MaxCountOfConcurrentSqlConnections'.
+        /// The instance of IConnectionThrottleGuard is registered as single instance.
         /// </summary>
         /// <returns></returns>
         IDisposable ExecuteGuarded();

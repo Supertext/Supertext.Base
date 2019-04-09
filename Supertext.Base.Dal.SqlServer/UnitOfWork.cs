@@ -10,11 +10,12 @@ namespace Supertext.Base.Dal.SqlServer
     internal class UnitOfWork : IUnitOfWork
     {
         private readonly string _connectionString;
-        private readonly ISqlConnectionFactory _sqlConnectionFactory;
         private readonly IConnectionThrottleGuard _connectionThrottleGuard;
+        private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-        public UnitOfWork(string connectionString, ISqlConnectionFactory sqlConnectionFactory,
-            IConnectionThrottleGuard connectionThrottleGuard)
+        public UnitOfWork(string connectionString,
+                          ISqlConnectionFactory sqlConnectionFactory,
+                          IConnectionThrottleGuard connectionThrottleGuard)
         {
             _connectionString = connectionString;
             _sqlConnectionFactory = sqlConnectionFactory;
@@ -23,7 +24,7 @@ namespace Supertext.Base.Dal.SqlServer
 
         public TReturnValue ExecuteScalar<TReturnValue>(Func<IDbConnection, TReturnValue> action)
         {
-            using (_connectionThrottleGuard.ExecuteGuardedAsync().GetAwaiter().GetResult())
+            using (_connectionThrottleGuard.ExecuteGuarded())
             using (var connection = _sqlConnectionFactory.CreateOpenedReliableConnection(_connectionString))
             {
                 return action(connection);
@@ -44,10 +45,10 @@ namespace Supertext.Base.Dal.SqlServer
             using (_connectionThrottleGuard.ExecuteGuarded())
             {
                 ExecuteWithinTransactionScopeAsync(connection =>
-                    {
-                        action(connection);
-                        return Task.CompletedTask;
-                    })
+                                                   {
+                                                       action(connection);
+                                                       return Task.CompletedTask;
+                                                   })
                     .GetAwaiter()
                     .GetResult();
             }
@@ -58,12 +59,12 @@ namespace Supertext.Base.Dal.SqlServer
             using (_connectionThrottleGuard.ExecuteGuarded())
             {
                 return ExecuteWithinTransactionScopeAsync(connection =>
-                    {
-                        var result = func(connection);
-                        return Task.FromResult(result);
-                    })
-                    .GetAwaiter()
-                    .GetResult();
+                                                          {
+                                                              var result = func(connection);
+                                                              return Task.FromResult(result);
+                                                          })
+                       .GetAwaiter()
+                       .GetResult();
             }
         }
 
