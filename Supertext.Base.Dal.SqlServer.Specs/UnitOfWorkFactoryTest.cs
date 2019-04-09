@@ -2,13 +2,14 @@
 using Autofac;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Dal.SqlServer.ConnectionThrottling;
 using Supertext.Base.Dal.SqlServer.Modules;
 using Supertext.Base.Modules;
 
 namespace Supertext.Base.Dal.SqlServer.Specs
 {
     [TestClass]
-    public class UnitOfWorkFactoryTest
+    public class ConnectionThrottleGuardTest
     {
         private IUnitOfWorkFactory _testee;
         private ContainerBuilder _builder;
@@ -19,6 +20,7 @@ namespace Supertext.Base.Dal.SqlServer.Specs
             _builder = new ContainerBuilder();
             _builder.RegisterModule<SqlServerModule>();
             _builder.RegisterModule<BaseModule>();
+            _builder.RegisterType<ThrottlingConfig>().AsSelf();
 
             var container = _builder.Build();
             _testee = container.Resolve<IUnitOfWorkFactory>();
