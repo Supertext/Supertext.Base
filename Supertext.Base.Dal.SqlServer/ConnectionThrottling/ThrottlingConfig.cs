@@ -5,6 +5,6 @@ namespace Supertext.Base.Dal.SqlServer.ConnectionThrottling
     [ConfigSection("ConnectionThrottleGuard")]
     public class ThrottlingConfig
     {
-        public int MaxCountOfConcurrentSqlConnections { get; set; } = 10;
+        public int MaxCountOfConcurrentSqlConnections { get; set; } = 20;
     }
 }
