@@ -6,7 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="Microsoft.VisualStudio.TestPlatform" Version="14.0.0" />
     <PackageReference Include="MvcRouteTester.AspNetCore" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Dal\Supertext.Base.Dal.csproj" />
+    <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 
 </Project>
