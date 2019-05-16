@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="MvcRouteTester.AspNetCore" Version="2.2.0" />
   </ItemGroup>
 
