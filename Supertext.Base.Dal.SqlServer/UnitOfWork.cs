@@ -90,10 +90,5 @@ namespace Supertext.Base.Dal.SqlServer
                 return result;
             }
         }
-
-        public void Dispose()
-        {
-            _connectionThrottleGuard?.Dispose();
-        }
     }
 }
