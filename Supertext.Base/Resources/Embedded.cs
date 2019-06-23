@@ -477,9 +477,9 @@ namespace Supertext.Base.Resources
             {
                 _assembly = Assembly.Load(assemblyName);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                throw new FileNotFoundException($"Unable to load the assembly \"{assemblyName}\".");
+                throw new FileNotFoundException($"Unable to load the assembly \"{assemblyName}\".", exception);
             }
 
             if (_assembly == null)
