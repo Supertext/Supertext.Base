@@ -22,7 +22,6 @@ namespace Supertext.Base.Modules
 
             builder.RegisterGeneric(typeof(AutofacKeyFactory<,>)).As(typeof(IKeyFactory<,>));
 
-
             builder.RegisterType<SequentialGuidFactory>().As<ISequentialGuidFactory>();
         }
     }

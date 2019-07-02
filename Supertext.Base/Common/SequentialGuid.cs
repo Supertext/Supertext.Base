@@ -332,16 +332,14 @@ namespace Supertext.Base.Common
         public override string ToString()
         {
             var roundedCreatedDateTime = Round(CreatedDateTime, TimeSpan.FromMilliseconds(1));
-            return string.Format("{0} ({1:yyyy-MM-dd HH:mm:ss.fff})",
-                                 _guidValue, roundedCreatedDateTime);
+            return $"{_guidValue} ({roundedCreatedDateTime:yyyy-MM-dd HH:mm:ss.fff})";
         }
 
         private static DateTime Round(DateTime dateTime, TimeSpan interval)
         {
             var halfIntervalTicks = (interval.Ticks + 1) >> 1;
 
-            return dateTime.AddTicks(halfIntervalTicks -
-                   ((dateTime.Ticks + halfIntervalTicks) % interval.Ticks));
+            return dateTime.AddTicks(halfIntervalTicks - (dateTime.Ticks + halfIntervalTicks) % interval.Ticks);
         }
 
         #endregion
