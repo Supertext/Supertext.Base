@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Dal.SqlServe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Dal.Specs", "Supertext.Base.Dal.Specs\Supertext.Base.Dal.Specs.csproj", "{BFF5C8D2-F28E-48EE-8C7F-9F4E2A47CAB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Test.Utils", "Supertext.Base.Test.Utils\Supertext.Base.Test.Utils.csproj", "{4D9A8BAA-08AF-4BB1-9C34-BA9FC9620C8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils", "Supertext.Base.Test.Utils\Supertext.Base.Test.Utils.csproj", "{4D9A8BAA-08AF-4BB1-9C34-BA9FC9620C8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Net", "Supertext.Base.Net\Supertext.Base.Net.csproj", "{123C3CF5-1205-408D-B142-CACA14890F8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{4D9A8BAA-08AF-4BB1-9C34-BA9FC9620C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D9A8BAA-08AF-4BB1-9C34-BA9FC9620C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D9A8BAA-08AF-4BB1-9C34-BA9FC9620C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123C3CF5-1205-408D-B142-CACA14890F8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123C3CF5-1205-408D-B142-CACA14890F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123C3CF5-1205-408D-B142-CACA14890F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123C3CF5-1205-408D-B142-CACA14890F8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
