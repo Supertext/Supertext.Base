@@ -7,7 +7,7 @@ namespace Supertext.Base.Common
     public static class Validate
     {
         private const string EmptyEnumerableMessage = "enumerable is empty";
-        private const string BlankStringMessage = "string is blank";
+        private const string BlankStringMessage = "string is null or whitespace";
         private const string EmptyStringMessage = "string is empty";
 
         /// <summary>
@@ -71,9 +71,10 @@ namespace Supertext.Base.Common
         /// </summary>
         /// <param name="str"></param>
         /// <exception cref="ArgumentException">thrown, if string is blank</exception>
+        [Obsolete("Use NotNullOrWhitespace instead")]
         public static void NotBlank(string str)
         {
-            if (string.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrWhiteSpace(str))
             {
                 throw new ArgumentException(BlankStringMessage);
             }
@@ -85,9 +86,10 @@ namespace Supertext.Base.Common
         /// <param name="str"></param>
         /// <param name="parameterName"></param>
         /// <exception cref="ArgumentException">thrown, if string is blank</exception>
+        [Obsolete("Use NotNullOrWhitespace instead")]
         public static void NotBlank(string str, string parameterName)
         {
-            if (string.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrWhiteSpace(str))
             {
                 throw new ArgumentException(BlankStringMessage, parameterName);
             }
@@ -100,7 +102,7 @@ namespace Supertext.Base.Common
         /// <exception cref="ArgumentException">thrown, if string is empty</exception>
         public static void NotEmpty(string str)
         {
-            if (string.IsNullOrEmpty(str))
+            if (String.IsNullOrEmpty(str))
             {
                 throw new ArgumentException(EmptyStringMessage);
             }
@@ -114,7 +116,7 @@ namespace Supertext.Base.Common
         /// <exception cref="ArgumentException">thrown, if string is empty</exception>
         public static void NotEmpty(string str, string paramterName)
         {
-            if (string.IsNullOrEmpty(str))
+            if (String.IsNullOrEmpty(str))
             {
                 throw new ArgumentException(EmptyStringMessage, paramterName);
             }
@@ -144,6 +146,33 @@ namespace Supertext.Base.Common
             if (obj == null)
             {
                 throw new ArgumentNullException(parameterName);
+            }
+        }
+
+        /// <summary>
+        /// throws ArgumentException, if given string is null or whitespace
+        /// </summary>
+        /// <param name="str"></param>
+        /// <exception cref="ArgumentException">thrown, if string is null or whitespace</exception>
+        public static void NotNullOrWhitespace(string str)
+        {
+            if (String.IsNullOrWhiteSpace(str))
+            {
+                throw new ArgumentException(BlankStringMessage);
+            }
+        }
+
+        /// <summary>
+        /// throws ArgumentException(message), if given string is null or whitespace
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="parameterName"></param>
+        /// <exception cref="ArgumentException">thrown, if string is null or whitespace</exception>
+        public static void NotNullOrWhitespace(string str, string parameterName)
+        {
+            if (String.IsNullOrWhiteSpace(str))
+            {
+                throw new ArgumentException(BlankStringMessage, parameterName);
             }
         }
     }
