@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\StringTruncatorTest.cs" />
+    <Compile Include="Common\ValidateTest.cs" />
     <Compile Include="Extensions\AttributeExtensionsTests.cs" />
     <Compile Include="Extensions\EnumerableExtensionsTests.cs" />
     <Compile Include="Common\OptionTest.cs" />

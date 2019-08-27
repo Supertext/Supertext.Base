@@ -20,7 +20,11 @@ namespace Supertext.Base.Common
         {
             get
             {
-                if (!IsSome) throw new NullReferenceException();
+                if (!IsSome)
+                {
+                    throw new NullReferenceException();
+                }
+
                 return _value;
             }
         }

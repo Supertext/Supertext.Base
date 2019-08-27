@@ -14,8 +14,7 @@ namespace Supertext.Base.Dal.SqlServer
 
         public IUnitOfWork Create(string connectionString)
         {
-            Validate.NotEmpty(connectionString, nameof(connectionString));
-            Validate.NotBlank(connectionString, nameof(connectionString));
+            Validate.NotNullOrWhitespace(connectionString, nameof(connectionString));
 
             return _unitOfWorkFactory.Create(connectionString);
         }
