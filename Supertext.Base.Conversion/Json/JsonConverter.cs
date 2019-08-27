@@ -23,7 +23,7 @@ namespace Supertext.Base.Conversion.Json
                            {
                                ContractResolver = new CamelCasePropertyNamesContractResolver()
                            };
-            return JsonConvert.SerializeObject(jsonObject, Formatting.Indented, settings);
+            return JsonConvert.SerializeObject(jsonObject, Formatting.None, settings);
         }
 
         public string GetTokenValue(string json, string tokenName)
