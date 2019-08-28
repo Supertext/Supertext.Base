@@ -8,7 +8,7 @@ using System.Resources;
 using System.Threading.Tasks;
 using Exception = System.Exception;
 
-namespace Supertext.Base.Specs.Resources
+namespace Supertext.Base.Tests.Resources
 {
     [TestClass]
     public class EmbeddedTestsByAssemblyName
@@ -16,7 +16,7 @@ namespace Supertext.Base.Specs.Resources
         private static Assembly _assembly;
         private static DirectoryInfo _diTestDir;
         private static FileInfo _fiTestFile;
-        private const string ResourceName = "Supertext.Base.Specs.Resources.TestFiles.lorem_ipsum.txt";
+        private const string ResourceName = "Supertext.Base.Tests.Resources.TestFiles.lorem_ipsum.txt";
 
         [ClassInitialize]
         public static void ClassInit(TestContext context)

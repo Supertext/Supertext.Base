@@ -5,7 +5,7 @@ using Supertext.Base.Extensions;
 using System;
 using System.Linq;
 
-namespace Supertext.Base.Specs.Extensions
+namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
     public class AttributeExtensionsTests

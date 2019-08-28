@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.Dal.SqlServer\Supertext.Base.Dal.SqlServer.csproj" />
+    <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 
 </Project>

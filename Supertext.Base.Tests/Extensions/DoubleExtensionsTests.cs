@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Extensions;
 
-namespace Supertext.Base.Specs.Extensions
+
+namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
     public class DoubleExtensionsTests

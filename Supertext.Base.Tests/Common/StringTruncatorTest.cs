@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Common;
 
-namespace Supertext.Base.Test.Common
+namespace Supertext.Base.Tests.Common
 {
     [TestClass]
     public class StringTruncatorTest

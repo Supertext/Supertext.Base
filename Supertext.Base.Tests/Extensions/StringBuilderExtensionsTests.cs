@@ -2,12 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Extensions;
 
-namespace Supertext.Base.Specs.Extensions
+
+namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
     public class StringBuilderExtensionsTests
     {
         private System.Text.StringBuilder _testee;
+
 
         [TestInitialize]
         public void TestMethodInit()
@@ -18,6 +20,7 @@ namespace Supertext.Base.Specs.Extensions
             _testee.Append("third-string");
             _testee.Append("fourth-string");
         }
+
 
         [TestMethod]
         public void IndexOf_Returns_Expected_Index_With_startIndex_Ommitted()
@@ -31,6 +34,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(12);
         }
 
+
         [TestMethod]
         public void IndexOf_Returns_Expected_Index_With_startIndex_Specified()
         {
@@ -42,6 +46,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(12);
         }
+
 
         [TestMethod]
         public void IndexOf_Returns_Minus1_For_Unrecognised_String()
@@ -55,6 +60,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(-1);
         }
 
+
         [TestMethod]
         public void IndexOf_Returns_Minus1_For_Recognised_String_Before_startIndex()
         {
@@ -66,6 +72,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(-1);
         }
+
 
         [TestMethod]
         public void IndexOf_Returns_Expected_Index_With_startIndex_Ommitted_ignoreCase()
@@ -81,6 +88,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(12);
         }
 
+
         [TestMethod]
         public void IndexOf_Returns_Expected_Index_With_startIndex_Specified_ignoreCase()
         {
@@ -94,6 +102,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(12);
         }
+
 
         [TestMethod]
         public void IndexOf_Returns_Minus1_For_Unrecognised_String_ignoreCase()
@@ -109,6 +118,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(-1);
         }
 
+
         [TestMethod]
         public void IndexOf_Returns_Minus1_For_Recognised_String_Before_startIndex_ignoreCase()
         {
@@ -123,6 +133,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(-1);
         }
 
+
         [TestMethod]
         public void Contains_Returns_TRUE_For_Recognised_String()
         {
@@ -134,6 +145,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(true);
         }
+
 
         [TestMethod]
         public void Contains_Returns_FALSE_For_Unrecognised_String()
@@ -147,6 +159,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(false);
         }
 
+
         [TestMethod]
         public void Contains_Returns_TRUE_For_Recognised_String_ignoreCase()
         {
@@ -158,6 +171,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(true);
         }
+
 
         [TestMethod]
         public void Contains_Returns_FALSE_For_Unrecognised_String_ignoreCase()

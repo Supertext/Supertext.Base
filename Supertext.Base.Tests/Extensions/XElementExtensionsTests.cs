@@ -5,14 +5,12 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-
-namespace Supertext.Base.Test.Extensions
+namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
     public class XElementExtensionsTests
     {
         private static readonly Random Rdm = new Random();
-
 
         [TestMethod]
         public void GetAttrValue_Retrieves_Expected_Boolean_Value()
@@ -29,7 +27,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().Be(val);
         }
 
-
         [TestMethod]
         public void GetAttrValue_Retrieves_Expected_Int_Value()
         {
@@ -44,7 +41,6 @@ namespace Supertext.Base.Test.Extensions
             result.GetType().Should().Be(typeof(int));
             result.Should().Be(val);
         }
-
 
         [TestMethod]
         public void GetAttrValue_Retrieves_Expected_String_Value()
@@ -61,7 +57,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().Be(val);
         }
 
-
         [TestMethod]
         public void GetAttrValue_Returns_Default_Boolean_Value_For_Missing_Attribute()
         {
@@ -76,7 +71,6 @@ namespace Supertext.Base.Test.Extensions
             result.GetType().Should().Be(typeof(Boolean));
             result.Should().Be(defaultVal);
         }
-
 
         [TestMethod]
         public void GetAttrValue_Returns_Default_Int_Value_For_Missing_Attribute()
@@ -93,7 +87,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().Be(defaultVal);
         }
 
-
         [TestMethod]
         public void GetAttrValue_Returns_Default_String_Value_For_Missing_Attribute()
         {
@@ -107,7 +100,6 @@ namespace Supertext.Base.Test.Extensions
             // Assert
             result.Should().Be(defaultVal);
         }
-
 
         [TestMethod]
         public void GetAttrValue_Returns_Specified_Default_Boolean_Value_For_Missing_Attribute()
@@ -124,7 +116,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().Be(defaultVal);
         }
 
-
         [TestMethod]
         public void GetAttrValue_Returns_Specified_Default_Int_Value_For_Missing_Attribute()
         {
@@ -140,7 +131,6 @@ namespace Supertext.Base.Test.Extensions
             result.Should().Be(defaultVal);
         }
 
-
         [TestMethod]
         public void GetAttrValue_Returns_Specified_Default_String_Value_For_Missing_Attribute()
         {
@@ -155,7 +145,6 @@ namespace Supertext.Base.Test.Extensions
             result.GetType().Should().Be(typeof(string));
             result.Should().Be(defaultVal);
         }
-
 
         [TestMethod]
         public void GetAttrValue_Throws_Expected_Exception_For_Null_XElement()
@@ -177,7 +166,6 @@ namespace Supertext.Base.Test.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void GetAttrValue_Throws_Expected_Exception_For_Null_attrName()
         {
@@ -197,7 +185,6 @@ namespace Supertext.Base.Test.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
 
         [TestMethod]
         public void GetAttrValue_Throws_Expected_Exception_For_Empty_attrName()
@@ -219,13 +206,12 @@ namespace Supertext.Base.Test.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void RemoveAllNamespaces_Returns_Expected_When_Passed_XDocument()
         {
             // Arrange
             var resources = new Base.Resources.EmbeddedResource();
-            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
             var xElmnt = XDocument.Parse(xmlContents);
 
             void AssertHasDeclaration(XDocument xElmntAssert)
@@ -245,13 +231,12 @@ namespace Supertext.Base.Test.Extensions
             AssertNoXmlnsAttr(modifiedXElmnt.Root);
         }
 
-
         [TestMethod]
         public void RemoveAllNamespaces_Returns_Expected_When_Passed_XElement()
         {
             // Arrange
             var resources = new Base.Resources.EmbeddedResource();
-            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Test.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
             var xElmnt = XElement.Parse(xmlContents);
 
             // Act

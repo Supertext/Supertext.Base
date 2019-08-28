@@ -8,22 +8,22 @@ using System.Resources;
 using System.Threading.Tasks;
 using Exception = System.Exception;
 
-namespace Supertext.Base.Test.Resources
+namespace Supertext.Base.Tests.Resources
 {
     [TestClass]
-    public class EmbeddedTests
+    public class EmbeddedTestsByAssemblyNameAsString
     {
         private static Assembly _assembly;
         private static DirectoryInfo _diTestDir;
         private static FileInfo _fiTestFile;
-        private const string ResourceName = "Supertext.Base.Test.Resources.TestFiles.lorem_ipsum.txt";
+        private const string ResourceName = "Supertext.Base.Tests.Resources.TestFiles.lorem_ipsum.txt";
 
         [ClassInitialize]
         public static void ClassInit(TestContext context)
         {
             _assembly = Assembly.GetAssembly(typeof(EmbeddedTests));
             var codebase = _assembly.CodeBase.Replace("file:///", String.Empty);
-            var diProject = new FileInfo(codebase).Directory.Parent.Parent;
+            var diProject = new FileInfo(codebase).Directory;//.Parent.Parent;
             _diTestDir = new DirectoryInfo(Path.Combine(diProject.FullName,
                                                         "Resources",
                                                         "TestFiles",
@@ -78,7 +78,7 @@ namespace Supertext.Base.Test.Resources
         }
 
         [TestMethod]
-        public void ReadContentsAsByteArray_Returns_Expected_Result()
+        public void ReadContentsAsByteArray_Returns_Expected_Result_OLD()
         {
             // Arrange
             var testee = new EmbeddedResource();
@@ -116,6 +116,54 @@ namespace Supertext.Base.Test.Resources
 
             // Act
             result = testee.ReadContentsAsByteArray(_assembly, ResourceName);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+        }
+
+        [TestMethod]
+        public void ReadContentsAsByteArray_Returns_Expected_Result_NEW()
+        {
+            // Arrange
+            var testee =new EmbeddedResource(ResourceName);
+            var resourceFileContents = File.ReadAllBytes(_fiTestFile.FullName);
+
+            // overload with only resource name
+            // Act
+            var result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee =new EmbeddedResource(_assembly.GetName(), ResourceName);
+            result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+            // Act
+            testee =new EmbeddedResource(_assembly.GetName().Name, ResourceName);
+            result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee =new EmbeddedResource(_assembly, ResourceName);
+            result = testee.ReadContentsAsByteArray();
 
             // Assert
             result.Should().NotBeNull();
@@ -225,7 +273,7 @@ namespace Supertext.Base.Test.Resources
         }
 
         [TestMethod]
-        public void ReadContentsAsStream_Returns_Expected_Result()
+        public void ReadContentsAsStream_Returns_Expected_Result_OLD()
         {
             // Arrange
             var testee =new EmbeddedResource();
@@ -264,6 +312,56 @@ namespace Supertext.Base.Test.Resources
 
             // Act
             using (var result = testee.ReadContentsAsStream(_assembly, ResourceName))
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+        }
+
+        [TestMethod]
+        public void ReadContentsAsStream_Returns_Expected_Result_NEW()
+        {
+            // Arrange
+            var testee = new EmbeddedResource(ResourceName);
+            var resourceFileContents = File.ReadAllBytes(_fiTestFile.FullName);
+
+            // overload with only resource name
+            // Act
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), ResourceName);
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, ResourceName);
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, ResourceName);
+            using (var result = testee.ReadContentsAsStream())
             {
                 // Assert
                 result.Should().NotBeNull();
@@ -322,7 +420,48 @@ namespace Supertext.Base.Test.Resources
         }
 
         [TestMethod]
-        public void ReadContentsAsString_Returns_Expected_Result()
+        public void ReadContentsAsStream_Throws_Expected_Exception_For_Invalid_resourceName_NEW()
+        {
+            // Arrange
+            var invalidResourceName = Guid.NewGuid().ToString();
+
+            // overload with only resource name
+            // Act
+            var testee = new EmbeddedResource(invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsStream()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with AssemblyName and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsStream()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsStream()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsStream()).Should().Throw<MissingManifestResourceException>();
+        }
+
+        [TestMethod]
+        public void ReadContentsAsString_Returns_Expected_Result_OLD()
         {
             // Arrange
             var testee =new EmbeddedResource();
@@ -360,6 +499,54 @@ namespace Supertext.Base.Test.Resources
 
             // Act
             result = testee.ReadContentsAsString(_assembly, ResourceName);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+        }
+
+        [TestMethod]
+        public void ReadContentsAsString_Returns_Expected_Result_NEW()
+        {
+            // Arrange
+            var testee = new EmbeddedResource(ResourceName);
+            var resourceFileContents = File.ReadAllText(_fiTestFile.FullName);
+
+            // overload with only resource name
+            // Act
+            var result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), ResourceName);
+            result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, ResourceName);
+            result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, ResourceName);
+            result = testee.ReadContentsAsString();
 
             // Assert
             result.Should().NotBeNull();
@@ -465,7 +652,48 @@ namespace Supertext.Base.Test.Resources
         }
 
         [TestMethod]
-        public void WriteAsFile_Produces_Expected_File()
+        public void ReadContentsAsString_Throws_Expected_Exception_For_Invalid_resourceName_NEW()
+        {
+            // Arrange
+            var invalidResourceName = Guid.NewGuid().ToString();
+
+            // overload with only resource name
+            // Act
+            var testee = new EmbeddedResource(invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsString()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with AssemblyName and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsString()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsString()).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.ReadContentsAsString()).Should().Throw<MissingManifestResourceException>();
+        }
+
+        [TestMethod]
+        public void WriteAsFile_Produces_Expected_File_OLD()
         {
             // Arrange
             var testee =new EmbeddedResource();
@@ -516,6 +744,63 @@ namespace Supertext.Base.Test.Resources
             testee.WriteAsFile(_assembly,
                                ResourceName,
                                writeFileName);
+
+            // Assert
+            fiWriteFileName.Exists.Should().BeTrue();
+            File.ReadAllText(writeFileName).Should().BeEquivalentTo(resourceFileContents);
+
+            fiWriteFileName.Delete();
+        }
+
+        [TestMethod]
+        public void WriteAsFile_Produces_Expected_File_NEW()
+        {
+            // Arrange
+            var testee = new EmbeddedResource(ResourceName);
+            var resourceFileContents = File.ReadAllText(_fiTestFile.FullName);
+            var writeFileName = Path.Combine(_diTestDir.FullName, "embedded_write.txt");
+            var fiWriteFileName = new FileInfo(writeFileName);
+
+            // overload with only resource name
+            // Act
+            testee.WriteAsFile(writeFileName);
+
+            // Assert
+            fiWriteFileName.Exists.Should().BeTrue();
+            File.ReadAllText(writeFileName).Should().BeEquivalentTo(resourceFileContents);
+
+            fiWriteFileName.Delete();
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), ResourceName);
+            testee.WriteAsFile(writeFileName);
+
+            // Assert
+            fiWriteFileName.Exists.Should().BeTrue();
+            File.ReadAllText(writeFileName).Should().BeEquivalentTo(resourceFileContents);
+
+            fiWriteFileName.Delete();
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, ResourceName);
+            testee.WriteAsFile(writeFileName);
+
+            // Assert
+            fiWriteFileName.Exists.Should().BeTrue();
+            File.ReadAllText(writeFileName).Should().BeEquivalentTo(resourceFileContents);
+
+            fiWriteFileName.Delete();
+
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, ResourceName);
+            testee.WriteAsFile(writeFileName);
 
             // Assert
             fiWriteFileName.Exists.Should().BeTrue();
@@ -635,6 +920,48 @@ namespace Supertext.Base.Test.Resources
 
             // Act & Assert
             testee.Invoking(t => t.WriteAsFile(_assembly, invalidResourceName, writeFileName)).Should().Throw<MissingManifestResourceException>();
+        }
+
+        [TestMethod]
+        public void WriteAsFile_Throws_Expected_Exception_For_Invalid_resourceName_NEW()
+        {
+            // Arrange
+            var invalidResourceName = Guid.NewGuid().ToString();
+            var writeFileName = Path.Combine(_diTestDir.FullName, "embedded_write.txt");
+
+            // overload with only resource name
+            // Act
+            var testee = new EmbeddedResource(invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.WriteAsFile(writeFileName)).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with AssemblyName and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName(), invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.WriteAsFile(writeFileName)).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly name and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly.GetName().Name, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.WriteAsFile(writeFileName)).Should().Throw<MissingManifestResourceException>();
+
+
+            // overload with assembly and resource name
+
+            // Act
+            testee = new EmbeddedResource(_assembly, invalidResourceName);
+
+            // Assert
+            testee.Invoking(t => t.WriteAsFile(writeFileName)).Should().Throw<MissingManifestResourceException>();
         }
     }
 }

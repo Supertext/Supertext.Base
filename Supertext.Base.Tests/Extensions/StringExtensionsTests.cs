@@ -3,7 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Extensions;
 using System;
 
-namespace Supertext.Base.Specs.Extensions
+
+namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
     public class StringExtensionsTests
@@ -23,6 +24,7 @@ namespace Supertext.Base.Specs.Extensions
             str.Should().Be("this INSERTis a string extension unit test");
         }
 
+
         [TestMethod]
         public void ReplaceAt_Replaces_String()
         {
@@ -39,6 +41,7 @@ namespace Supertext.Base.Specs.Extensions
             str.Should().Be("this INSERTtring extension unit test");
         }
 
+
         [TestMethod]
         public void ReplaceAt_Returns_Longer_String_When_Insert_String_Exceeds_Current_Length()
         {
@@ -54,6 +57,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             str.Should().Be("this this is a string extension unit test");
         }
+
 
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_length_Is_Too_Large()
@@ -77,6 +81,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
+
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_str_Is_Null()
         {
@@ -98,6 +103,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
+
 
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_length_Is_Negative()
@@ -121,6 +127,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
+
         [TestMethod]
         public void Reverse_Returns_Null_When_Input_Is_Null()
         {
@@ -133,6 +140,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().BeNull();
         }
+
 
         [TestMethod]
         public void Reverse_Returns_Expected_String()

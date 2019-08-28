@@ -1,17 +1,22 @@
-﻿using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Extensions;
+﻿using Supertext.Base.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Supertext.Base.Specs.Extensions
+
+namespace Supertext.Base.Tests.Extensions
 {
+    using FluentAssertions;
+
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+
     [TestClass]
     public class EnumerableExtensionsTests
     {
         private ICollection<string> _testee;
+
 
         private struct TestPerson
         {
@@ -24,11 +29,13 @@ namespace Supertext.Base.Specs.Extensions
             }
         }
 
+
         [TestInitialize]
         public void TestInitialize()
         {
             _testee = new Collection<string>();
         }
+
 
         [TestMethod]
         public void IsEmpty_CollectionIsEmpty_IsEmpty()
@@ -37,6 +44,7 @@ namespace Supertext.Base.Specs.Extensions
 
             result.Should().BeTrue();
         }
+
 
         [TestMethod]
         public void IsEmpty_CollectionIsFilled_IsNotEmpty()
@@ -47,6 +55,7 @@ namespace Supertext.Base.Specs.Extensions
 
             result.Should().BeFalse();
         }
+
 
         [TestMethod]
         public void ForEach_CollectionIsFilled_EachItemIsTouched()
@@ -59,19 +68,18 @@ namespace Supertext.Base.Specs.Extensions
 
             _testee.ForEach(item => items.Add(item));
 
-            items.Should()
-            .Contain(new List<string>
-                         {
-                             item1,
-                             item2
-                         });
+            items.Should().Contain(new List<string> {item1, item2});
         }
+
 
         [TestMethod]
         public void IsNullOrEmpty_Returns_False_For_NonNull_Source()
         {
             // Arrange
-            var source = new List<object> {new object()};
+            var source = new List<object>
+                             {
+                                 new object()
+                             };
 
             // Act
             var result = source.IsNullOrEmpty();
@@ -79,6 +87,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             Assert.IsFalse(result);
         }
+
 
         [TestMethod]
         public void IsNullOrEmpty_Returns_True_For_Empty_Source()
@@ -93,6 +102,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.IsTrue(result);
         }
 
+
         [TestMethod]
         public void IsNullOrEmpty_Returns_True_For_Null_Source()
         {
@@ -106,6 +116,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.IsTrue(result);
         }
 
+
         [TestMethod]
         public void None_CollectionIsEmpty_IsNone()
         {
@@ -113,6 +124,7 @@ namespace Supertext.Base.Specs.Extensions
 
             result.Should().BeTrue();
         }
+
 
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Expected_String_With_Default_Separator()
@@ -135,6 +147,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.AreEqual(expectedResult, result);
         }
 
+
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Expected_String_With_Specified_Separator()
         {
@@ -156,6 +169,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.AreEqual(expectedResult, result);
         }
 
+
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Null_For_Null_Source()
         {
@@ -169,6 +183,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.IsNull(result);
         }
 
+
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Empty_String_For_Empty_Source()
         {
@@ -181,6 +196,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             Assert.AreEqual(String.Empty, result);
         }
+
 
         [TestMethod]
         public void IndexOf_Returns_Expected_Result()
@@ -203,6 +219,7 @@ namespace Supertext.Base.Specs.Extensions
             result.Should().Be(source.Count() - 1);
         }
 
+
         [TestMethod]
         public void IndexOf_Returns_NotFound_For_Empty_Source()
         {
@@ -216,6 +233,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             result.Should().Be(-1);
         }
+
 
         [TestMethod]
         public void IndexOf_Throws_Exception_For_Null_Source()
@@ -238,6 +256,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
+
         [TestMethod]
         public void ItemWithMax_Returns_Expected_Item()
         {
@@ -259,6 +278,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.AreEqual(tpMarge, result);
         }
 
+
         [TestMethod]
         public void ItemWithMax_Throws_Exception_For_Null_Source()
         {
@@ -270,7 +290,7 @@ namespace Supertext.Base.Specs.Extensions
             {
                 source.ItemWithMax(tp => tp.Name);
             }
-            catch (ArgumentNullException exception) when (exception.ParamName == "source")
+            catch (ArgumentNullException exception) when(exception.ParamName == "source")
             {
                 // Assert
                 return;
@@ -278,6 +298,7 @@ namespace Supertext.Base.Specs.Extensions
 
             Assert.Fail("The expected exception was not thrown.");
         }
+
 
         [TestMethod]
         public void ItemWithMax_Throws_Exception_For_Empty_Source()
@@ -299,6 +320,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
+
         [TestMethod]
         public void MoveToFirst_Moves_Expected_Single_Item()
         {
@@ -319,6 +341,7 @@ namespace Supertext.Base.Specs.Extensions
             // Assert
             Assert.AreEqual(tpMarge, result.First());
         }
+
 
         [TestMethod]
         public void MoveToFirst_Moves_Expected_Items()
@@ -342,6 +365,7 @@ namespace Supertext.Base.Specs.Extensions
             Assert.AreEqual(tpMaggie, result.First());
             Assert.AreEqual(tpMarge, result.ElementAt(1));
         }
+
 
         [TestMethod]
         public void MoveToFirst_Throws_Exception_For_Null_Source()
