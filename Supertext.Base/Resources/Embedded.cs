@@ -511,7 +511,7 @@ namespace Supertext.Base.Resources
         /// <returns>
         /// A <c>byte[]</c> containing the contents of the specified embedded resource.
         /// </returns>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public byte[] ReadContentsAsByteArray()
         {
             using (var stream = _assembly.GetManifestResourceStream(_resourceName))
@@ -536,7 +536,7 @@ namespace Supertext.Base.Resources
         /// <returns>
         /// A <c>byte[]</c> containing the contents of the specified embedded resource.
         /// </returns>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public async Task<byte[]> ReadContentsAsByteArrayAsync()
         {
             using (var stream = _assembly.GetManifestResourceStream(_resourceName))
@@ -565,7 +565,7 @@ namespace Supertext.Base.Resources
         /// <returns>
         /// A <c>Stream</c> containing the contents of the specified embedded resource.
         /// </returns>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public Stream ReadContentsAsStream()
         {
             var stream = _assembly.GetManifestResourceStream(_resourceName);
@@ -588,7 +588,7 @@ namespace Supertext.Base.Resources
         /// <returns>
         /// A <c>string</c> containing the contents of the specified embedded resource.
         /// </returns>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public string ReadContentsAsString()
         {
             using (var stream = ReadContentsAsStream())
@@ -604,7 +604,7 @@ namespace Supertext.Base.Resources
         /// <returns>
         /// A <c>string</c> containing the contents of the specified embedded resource.
         /// </returns>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public async Task<string> ReadContentsAsStringAsync()
         {
             using (var stream = ReadContentsAsStream())
@@ -625,8 +625,8 @@ namespace Supertext.Base.Resources
         /// <remarks>
         /// Probably only used for integration testing.
         /// </remarks>
-        /// <exception cref="FileNotFoundException">The specified <see cref="assembly"/> argument could not be loaded.</exception>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="FileNotFoundException">The assembly specified to the constructor could not be loaded.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public void WriteAsFile(string fullPath)
         {
             var contents = ReadContentsAsString();
@@ -641,8 +641,8 @@ namespace Supertext.Base.Resources
         /// <remarks>
         /// Probably only used for integration testing.
         /// </remarks>
-        /// <exception cref="FileNotFoundException">The specified <see cref="assembly"/> argument could not be loaded.</exception>
-        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
+        /// <exception cref="FileNotFoundException">The assembly specified to the constructor could not be loaded.</exception>
+        /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the arguments passed to the constructor.</exception>
         public async Task WriteAsFileAsync(string fullPath)
         {
             var contents = await ReadContentsAsStringAsync().ConfigureAwait(false);

@@ -210,8 +210,8 @@ namespace Supertext.Base.Tests.Extensions
         public void RemoveAllNamespaces_Returns_Expected_When_Passed_XDocument()
         {
             // Arrange
-            var resources = new Base.Resources.EmbeddedResource();
-            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var resources = new Base.Resources.EmbeddedResource("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xmlContents = resources.ReadContentsAsString();
             var xElmnt = XDocument.Parse(xmlContents);
 
             void AssertHasDeclaration(XDocument xElmntAssert)
@@ -235,8 +235,8 @@ namespace Supertext.Base.Tests.Extensions
         public void RemoveAllNamespaces_Returns_Expected_When_Passed_XElement()
         {
             // Arrange
-            var resources = new Base.Resources.EmbeddedResource();
-            var xmlContents = resources.ReadContentsAsString("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var resources = new Base.Resources.EmbeddedResource("Supertext.Base.Tests.Extensions.TestFiles.Xml_with_namespace.sdlproj");
+            var xmlContents = resources.ReadContentsAsString();
             var xElmnt = XElement.Parse(xmlContents);
 
             // Act
