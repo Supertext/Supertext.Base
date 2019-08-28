@@ -607,7 +607,7 @@ namespace Supertext.Base.Resources
         /// <exception cref="MissingManifestResourceException">No resource could be found in the specified assembly using the specified <see cref="resourceName"/> argument.</exception>
         public async Task<string> ReadContentsAsStringAsync()
         {
-            using (var stream = ReadContentsAsStream(_assembly, _resourceName))
+            using (var stream = ReadContentsAsStream())
             using (var reader = new StreamReader(stream))
             {
                 return await reader.ReadToEndAsync().ConfigureAwait(false);

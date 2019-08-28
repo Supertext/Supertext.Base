@@ -63,6 +63,9 @@
     <Compile Include="Extensions\StringBuilderExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="Resources\EmbeddedTests.cs" />
+    <Compile Include="Resources\EmbeddedTestsByAssemblyNameAsString.cs" />
+    <Compile Include="Resources\EmbeddedTestsByAssemblyName.cs" />
+    <Compile Include="Resources\EmbeddedTestsInOwnAssembly.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Extensions\TestFiles\Xml_with_namespace.sdlproj" />
