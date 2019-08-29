@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
@@ -444,6 +445,7 @@ namespace Supertext.Base.Resources
     // This class contains all the current methods
     public partial class EmbeddedResource
     {
+        private readonly string[] _allResNames;
         private Assembly _assembly;
         private string _resourceName;
 
@@ -452,7 +454,7 @@ namespace Supertext.Base.Resources
         /// <summary>
         /// Creates an instance of <see cref="EmbeddedResource"/> providing access to the specified resource in the calling assembly.
         /// </summary>
-        /// <param name="resourceName">The fully-qualified name of an embedded resource in the calling assembly.</param>
+        /// <param name="resourceName">The fully-qualified, case-sensitive name of an embedded resource in the calling assembly.</param>
         public EmbeddedResource(string resourceName) : this(Assembly.GetCallingAssembly(), resourceName)
         {
         }
@@ -461,7 +463,7 @@ namespace Supertext.Base.Resources
         /// Creates an instance of <see cref="EmbeddedResource"/> providing access to the specified resource in the specified assembly.
         /// </summary>
         /// <param name="assemblyName">The name of the <c>Assembly</c> in which the resource has been embedded.</param>
-        /// <param name="resourceName">The fully-qualified name of an embedded resource in the specified assembly.</param>
+        /// <param name="resourceName">The fully-qualified, case-sensitive name of an embedded resource in the specified assembly.</param>
         public EmbeddedResource(string assemblyName, string resourceName) : this(new AssemblyName(assemblyName), resourceName)
         {
         }
@@ -470,7 +472,7 @@ namespace Supertext.Base.Resources
         /// Creates an instance of <see cref="EmbeddedResource"/> providing access to the specified resource in the specified assembly.
         /// </summary>
         /// <param name="assemblyName">The name of the <c>Assembly</c> in which the resource has been embedded.</param>
-        /// <param name="resourceName">The fully-qualified name of an embedded resource in the specified assembly.</param>
+        /// <param name="resourceName">The fully-qualified, case-sensitive name of an embedded resource in the specified assembly.</param>
         public EmbeddedResource(AssemblyName assemblyName, string resourceName)
         {
             try
@@ -487,6 +489,8 @@ namespace Supertext.Base.Resources
                 throw new FileNotFoundException($"Unable to load the assembly \"{assemblyName}\".");
             }
 
+            _allResNames = _assembly.GetManifestResourceNames();
+
             _resourceName = resourceName;
         }
 
@@ -494,9 +498,10 @@ namespace Supertext.Base.Resources
         /// Creates an instance of <see cref="EmbeddedResource"/> providing access to the specified resource in the specified assembly.
         /// </summary>
         /// <param name="assembly">The <c>Assembly</c> in which the resource has been embedded.</param>
-        /// <param name="resourceName">The fully-qualified name of an embedded resource in the specified assembly.</param>
+        /// <param name="resourceName">The fully-qualified, case-sensitive name of an embedded resource in the specified assembly.</param>
         public EmbeddedResource(Assembly assembly, string resourceName)
         {
+            _allResNames = assembly.GetManifestResourceNames();
             _assembly = assembly;
             _resourceName = resourceName;
         }
@@ -516,18 +521,25 @@ namespace Supertext.Base.Resources
         {
             using (var stream = _assembly.GetManifestResourceStream(_resourceName))
             {
-                if (stream == null)
+                if (stream != null)
                 {
-                    throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
+                    var bytes = new byte[stream.Length];
+                    stream.Read(bytes,
+                                0,
+                                bytes.Length);
+
+                    return bytes;
                 }
-
-                var bytes = new byte[stream.Length];
-                stream.Read(bytes,
-                            0,
-                            bytes.Length);
-
-                return bytes;
             }
+
+            if (TryGetCorrectedName(out var matchedName))
+            {
+                _resourceName = matchedName;
+
+                return ReadContentsAsByteArray();
+            }
+
+            throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
         }
 
         /// <summary>
@@ -541,18 +553,25 @@ namespace Supertext.Base.Resources
         {
             using (var stream = _assembly.GetManifestResourceStream(_resourceName))
             {
-                if (stream == null)
+                if (stream != null)
                 {
-                    throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
+                    var bytes = new byte[stream.Length];
+                    await stream.ReadAsync(bytes,
+                                           0,
+                                           bytes.Length);
+
+                    return bytes;
                 }
-
-                var bytes = new byte[stream.Length];
-                await stream.ReadAsync(bytes,
-                                       0,
-                                       bytes.Length).ConfigureAwait(false);
-
-                return bytes;
             }
+
+            if (TryGetCorrectedName(out var matchedName))
+            {
+                _resourceName = matchedName;
+
+                return await ReadContentsAsByteArrayAsync();
+            }
+
+            throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
         }
 
         #endregion
@@ -570,12 +589,19 @@ namespace Supertext.Base.Resources
         {
             var stream = _assembly.GetManifestResourceStream(_resourceName);
 
-            if (stream == null)
+            if (stream != null)
             {
-                throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
+                return stream;
             }
 
-            return stream;
+            if (TryGetCorrectedName(out var matchedName))
+            {
+                _resourceName = matchedName;
+
+                return ReadContentsAsStream();
+            }
+
+            throw new MissingManifestResourceException($"Unable to read the resource \"{_resourceName}\" from the assembly \"{_assembly.GetName().Name}\".");
         }
 
         #endregion
@@ -651,5 +677,24 @@ namespace Supertext.Base.Resources
         }
 
         #endregion
+
+        /// <summary>
+        /// Looks for a resource name from the assembly's manifest which is the same as <c>_resourceName</c> but with difference in case.
+        /// </summary>
+        /// <param name="match">Contains the matched resource name, if found.</param>
+        /// <returns>
+        /// A <c>bool</c> indicating whether a resource name was found using a case-insensitive search but not when the resource name matched exactly the existing _resourceName.
+        /// </returns>
+        /// <remarks>
+        /// A <c>true</c> value indicates that a different version of the name has been found which is worth trying while <c>false</c> indicates that no name was found (from a
+        /// case-insensitive search) or that the _resourceName variable already matches a resource name in the manifest.
+        /// This allows us to have recursive calls in the above functions while knowing that TryGetCorrectedName will not perpetually return the same match.
+        /// </remarks>
+        private bool TryGetCorrectedName(out string match)
+        {
+            match = _allResNames.FirstOrDefault(rn => String.Equals(rn, _resourceName, StringComparison.InvariantCultureIgnoreCase));
+
+            return match != null && !match.Equals(_resourceName);
+        }
     }
 }

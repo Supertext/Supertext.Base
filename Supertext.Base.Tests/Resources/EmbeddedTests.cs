@@ -190,6 +190,65 @@ namespace Supertext.Base.Tests.Resources
         }
 
         [TestMethod]
+        public void ReadContentsAsByteArray_Returns_Expected_Result_When_Resource_Name_Corrected()
+        {
+            // Arrange
+            var resourceFileContents = File.ReadAllBytes(_fiTestFile.FullName);
+            var resourceName = ResourceName.Clone().ToString().ToLower();
+
+            // overload with only resource name
+
+            // Arrange
+            var testee = new EmbeddedResource(resourceName);
+
+            // Act
+            var result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+
+
+            // overload with assembly name and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName(), resourceName);
+
+            // Act
+            result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName().Name, resourceName);
+
+            // Act
+            result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+
+
+
+            // overload with assembly and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly, resourceName);
+
+            // Act
+            result = testee.ReadContentsAsByteArray();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Length.Should().Be(resourceFileContents.Length);
+        }
+
+        [TestMethod]
         public async Task ReadContentsAsByteArrayAsync_Returns_Expected_Result()
         {
             // Arrange
@@ -298,6 +357,67 @@ namespace Supertext.Base.Tests.Resources
         }
 
         [TestMethod]
+        public void ReadContentsAsStream_Returns_Expected_Result_When_Resource_Name_Corrected()
+        {
+            // Arrange
+            var resourceFileContents = File.ReadAllBytes(_fiTestFile.FullName);
+            var resourceName = ResourceName.Clone().ToString().ToLower();
+
+            // overload with only resource name
+
+            // Arrange
+            var testee = new EmbeddedResource(resourceName);
+
+            // Act
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+
+            // overload with assembly name and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName(), resourceName);
+
+            // Act
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName().Name, resourceName);
+
+            // Act
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+
+
+            // overload with assembly and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly, resourceName);
+
+            // Act
+            using (var result = testee.ReadContentsAsStream())
+            {
+                // Assert
+                result.Should().NotBeNull();
+                result.Length.Should().Be(resourceFileContents.Length);
+            }
+        }
+
+        [TestMethod]
         public void ReadContentsAsStream_Throws_Expected_Exception_For_Invalid_resourceName()
         {
             // Arrange
@@ -388,6 +508,65 @@ namespace Supertext.Base.Tests.Resources
 
             // Arrange
             testee = new EmbeddedResource(_assembly, ResourceName);
+
+            // Act
+            result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+        }
+
+        [TestMethod]
+        public void ReadContentsAsString_Returns_Expected_Result_When_Resource_Name_Corrected()
+        {
+            // Arrange
+            var resourceFileContents = File.ReadAllText(_fiTestFile.FullName);
+            var resourceName = ResourceName.Clone().ToString().ToLower();
+
+            // overload with only resource name
+
+            // Arrange
+            var testee = new EmbeddedResource(resourceName);
+
+            // Act
+            var result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+
+
+            // overload with assembly name and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName(), resourceName);
+
+            // Act
+            result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly.GetName().Name, resourceName);
+
+            // Act
+            result = testee.ReadContentsAsString();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(resourceFileContents);
+
+
+
+            // overload with assembly and resource name
+
+            // Arrange
+            testee = new EmbeddedResource(_assembly, resourceName);
 
             // Act
             result = testee.ReadContentsAsString();
