@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Conversion",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Tests", "Supertext.Base.Tests\Supertext.Base.Tests.csproj", "{B8AEE43A-51B7-48C2-BAE4-13F62E049FF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
