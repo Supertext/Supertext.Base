@@ -3,12 +3,8 @@
 # Introduction 
 Supertext.Base contains a collection of useful utilities and helpers. 
 
-With evolution of the libraray it is meant, that there will be several topic specific libraries like:
-* Supertext.Base.Dal - Contains data access relevant components
-* Supertext.Base.Net - Contains components for network accessing reasons
-
 ## Testing 
-*.Test projects should contain Unit Tests only which are fast
+*.Test projects should contain Unit Tests only which are fast and dependencies mocked
 *.Specs projects should contain Integration tests whose execution time us probably longer
 
 # Getting Started
