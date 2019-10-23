@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Tests", "Sup
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Authentication", "Supertext.Base.Authentication\Supertext.Base.Authentication.csproj", "{22143687-EF4D-459A-AB1F-63C5BCFD980F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
