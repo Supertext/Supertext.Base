@@ -8,8 +8,6 @@ using Supertext.Base.Dal.SqlServer.ConnectionThrottling;
 namespace Supertext.Base.Dal.SqlServer.Specs.ConnectionThrottling
 {
     [TestClass]
-    [Ignore("The ConnectionThrottleGuard is hard to be unit testable. "
-            + "Containing test methods show sync and async invocation of the guard.")]
     public class ConnectionThrottleGuardTest
     {
         private IConnectionThrottleGuard _testee;
