@@ -35,7 +35,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Tests", "Sup
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Authentication", "Supertext.Base.Authentication\Supertext.Base.Authentication.csproj", "{22143687-EF4D-459A-AB1F-63C5BCFD980F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Authentication", "Supertext.Base.Authentication\Supertext.Base.Authentication.csproj", "{22143687-EF4D-459A-AB1F-63C5BCFD980F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C972A9E1-2173-44D0-A896-4608C2EA6D64}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
