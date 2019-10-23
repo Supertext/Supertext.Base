@@ -1,6 +1,8 @@
 develop
+
 [![Build status](https://dev.azure.com/supertext/Supertext/_apis/build/status/Supertext.Base/Supertext.Base%20develop%20CI)](https://dev.azure.com/supertext/Supertext/_build/latest?definitionId=15)
 master
+
 [![Build Status](https://supertext.visualstudio.com/Supertext/_apis/build/status/Supertext.Base%20Release)](https://dev.azure.com/supertext/Supertext/_build/latest?definitionId=18)
 
 # Introduction 
@@ -34,7 +36,9 @@ Steps in order to release the Supertext.Base libraries:
 1. Initiate the release with a pull request from develop to master
 2. After the pull request has been approved, it needs to be merged into the master branch.
 3. Discuss and coordinate an upcoming release with your team mates.
-4. Set a new Tag at the master branch according to the SemVer principle. 
+4. Set a new Tag at the master branch according to the SemVer principle.
+You can do this via https://github.com/Supertext/Supertext.Base/releases/new
+Write also something regarding the release
 5. Queue a new build with the "Supertext.Base release" pipeline.
 	The package will be released with before the tagged number as package version. It will be available under the same [feed](https://supertext.pkgs.visualstudio.com/_packaging/internal/nuget/v3/index.json).
 
