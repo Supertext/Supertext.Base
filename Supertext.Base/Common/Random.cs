@@ -13,20 +13,23 @@ namespace Supertext.Base.Common
         /// <summary>
         /// Generates a collection of random bytes.
         /// </summary>
-        /// <example>
-        /// var randomBytes = Random.Bytes().Take(1000);   // generate a 1000-element array of random bytes
-        /// </example>
-        public static IEnumerable<byte> GetBytes()
+        /// <param name="count">The size of the collection to be returned.</param>
+        public static IEnumerable<byte> GetBytes(int count)
         {
-            var buffer = new byte[32];
-            while (true)
+            IEnumerable<byte> ReturnFromStream()
             {
-                Rdm.NextBytes(buffer);
-                foreach (var ret in buffer)
+                var buffer = new byte[32];
+                while (true)
                 {
-                    yield return ret;
+                    Rdm.NextBytes(buffer);
+                    foreach (var ret in buffer)
+                    {
+                        yield return ret;
+                    }
                 }
             }
+
+            return ReturnFromStream().Take(count).ToArray();
         }
 
         /// <summary>
