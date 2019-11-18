@@ -17,11 +17,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Supertext.Base" Version="3.3.0-ci-20191104-140321" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.Test.Utils\Supertext.Base.Test.Utils.csproj" />
+    <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 
 </Project>
