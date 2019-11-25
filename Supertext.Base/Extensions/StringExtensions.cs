@@ -53,5 +53,35 @@ namespace Supertext.Base.Extensions
                                    .Reverse()
                                    .ToArray());
         }
+
+        /// <summary>
+        /// Returns the string with the initial letter converted to lower-case.
+        /// </summary>
+        public static string ToLowerInitial(this string input)
+        {
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                return input;
+            }
+
+            var a = input.ToCharArray();
+            a[0] = Char.ToLower(a[0]);
+            return new string(a);
+        }
+
+        /// <summary>
+        /// Returns the string with the initial letter converted to upper-case.
+        /// </summary>
+        public static string ToUpperInitial(this string input)
+        {
+            if (String.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            var a = input.ToCharArray();
+            a[0] = Char.ToUpper(a[0]);
+            return new string(a);
+        }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Extensions;
 using System;
 
-
 namespace Supertext.Base.Tests.Extensions
 {
     [TestClass]
@@ -24,7 +23,6 @@ namespace Supertext.Base.Tests.Extensions
             str.Should().Be("this INSERTis a string extension unit test");
         }
 
-
         [TestMethod]
         public void ReplaceAt_Replaces_String()
         {
@@ -41,7 +39,6 @@ namespace Supertext.Base.Tests.Extensions
             str.Should().Be("this INSERTtring extension unit test");
         }
 
-
         [TestMethod]
         public void ReplaceAt_Returns_Longer_String_When_Insert_String_Exceeds_Current_Length()
         {
@@ -57,7 +54,6 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             str.Should().Be("this this is a string extension unit test");
         }
-
 
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_length_Is_Too_Large()
@@ -81,7 +77,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_str_Is_Null()
         {
@@ -103,7 +98,6 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
 
         [TestMethod]
         public void ReplaceAt_Throws_Expected_Exception_When_length_Is_Negative()
@@ -127,7 +121,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.Fail("The expected exception was not thrown.");
         }
 
-
         [TestMethod]
         public void Reverse_Returns_Null_When_Input_Is_Null()
         {
@@ -141,7 +134,6 @@ namespace Supertext.Base.Tests.Extensions
             result.Should().BeNull();
         }
 
-
         [TestMethod]
         public void Reverse_Returns_Expected_String()
         {
@@ -154,6 +146,60 @@ namespace Supertext.Base.Tests.Extensions
 
             // Assert
             result.Should().Be(expectedResult);
+        }
+
+        [TestMethod]
+        public void ToLowerInitial_Returns_Expected_String()
+        {
+            // Arrange
+            const string str = "Andrew";
+            const string expectedResult = "andrew";
+
+            // Act
+            var result = str.ToLowerInitial();
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
+
+        [TestMethod]
+        public void ToLowerInitial_Returns_Null_When_Passed_Null()
+        {
+            // Arrange
+            const string str = null;
+
+            // Act
+            var result = str.ToLowerInitial();
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void ToUpperInitial_Returns_Expected_String()
+        {
+            // Arrange
+            const string str = "andrew";
+            const string expectedResult = "Andrew";
+
+            // Act
+            var result = str.ToUpperInitial();
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
+
+        [TestMethod]
+        public void ToUpperInitial_Returns_Null_Wen_Passed_Null()
+        {
+            // Arrange
+            const string str = null;
+
+            // Act
+            var result = str.ToUpperInitial();
+
+            // Assert
+            result.Should().BeNull();
         }
     }
 }
