@@ -1,7 +1,8 @@
-﻿using Autofac;
+﻿using System.Runtime.CompilerServices;
+using Autofac;
 using Supertext.Base.Common;
 using Supertext.Base.Factory;
-
+[assembly: InternalsVisibleTo("Supertext.Base.Tests")]
 namespace Supertext.Base.Modules
 {
     public class BaseModule : Module
@@ -9,6 +10,7 @@ namespace Supertext.Base.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
+            builder.RegisterType<WildcardChecker>().As<IWildcardChecker>();
 
             RegisterFactories(builder);
         }
