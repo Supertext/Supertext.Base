@@ -10,5 +10,8 @@ namespace Supertext.Base.Core.Configuration.Specs
         public string Value { get; set; }
 
         public double DoubleValue { get; set; }
+
+        [KeyVaultSecret]
+        public string ConnectionString { get; set; }
     }
 }
