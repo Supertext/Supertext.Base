@@ -5,12 +5,12 @@ namespace Supertext.Base.Authorization.Claims
 {
     internal class ClaimRequirement : IAuthorizationRequirement
     {
-        public ClaimRequirement(string claimType)
+        public ClaimRequirement(string claimValue)
         {
-            Validate.NotNullOrWhitespace(claimType, nameof(claimType));
-            ClaimType = claimType;
+            Validate.NotNullOrWhitespace(claimValue, nameof(claimValue));
+            ClaimValue = claimValue;
         }
 
-        public string ClaimType { get; }
+        public string ClaimValue { get; }
     }
 }

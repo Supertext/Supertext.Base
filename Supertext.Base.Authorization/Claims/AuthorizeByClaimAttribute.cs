@@ -4,10 +4,10 @@ namespace Supertext.Base.Authorization.Claims
 {
     public class AuthorizeByClaimAttribute : AuthorizeAttribute
     {
-        public AuthorizeByClaimAttribute(string claimType) => ClaimType = claimType;
+        public AuthorizeByClaimAttribute(string claimValue) => ClaimValue = claimValue;
 
-        // Get or set the ClaimType property by manipulating the underlying Policy property
-        public string ClaimType
+        // Get or set the ClaimValue property by manipulating the underlying Policy property
+        public string ClaimValue
         {
             get
             {
