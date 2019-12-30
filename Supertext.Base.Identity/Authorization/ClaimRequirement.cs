@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Supertext.Base.Common;
 
-namespace Supertext.Base.Authorization.Claims
+namespace Supertext.Base.Identity.Authorization
 {
     internal class ClaimRequirement : IAuthorizationRequirement
     {

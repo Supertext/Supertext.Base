@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Supertext.Base.Authorization.Claims
+namespace Supertext.Base.Identity.Authorization
 {
     public class AuthorizeByClaimAttribute : AuthorizeAttribute
     {

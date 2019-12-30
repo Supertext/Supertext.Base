@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Supertext.Base.Authorization.Claims
+namespace Supertext.Base.Identity.Authorization
 {
     public static class AuthorizationExtensions
     {

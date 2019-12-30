@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Contains types related to authorization. E.g. autorization with claim types.</Description>
   </PropertyGroup>
 
   <ItemGroup>

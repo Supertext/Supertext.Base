@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Supertext.Base.Authorization.Claims
+namespace Supertext.Base.Identity.Authorization
 {
     internal class ClaimAuthorizeHandler : AuthorizationHandler<ClaimRequirement>
     {

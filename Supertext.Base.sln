@@ -35,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Tests", "Sup
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Authentication", "Supertext.Base.Authentication\Supertext.Base.Authentication.csproj", "{22143687-EF4D-459A-AB1F-63C5BCFD980F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C972A9E1-2173-44D0-A896-4608C2EA6D64}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
@@ -46,7 +44,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.NetFramework
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.NetFramework.Caching.Specs", "Supertext.Base.NetFramework.Caching.Specs\Supertext.Base.NetFramework.Caching.Specs.csproj", "{116DFAD2-5B92-4E10-A03C-AFFA3414A12D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Authorization", "Supertext.Base.Authorization\Supertext.Base.Authorization.csproj", "{AC382BEA-E379-4D5E-B458-B7845418BBDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Security", "Supertext.Base.Security\Supertext.Base.Security.csproj", "{F9048F5C-B9CB-4E29-959A-25F1C809247B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Identity", "Supertext.Base.Identity\Supertext.Base.Identity.csproj", "{8CC29C1B-2F6B-4757-8B06-F6DD6CE1F1E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,10 +118,6 @@ Global
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22143687-EF4D-459A-AB1F-63C5BCFD980F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94C9EFBD-395B-4805-B815-A298825B6F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94C9EFBD-395B-4805-B815-A298825B6F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94C9EFBD-395B-4805-B815-A298825B6F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -130,10 +126,14 @@ Global
 		{116DFAD2-5B92-4E10-A03C-AFFA3414A12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{116DFAD2-5B92-4E10-A03C-AFFA3414A12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{116DFAD2-5B92-4E10-A03C-AFFA3414A12D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC382BEA-E379-4D5E-B458-B7845418BBDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC382BEA-E379-4D5E-B458-B7845418BBDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC382BEA-E379-4D5E-B458-B7845418BBDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC382BEA-E379-4D5E-B458-B7845418BBDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9048F5C-B9CB-4E29-959A-25F1C809247B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9048F5C-B9CB-4E29-959A-25F1C809247B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9048F5C-B9CB-4E29-959A-25F1C809247B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9048F5C-B9CB-4E29-959A-25F1C809247B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC29C1B-2F6B-4757-8B06-F6DD6CE1F1E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC29C1B-2F6B-4757-8B06-F6DD6CE1F1E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC29C1B-2F6B-4757-8B06-F6DD6CE1F1E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC29C1B-2F6B-4757-8B06-F6DD6CE1F1E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
