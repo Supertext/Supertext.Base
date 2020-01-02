@@ -21,13 +21,18 @@ namespace Supertext.Base.Security.Cryptography
 
         public X509Certificate2 GetCertificateFromKeyVault(string vaultCertificateName)
         {
-            var keyVaultClient = new KeyVaultClient(AuthenticationCallback);
-
-            var certBundle = keyVaultClient.GetCertificateAsync(_vaultAddress, vaultCertificateName).Result;
-            var certContent = keyVaultClient.GetSecretAsync(certBundle.SecretIdentifier.Identifier).Result;
-            var certBytes = Convert.FromBase64String(certContent.Value);
-            var cert = new X509Certificate2(certBytes);
-            return cert;
+            using (var keyVaultClient = new KeyVaultClient(AuthenticationCallback))
+            {
+                var certBundle = keyVaultClient.GetCertificateAsync(_vaultAddress, vaultCertificateName)
+                                               .GetAwaiter()
+                                               .GetResult();
+                var certContent = keyVaultClient.GetSecretAsync(certBundle.SecretIdentifier.Identifier)
+                                                .GetAwaiter()
+                                                .GetResult();
+                var certBytes = Convert.FromBase64String(certContent.Value);
+                var cert = new X509Certificate2(certBytes);
+                return cert;
+            }
         }
 
         private async Task<string> AuthenticationCallback(string authority, string resource, string scope)
