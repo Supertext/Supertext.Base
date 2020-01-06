@@ -7,7 +7,7 @@ namespace Supertext.Base.Identity.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimRequirement requirement)
         {
-            if (context.User.HasClaim(c => c.Type == "allowedAccess" && c.Value == requirement.ClaimValue))
+            if (context.User.HasClaim(c => c.Type.EndsWith("allowedAccess") && c.Value == requirement.ClaimValue))
             {
                 context.Succeed(requirement);
             }
