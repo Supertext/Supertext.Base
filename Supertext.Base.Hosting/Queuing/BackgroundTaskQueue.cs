@@ -8,7 +8,7 @@ using Supertext.Base.Common;
 
 namespace Supertext.Base.Hosting.Queuing
 {
-    internal class BackgroundTaskQueue : IBackgroundTaskQueue, IDisposable
+    internal class BackgroundTaskQueue : IBackgroundTaskQueueObserver, IBackgroundTaskQueue, IDisposable
     {
         private readonly ConcurrentQueue<Func<ILifetimeScope, CancellationToken, Task>> _workItems = new ConcurrentQueue<Func<ILifetimeScope, CancellationToken, Task>>();
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);

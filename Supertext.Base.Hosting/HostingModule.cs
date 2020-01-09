@@ -8,7 +8,9 @@ namespace Supertext.Base.Hosting
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<BackgroundTaskQueue>().As<IBackgroundTaskQueue>().SingleInstance();
+            builder.RegisterType<BackgroundTaskQueue>()
+                   .As<IBackgroundTaskQueueObserver>()
+                   .As<IBackgroundTaskQueue>().SingleInstance();
         }
     }
 }

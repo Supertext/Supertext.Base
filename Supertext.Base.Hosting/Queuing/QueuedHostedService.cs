@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Supertext.Base.BackgroundTasks;
 
 namespace Supertext.Base.Hosting.Queuing
 {
@@ -16,14 +15,14 @@ namespace Supertext.Base.Hosting.Queuing
         private readonly IContainer _container;
         private readonly ILogger _logger;
 
-        public QueuedHostedService(IBackgroundTaskQueue taskQueue, ILoggerFactory loggerFactory, IContainer container)
+        public QueuedHostedService(IBackgroundTaskQueueObserver taskQueue, ILoggerFactory loggerFactory, IContainer container)
         {
             _container = container;
             TaskQueue = taskQueue;
             _logger = loggerFactory.CreateLogger<QueuedHostedService>();
         }
 
-        private IBackgroundTaskQueue TaskQueue { get; }
+        private IBackgroundTaskQueueObserver TaskQueue { get; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

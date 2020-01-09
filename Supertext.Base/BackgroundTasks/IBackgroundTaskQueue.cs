@@ -13,10 +13,6 @@ namespace Supertext.Base.BackgroundTasks
     {
         void QueueBackgroundWorkItem(Func<ILifetimeScope, CancellationToken, Task> workItem);
 
-        Task<Func<ILifetimeScope, CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken);
-
-        void WorkItemFinished();
-
         bool IsQueueEmpty();
     }
 }
