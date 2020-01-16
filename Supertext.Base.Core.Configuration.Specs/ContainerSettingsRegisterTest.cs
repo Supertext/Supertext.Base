@@ -44,5 +44,16 @@ namespace Supertext.Base.Core.Configuration.Specs
             config.SomeInt.Should().Be(4711);
             config.DoubleValue.Should().Be(34.5);
         }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_PropertyWithKeyVaultSecret_KeyVaultValueAvailable()
+        {
+            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<DummyConfig>();
+
+            config.ConnectionString.Should().Be("some value");
+        }
     }
 }
