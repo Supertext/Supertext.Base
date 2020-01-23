@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Supertext.Base.Abstractions;
+using Supertext.Base.Factory;
 
 namespace Supertext.Base.Hosting.Queuing
 {
@@ -37,8 +37,8 @@ namespace Supertext.Base.Hosting.Queuing
                 {
                     using (var scope = _lifetimeScope.BeginLifetimeScope())
                     {
-                        var scopeAbstraction = new LifetimeScopeAbstraction(scope);
-                        await workItem(scopeAbstraction, stoppingToken).ConfigureAwait(false);
+                        var factory = scope.Resolve<IFactory>();
+                        await workItem(factory, stoppingToken).ConfigureAwait(false);
                         TaskQueue.WorkItemFinished();
                     }
                 }

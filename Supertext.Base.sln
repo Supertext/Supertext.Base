@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Identity", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Hosting", "Supertext.Base.Hosting\Supertext.Base.Hosting.csproj", "{1968DF32-8482-4DB9-9190-B78B709D432A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Hosting.Specs", "Supertext.Base.Hosting.Specs\Supertext.Base.Hosting.Specs.csproj", "{7EF3E619-9B23-412A-9676-898BDC0B270A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{1968DF32-8482-4DB9-9190-B78B709D432A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1968DF32-8482-4DB9-9190-B78B709D432A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1968DF32-8482-4DB9-9190-B78B709D432A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EF3E619-9B23-412A-9676-898BDC0B270A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF3E619-9B23-412A-9676-898BDC0B270A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF3E619-9B23-412A-9676-898BDC0B270A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF3E619-9B23-412A-9676-898BDC0B270A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
