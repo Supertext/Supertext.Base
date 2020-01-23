@@ -3,6 +3,7 @@ using Autofac;
 using Supertext.Base.Common;
 using Supertext.Base.Factory;
 [assembly: InternalsVisibleTo("Supertext.Base.Tests")]
+[assembly: InternalsVisibleTo("Supertext.Base.Hosting")]
 namespace Supertext.Base.Modules
 {
     public class BaseModule : Module

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Supertext.Base.Abstractions;
 
 namespace Supertext.Base.Hosting.Queuing
 {
@@ -12,12 +13,12 @@ namespace Supertext.Base.Hosting.Queuing
     /// </summary>
     public class QueuedHostedService : BackgroundService
     {
-        private readonly IContainer _container;
+        private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger _logger;
 
-        public QueuedHostedService(IBackgroundTaskQueueObserver taskQueue, ILoggerFactory loggerFactory, IContainer container)
+        public QueuedHostedService(IBackgroundTaskQueueObserver taskQueue, ILoggerFactory loggerFactory, ILifetimeScope lifetimeScope)
         {
-            _container = container;
+            _lifetimeScope = lifetimeScope;
             TaskQueue = taskQueue;
             _logger = loggerFactory.CreateLogger<QueuedHostedService>();
         }
@@ -34,9 +35,10 @@ namespace Supertext.Base.Hosting.Queuing
 
                 try
                 {
-                    using (var scope = _container.BeginLifetimeScope())
+                    using (var scope = _lifetimeScope.BeginLifetimeScope())
                     {
-                        await workItem(scope, stoppingToken).ConfigureAwait(false);
+                        var scopeAbstraction = new LifetimeScopeAbstraction(scope);
+                        await workItem(scopeAbstraction, stoppingToken).ConfigureAwait(false);
                         TaskQueue.WorkItemFinished();
                     }
                 }
