@@ -18,6 +18,7 @@ namespace Supertext.Base.Modules
 
         private void RegisterFactories(ContainerBuilder builder)
         {
+            builder.RegisterType<AutofacFactory>().As<IFactory>();
             builder.RegisterGeneric(typeof(AutofacFactory<>)).As(typeof(IFactory<>));
             builder.RegisterGeneric(typeof(AutofacFactory<,>)).As(typeof(IFactory<,>));
             builder.RegisterGeneric(typeof(AutofacFactory<,,>)).As(typeof(IFactory<,,>));
