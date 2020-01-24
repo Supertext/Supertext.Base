@@ -3,6 +3,7 @@ using Autofac;
 using Supertext.Base.Common;
 using Supertext.Base.Factory;
 [assembly: InternalsVisibleTo("Supertext.Base.Tests")]
+[assembly: InternalsVisibleTo("Supertext.Base.Hosting")]
 namespace Supertext.Base.Modules
 {
     public class BaseModule : Module
@@ -17,6 +18,7 @@ namespace Supertext.Base.Modules
 
         private void RegisterFactories(ContainerBuilder builder)
         {
+            builder.RegisterType<AutofacFactory>().As<IFactory>();
             builder.RegisterGeneric(typeof(AutofacFactory<>)).As(typeof(IFactory<>));
             builder.RegisterGeneric(typeof(AutofacFactory<,>)).As(typeof(IFactory<,>));
             builder.RegisterGeneric(typeof(AutofacFactory<,,>)).As(typeof(IFactory<,,>));

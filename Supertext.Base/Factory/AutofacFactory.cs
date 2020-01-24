@@ -1,7 +1,23 @@
 ﻿using System;
+using Autofac;
 
 namespace Supertext.Base.Factory
 {
+    internal class AutofacFactory : IFactory
+    {
+        private readonly ILifetimeScope _lifetimeScope;
+
+        public AutofacFactory(ILifetimeScope lifetimeScope)
+        {
+            _lifetimeScope = lifetimeScope;
+        }
+
+        public T Create<T>()
+        {
+            return _lifetimeScope.Resolve<T>();
+        }
+    }
+
     internal class AutofacFactory<T> : IFactory<T>
     {
         private readonly Func<T> _factoryMethod;

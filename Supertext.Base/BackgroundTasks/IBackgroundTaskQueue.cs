@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
+using Supertext.Base.Factory;
 
 namespace Supertext.Base.BackgroundTasks
 {
@@ -11,7 +11,7 @@ namespace Supertext.Base.BackgroundTasks
     /// </summary>
     public interface IBackgroundTaskQueue
     {
-        void QueueBackgroundWorkItem(Func<ILifetimeScope, CancellationToken, Task> workItem);
+        void QueueBackgroundWorkItem(Func<IFactory, CancellationToken, Task> workItem);
 
         bool IsQueueEmpty();
     }

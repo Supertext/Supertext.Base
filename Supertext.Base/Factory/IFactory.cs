@@ -3,6 +3,14 @@
     /// <summary>
     /// Adapter for IoC-Func-Feature
     /// </summary>
+    public interface IFactory
+    {
+        T Create<T>();
+    }
+
+    /// <summary>
+    /// Adapter for IoC-Func-Feature
+    /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IFactory<out T>
     {
