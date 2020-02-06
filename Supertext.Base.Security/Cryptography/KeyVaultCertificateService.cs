@@ -30,8 +30,8 @@ namespace Supertext.Base.Security.Cryptography
                                                 .GetAwaiter()
                                                 .GetResult();
                 var certBytes = Convert.FromBase64String(certContent.Value);
-                var cert = new X509Certificate2(certBytes);
-                return cert;
+
+                return new X509Certificate2(certBytes, String.Empty, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
             }
         }
 
