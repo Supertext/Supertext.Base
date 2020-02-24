@@ -13,5 +13,8 @@ namespace Supertext.Base.Core.Configuration.Specs
 
         [KeyVaultSecret]
         public string ConnectionString { get; set; }
+
+        [KeyVaultSecret("AuthenticationConnectionString")]
+        public string AnotherString { get; set; }
     }
 }

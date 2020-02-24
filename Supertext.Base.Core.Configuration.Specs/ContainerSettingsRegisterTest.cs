@@ -55,5 +55,16 @@ namespace Supertext.Base.Core.Configuration.Specs
 
             config.ConnectionString.Should().Be("some value");
         }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_PropertyWithExplicitNamedKeyVaultSecret_KeyVaultValueAvailable()
+        {
+            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<DummyConfig>();
+
+            config.AnotherString.Should().Be("some other value");
+        }
     }
 }
