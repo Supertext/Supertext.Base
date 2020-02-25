@@ -45,14 +45,17 @@ namespace Supertext.Base.Core.Configuration
                 var keyVaultSecret = propertyInfo.GetCustomAttributes<KeyVaultSecretAttribute>().SingleOrDefault();
                 if (keyVaultSecret != null)
                 {
-                    SetValueIfSome(propertyInfo, configInstance, configuration);
+                    SetValueIfSome(propertyInfo, configInstance, configuration, keyVaultSecret.SecretName ?? propertyInfo.Name);
                 }
             }
         }
 
-        private static void SetValueIfSome(PropertyInfo propertyInfo, object configInstance, IConfiguration configuration)
+        private static void SetValueIfSome(PropertyInfo propertyInfo,
+                                           object configInstance,
+                                           IConfiguration configuration,
+                                           string settingsKey)
         {
-            var valueOption = GetSettingsValue(propertyInfo.Name, configuration);
+            var valueOption = GetSettingsValue(settingsKey, configuration);
             if (valueOption.IsSome)
             {
                 propertyInfo.SetValue(configInstance, Convert(valueOption.Value, propertyInfo.PropertyType));
