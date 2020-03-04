@@ -16,10 +16,12 @@ namespace Supertext.Base.Net.Mail
     public class MailService
     {
         private static ILogger<MailService> _logger;
+        private MailServiceConfig _configuration;
 
-        public MailService(ILogger<MailService> logger)
+        public MailService(ILogger<MailService> logger, MailServiceConfig configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         public List<AttachmentInfo> Attachments { set; get; } = new List<AttachmentInfo>();
@@ -130,20 +132,17 @@ namespace Supertext.Base.Net.Mail
 
                 using (var client = new SmtpClient())
                 {
-                    if (Convert.ToBoolean(ConfigurationManager.AppSettings["sendGrid.enabled"]))
+                    if (_configuration.SendGridEnabled)
                     {
-                        if (!Int32.TryParse(ConfigurationManager.AppSettings["sendGrid.port"], out var port))
-                        {
-                            port = 587;
-                        }
+                        var port = _configuration.SendGridPort;
 
                         client.SecurityOptions = SecurityOptions.SSLExplicit;
                         client.UseAuthentication = true;
                         client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        client.Host = ConfigurationManager.AppSettings["sendGrid.host"];
-                        client.Password = ConfigurationManager.AppSettings["sendGrid.password"];
+                        client.Host = _configuration.SendGridHost;
+                        client.Password = _configuration.SendGridPassword;
                         client.Port = port;
-                        client.Username = ConfigurationManager.AppSettings["sendGrid.username"];
+                        client.Username = _configuration.SendGridUsername;
 
                         if (String.IsNullOrWhiteSpace(client.Host))
                         {
@@ -166,7 +165,7 @@ namespace Supertext.Base.Net.Mail
                     else
                     {
                         client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                        client.PickupDirectoryLocation = ConfigurationManager.AppSettings["emailPickupDirectory"];
+                        client.PickupDirectoryLocation = _configuration.PickupDirectory;
                     }
 
                     //TODO: Find a better way to get the Attachments

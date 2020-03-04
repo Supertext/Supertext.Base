@@ -11,12 +11,14 @@ namespace Supertext.Base.Net.Specs
     {
         private MailService _testee;
         private ILogger<MailService> _logger;
+        private MailServiceConfig _config;
 
         [TestInitialize]
         public void Setup()
         {
             _logger = A.Fake<ILogger<MailService>>();
-            _testee = new MailService(_logger);
+            _config = A.Fake<MailServiceConfig>();
+            _testee = new MailService(_logger, _config);
         }
 
         [TestMethod]
