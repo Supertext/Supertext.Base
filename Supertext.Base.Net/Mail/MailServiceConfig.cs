@@ -14,7 +14,7 @@ namespace Supertext.Base.Net.Mail
 
         public int SendGridPort { get; set; } = 587;
 
-        public string PickupDirectory { get; set; }
+        public string LocalEmailDirectory { get; set; }
 
         [KeyVaultSecret]
         public string SendGridPassword { get; set; }

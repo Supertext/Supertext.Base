@@ -24,13 +24,20 @@ namespace Supertext.Base.Net.Specs
         [TestMethod]
         public void TestMethod1()
         {
-            var boxedObject = RuntimeHelpers.GetObjectValue(_testee);
+            var mailServiceBoxedObject = RuntimeHelpers.GetObjectValue(_testee);
+            _testee.GetType().GetProperty("Message")?.SetValue(mailServiceBoxedObject, "I'm testing the email service.");
+            _testee.GetType().GetProperty("Subject")?.SetValue(mailServiceBoxedObject, "Test");
 
-            _testee.GetType().GetProperty("Message")?.SetValue(boxedObject, "I'm testing the email service.");
+            var configBoxedObject = RuntimeHelpers.GetObjectValue(_config);
+            _config.GetType().GetProperty("SendGridEnabled")?.SetValue(configBoxedObject, true);
+            _config.GetType().GetProperty("SendGridHost")?.SetValue(configBoxedObject, "smtp.sendgrid.net");
+            _config.GetType().GetProperty("SendGridPassword")?.SetValue(configBoxedObject, "");
+            _config.GetType().GetProperty("SendGridUsername")?.SetValue(configBoxedObject, "");
 
-            _testee = (MailService)boxedObject;
+            _testee = (MailService)mailServiceBoxedObject;
+            _config = (MailServiceConfig)configBoxedObject;
 
-            _testee.Send("Yasaman", "yasaman@supertext.ch", "Yasaman", "yasaman@supertext.ch");
+            _testee.Send("", "", "", "");
         }
     }
 }

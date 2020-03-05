@@ -165,15 +165,8 @@ namespace Supertext.Base.Net.Mail
                     else
                     {
                         client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                        client.PickupDirectoryLocation = _configuration.PickupDirectory;
+                        client.PickupDirectoryLocation = _configuration.LocalEmailDirectory;
                     }
-
-                    //TODO: Find a better way to get the Attachments
-                    /*
-                     * Idea: get file from Byte[] and add it to Attachments
-                     * need to understand how they converted the MemoryStream to an Attachment
-                    */
-
 
                     var attachFileStreamsWithNames = Attachments.Select(att => new Tuple<Stream, string>(ConvertToFileStream(att.Content), att.Name)).ToList();
 
