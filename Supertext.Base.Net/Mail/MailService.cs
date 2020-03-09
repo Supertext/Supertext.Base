@@ -25,15 +25,12 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
-                MailMessage HandleHtml(MailMessage message)
-                {
-                    message.IsBodyHtml = true;
-                    message.Body = mail.Message;
-                    return message;
-                }
-
                 SendInternal(mail,
-                             HandleHtml);
+                             message =>
+                             {
+                                 message.IsBodyHtml = false;
+                                 message.Body = mail.Message;
+                             });
             }
             catch (Exception ex)
             {
@@ -46,14 +43,12 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
-                MailMessage HandleHtml(MailMessage message)
-                {
-                    message.IsBodyHtml = true;
-                    message.HtmlBody = mail.Message;
-                    return message;
-                }
-
-                SendInternal(mail,HandleHtml);
+                SendInternal(mail,
+                             (message) =>
+                             {
+                                 message.IsBodyHtml = true;
+                                 message.HtmlBody = mail.Message;
+                             });
             }
             catch (Exception ex)
             {
@@ -62,54 +57,53 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        private void SendInternal(EmailInfo mail, Func<MailMessage, MailMessage> handleHtml)
+        private void SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
         {
-            var msg = new MailMessage();
-
-            msg = CreateEmail(mail, msg, handleHtml);
-
-            var client = new SmtpClient();
-
-            if (_configuration.SendGridEnabled)
+            using (var msg = new MailMessage())
             {
-                client = SetSendGridClient(client);
-            }
-            else
-            {
-                client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                client.PickupDirectoryLocation = _configuration.LocalEmailDirectory;
-            }
+                CreateEmail(mail, msg, handleHtml);
 
-            var attachFileStreamsWithNames = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToFileStream(att.Content), att.Name)).ToList();
-            try
-            {
-                attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
-                client.Send(msg);
-            }
-            finally
-            {
-                // dispose of each of the attachment streams
-                foreach (var attachFileStreamWithName in attachFileStreamsWithNames)
+                using (var client = new SmtpClient())
                 {
-                    attachFileStreamWithName.Item1.Dispose();
+                    if (_configuration.SendGridEnabled)
+                    {
+                        SetSendGridClient(client);
+                    }
+                    else
+                    {
+                        client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
+                        client.PickupDirectoryLocation = _configuration.LocalEmailDirectory;
+                    }
+
+                    var attachFileStreamsWithNames = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToFileStream(att.Content), att.Name)).ToList();
+                    try
+                    {
+                        attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
+                        client.Send(msg);
+                    }
+                    finally
+                    {
+                        // dispose of each of the attachment streams
+                        foreach (var attachFileStreamWithName in attachFileStreamsWithNames)
+                        {
+                            attachFileStreamWithName.Item1.Dispose();
+                        }
+
+                        // dispose of each attachment
+                        foreach (var attachment in msg.Attachments)
+                        {
+                            attachment.Dispose();
+                        }
+                    }
                 }
 
-                // dispose of each attachment
-                foreach (var attachment in msg.Attachments)
-                {
-                    attachment.Dispose();
-                }
-
-                client.Dispose();
-                msg.Dispose();
+                _logger.LogInformation($"Email sent. To={mail.To.Email}; Subject={mail.Subject}");
             }
-
-            _logger.LogInformation($"Email sent. To={mail.To.Email}; Subject={mail.Subject}");
         }
 
-        private MailMessage CreateEmail(EmailInfo mail, MailMessage msg, Func<MailMessage, MailMessage> handleHtml)
+        private static void CreateEmail(EmailInfo mail, MailMessage msg, Action<MailMessage> handleHtml)
         {
-            msg = handleHtml(msg);
+            handleHtml(msg);
             msg.BodyEncoding = System.Text.Encoding.UTF8;
             msg.From = new MailAddress(mail.From.Email, mail.From.Name);
             msg.Subject = mail.Subject;
@@ -127,11 +121,9 @@ namespace Supertext.Base.Net.Mail
             {
                 msg.ReplyToList = new MailAddress(mail.ReplyTo, mail.ReplyToName);
             }
-
-            return msg;
         }
 
-        private SmtpClient SetSendGridClient(SmtpClient client)
+        private void SetSendGridClient(SmtpClient client)
         {
             var port = _configuration.SendGridPort;
 
@@ -160,8 +152,6 @@ namespace Supertext.Base.Net.Mail
                 Console.WriteLine("The SendGrid 'username' property was not set in the configuration's AppSettings.");
                 throw new ConfigurationException("The SendGrid 'username' property was not set in the configuration's AppSettings.");
             }
-
-            return client;
         }
 
         private static FileStream ConvertToFileStream(byte[] content)
@@ -170,7 +160,7 @@ namespace Supertext.Base.Net.Mail
             var binForm = new BinaryFormatter();
             memStream.Write(content, 0, content.Length);
             memStream.Seek(0, SeekOrigin.Begin);
-            return (FileStream)binForm.Deserialize(memStream);
+            return (FileStream) binForm.Deserialize(memStream);
         }
     }
 }

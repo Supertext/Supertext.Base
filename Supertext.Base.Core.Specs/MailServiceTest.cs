@@ -1,7 +1,5 @@
-using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Aspose.Email;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,14 +16,13 @@ namespace Supertext.Base.Net.Specs
         private ILogger<MailService> _logger;
         private MailServiceConfig _config;
         private EmailInfo _mail;
-        const string _dir = @"C:\Tmp\Emails";
+        private const string Dir = @"C:\Tmp\Emails";
 
         [TestInitialize]
         public void Setup()
         {
             _logger = A.Fake<ILogger<MailService>>();
-            _config = new MailServiceConfig();
-            _config.LocalEmailDirectory = _dir;
+            _config = new MailServiceConfig {LocalEmailDirectory = Dir};
             _testee = new MailService(_logger, _config);
 
             var to = new PersonInfo
@@ -56,7 +53,7 @@ namespace Supertext.Base.Net.Specs
 
             _testee.Send(_mail);
 
-            var directory = new DirectoryInfo(_dir);
+            var directory = new DirectoryInfo(Dir);
 
             var myFile = directory.GetFiles()
                                   .OrderByDescending(f => f.LastWriteTime)
