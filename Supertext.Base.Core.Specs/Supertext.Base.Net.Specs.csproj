@@ -7,17 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="FakeItEasy" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Supertext.Base.Hosting\Supertext.Base.Hosting.csproj" />
+    <ProjectReference Include="..\Supertext.Base.Net\Supertext.Base.Net.csproj" />
   </ItemGroup>
 
 </Project>
