@@ -6,7 +6,7 @@ namespace Supertext.Base.Net.Mail
 {
     public class PersonInfo
     {
-        public string Name { set; get; }
-        public string Email { set; get; }
+        public string Name { get; set; }
+        public string Email { get; set; }
     }
 }

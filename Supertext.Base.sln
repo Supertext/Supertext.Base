@@ -56,7 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AF4F0148-A87
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9433911D-A932-4266-B7CE-A95A9276FF35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Net.Specs", "Supertext.Base.Core.Specs\Supertext.Base.Net.Specs.csproj", "{5341F48E-DAC1-4B61-A938-FA1F2024C726}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Net.Specs", "Supertext.Base.Core.Specs\Supertext.Base.Net.Specs.csproj", "{5341F48E-DAC1-4B61-A938-FA1F2024C726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

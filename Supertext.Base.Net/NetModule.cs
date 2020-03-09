@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Supertext.Base.Net.Http;
-using Supertext.Base.Net.Mail;
 
 namespace Supertext.Base.Net
 {
