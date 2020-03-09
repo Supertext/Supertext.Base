@@ -17,65 +17,54 @@ namespace Supertext.Base.Net.Specs
         private MailService _testee;
         private ILogger<MailService> _logger;
         private MailServiceConfig _config;
+        private EmailInfo _mail;
+        const string _dir = @"C:\Tmp\Emails";
 
         [TestInitialize]
         public void Setup()
         {
             _logger = A.Fake<ILogger<MailService>>();
-            _config = A.Fake<MailServiceConfig>();
+            _config = new MailServiceConfig();
+            _config.LocalEmailDirectory = _dir;
             _testee = new MailService(_logger, _config);
-        }
 
-        [TestMethod]
-        public void EmailService_SendGridEnabled_EmailShouldBeSentBySendGrid()
-        {
-            var mailServiceBoxedObject = RuntimeHelpers.GetObjectValue(_testee);
-            _testee.GetType().GetProperty("Message")?.SetValue(mailServiceBoxedObject, "I'm testing the email service.");
-            _testee.GetType().GetProperty("Subject")?.SetValue(mailServiceBoxedObject, "Test");
+            var to = new PersonInfo
+                     {
+                         Name = "Verifier",
+                         Email = "verifier@mail.com"
+                     };
 
-            var configBoxedObject = RuntimeHelpers.GetObjectValue(_config);
-            _config.GetType().GetProperty("SendGridEnabled")?.SetValue(configBoxedObject, true);
-            _config.GetType().GetProperty("SendGridHost")?.SetValue(configBoxedObject, "smtp.sendgrid.net");
-            _config.GetType().GetProperty("SendGridPassword")?.SetValue(configBoxedObject, "");
-            _config.GetType().GetProperty("SendGridUsername")?.SetValue(configBoxedObject, "");
+            var from = new PersonInfo
+                       {
+                           Name = "Tester",
+                           Email = "tester@mail.com"
+                       };
 
-            _testee = (MailService)mailServiceBoxedObject;
-            _config = (MailServiceConfig)configBoxedObject;
-
-            _testee.Send("", "", "", "");
+            _mail = new EmailInfo
+                   {
+                       Subject = "Test",
+                       Message = "Testing the mail service.",
+                       To = to,
+                       From = from
+                   };
         }
 
         [TestMethod]
         public void EmailService_SendGridDisabled_EmailShouldBeStoredLocally()
         {
-            var dir = @"C:\Tmp\Emails";
-            var mailServiceBoxedObject = RuntimeHelpers.GetObjectValue(_testee);
-            _testee.GetType().GetProperty("Message")?.SetValue(mailServiceBoxedObject, "I'm testing the email service.");
-            _testee.GetType().GetProperty("Subject")?.SetValue(mailServiceBoxedObject, "Test");
+            _config.SendGridEnabled = false;
 
-            var configBoxedObject = RuntimeHelpers.GetObjectValue(_config);
-            _config.GetType().GetProperty("SendGridEnabled")?.SetValue(configBoxedObject, false);
-            _config.GetType().GetProperty("LocalEmailDirectory")?.SetValue(configBoxedObject, dir);
+            _testee.Send(_mail);
 
-            _testee = (MailService)mailServiceBoxedObject;
-            _config = (MailServiceConfig)configBoxedObject;
-
-            _testee.Send("Tester", "tester@mail.com", "Verifier", "verifier@mail.com");
-
-            var directory = new DirectoryInfo(dir);
+            var directory = new DirectoryInfo(_dir);
 
             var myFile = directory.GetFiles()
                                   .OrderByDescending(f => f.LastWriteTime)
                                   .First();
 
             var mailMessage = MailMessage.Load(myFile.FullName);
-            var body = mailMessage.Body;
-            var subject = mailMessage.Subject;
-            var from = mailMessage.From.Address;
 
-            body.Should().Equals(_testee.Message);
-            subject.Should().Equals(_testee.Subject);
-            from.Should().Equals("tester@mail.com");
+            mailMessage.From.Address.Should().Be(_mail.From.Email);
         }
     }
 }
