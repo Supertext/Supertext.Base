@@ -18,7 +18,7 @@ namespace Supertext.Base.Net.Mail
             try
             {
                 // Initializes a license from a stream
-                var licenseInfo = configuration.GetSection("Aspose-EmailLicense").ToString();
+                var licenseInfo = configuration.GetSection("Aspose-EmailLicense").Value;
                 var info = Encoding.UTF8.GetBytes(licenseInfo);
                 using (var stream = new MemoryStream(info))
                 {
