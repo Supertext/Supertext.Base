@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Aspose.Email;
@@ -16,13 +17,23 @@ namespace Supertext.Base.Net.Specs
         private ILogger<MailService> _logger;
         private MailServiceConfig _config;
         private EmailInfo _mail;
-        private const string Dir = @"C:\Tmp\Emails";
+        private string _dir;
+        private DirectoryInfo _testDir;
 
         [TestInitialize]
         public void Setup()
         {
+            var path = Directory.GetCurrentDirectory();
+            _dir = String.Concat(path, "\\temp");
+            Directory.CreateDirectory(_dir);
+            _testDir = new DirectoryInfo(_dir);
+            if (!_testDir.Exists)
+            {
+                _logger.LogError("Path for temporary local email storage is not correct.");
+            }
+
             _logger = A.Fake<ILogger<MailService>>();
-            _config = new MailServiceConfig {LocalEmailDirectory = Dir};
+            _config = new MailServiceConfig {LocalEmailDirectory = _dir};
             _testee = new MailService(_logger, _config);
 
             var to = new PersonInfo
@@ -53,7 +64,7 @@ namespace Supertext.Base.Net.Specs
 
             _testee.Send(_mail);
 
-            var directory = new DirectoryInfo(Dir);
+            var directory = new DirectoryInfo(_dir);
 
             var myFile = directory.GetFiles()
                                   .OrderByDescending(f => f.LastWriteTime)
@@ -62,6 +73,12 @@ namespace Supertext.Base.Net.Specs
             var mailMessage = MailMessage.Load(myFile.FullName);
 
             mailMessage.From.Address.Should().Be(_mail.From.Email);
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            Directory.Delete(_dir, true);
         }
     }
 }
