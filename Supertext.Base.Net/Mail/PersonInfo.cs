@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Supertext.Base.Net.Mail
+﻿namespace Supertext.Base.Net.Mail
 {
     public class PersonInfo
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
+        public PersonInfo(string name, string email)
+        {
+            Name = name;
+            Email = email;
+        }
+
+        public string Name { get; }
+        public string Email { get; }
     }
 }

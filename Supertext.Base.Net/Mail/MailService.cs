@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using Aspose.Email;
 using Aspose.Email.Clients;
@@ -10,12 +11,12 @@ using Supertext.Base.Exceptions;
 
 namespace Supertext.Base.Net.Mail
 {
-    public class MailService
+    internal class MailService : IMailService
     {
-        private static ILogger<MailService> _logger;
+        private static ILogger<IMailService> _logger;
         private readonly MailServiceConfig _configuration;
 
-        public MailService(ILogger<MailService> logger, MailServiceConfig configuration)
+        public MailService(ILogger<IMailService> logger, MailServiceConfig configuration)
         {
             _logger = logger;
             _configuration = configuration;

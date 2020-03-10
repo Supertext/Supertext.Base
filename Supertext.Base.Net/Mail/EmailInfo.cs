@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Supertext.Base.Net.Mail
 {
     public class EmailInfo
     {
-        public string Subject { set; get; }
+        public EmailInfo(string subject, string message, PersonInfo from, PersonInfo to)
+        {
+            Subject = subject;
+            Message = message;
+            From = from;
+            To = to;
+        }
 
-        public string Message { set; get; }
+        public string Subject { get; }
 
-        public PersonInfo From { get; set; }
+        public string Message { get; }
 
-        public PersonInfo To { get; set; }
+        public PersonInfo From { get; }
+
+        public PersonInfo To { get; }
 
         public string BccEmail { get; set; }
 

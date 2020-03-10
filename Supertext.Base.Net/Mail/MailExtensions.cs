@@ -13,6 +13,11 @@ namespace Supertext.Base.Net.Mail
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         public static void AddAsposeMailLicense(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration) {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
             var license = new Aspose.Email.License();
 
             try
@@ -28,7 +33,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception e)
             {
-                Console.WriteLine("There was an error setting the Aspose Email License.", e);
+                Console.WriteLine($"There was an error setting the Aspose Email License. Exception Message: {e.Message}");
                 throw;
             }
         }

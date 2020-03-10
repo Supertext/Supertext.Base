@@ -14,7 +14,7 @@ namespace Supertext.Base.Net.Specs
     public class MailServiceTest
     {
         private MailService _testee;
-        private ILogger<MailService> _logger;
+        private ILogger<IMailService> _logger;
         private MailServiceConfig _config;
         private EmailInfo _mail;
         private string _dir;
@@ -27,34 +27,20 @@ namespace Supertext.Base.Net.Specs
             _dir = String.Concat(path, "\\temp");
             Directory.CreateDirectory(_dir);
             _testDir = new DirectoryInfo(_dir);
+            _logger = A.Fake<ILogger<IMailService>>();
             if (!_testDir.Exists)
             {
                 _logger.LogError("Path for temporary local email storage is not correct.");
             }
 
-            _logger = A.Fake<ILogger<MailService>>();
             _config = new MailServiceConfig {LocalEmailDirectory = _dir};
             _testee = new MailService(_logger, _config);
 
-            var to = new PersonInfo
-                     {
-                         Name = "Verifier",
-                         Email = "verifier@mail.com"
-                     };
+            var to = new PersonInfo("Verifier", "verifier@mail.com");
 
-            var from = new PersonInfo
-                       {
-                           Name = "Tester",
-                           Email = "tester@mail.com"
-                       };
+            var from = new PersonInfo("Tester", "tester@mail.com");
 
-            _mail = new EmailInfo
-                   {
-                       Subject = "Test",
-                       Message = "Testing the mail service.",
-                       To = to,
-                       From = from
-                   };
+            _mail = new EmailInfo("Test", "Testing the mail service.", to, from);
         }
 
         [TestMethod]

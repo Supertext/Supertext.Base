@@ -1,5 +1,4 @@
-﻿using System;
-using Supertext.Base.Configuration;
+﻿using Supertext.Base.Configuration;
 
 namespace Supertext.Base.Net.Mail
 {
