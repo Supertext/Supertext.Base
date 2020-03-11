@@ -25,7 +25,7 @@ namespace Supertext.Base.Net.Mail
             {
                 // Initializes a license from a stream
                 var licenseInfo = configuration.GetSection("Aspose-EmailLicense").Value;
-                if (licenseInfo.IsNullOrEmpty())
+                if (String.IsNullOrWhiteSpace(licenseInfo))
                 {
                     return;
                 }
