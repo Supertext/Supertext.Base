@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
-    <PackageReference Include="FakeItEasy" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
@@ -17,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Supertext.Base.Hosting\Supertext.Base.Hosting.csproj" />
+    <ProjectReference Include="..\Supertext.Base.Security\Supertext.Base.Security.csproj" />
   </ItemGroup>
 
 </Project>
