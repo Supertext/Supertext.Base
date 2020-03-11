@@ -2,6 +2,7 @@
 using System.Text;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
+using Supertext.Base.Extensions;
 
 namespace Supertext.Base.Net.Mail
 {
@@ -24,6 +25,10 @@ namespace Supertext.Base.Net.Mail
             {
                 // Initializes a license from a stream
                 var licenseInfo = configuration.GetSection("Aspose-EmailLicense").Value;
+                if (licenseInfo.IsNullOrEmpty())
+                {
+                    return;
+                }
                 var info = Encoding.UTF8.GetBytes(licenseInfo);
                 using (var stream = new MemoryStream(info))
                 {
