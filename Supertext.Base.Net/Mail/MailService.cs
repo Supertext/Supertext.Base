@@ -31,7 +31,7 @@ namespace Supertext.Base.Net.Mail
                              {
                                  message.IsBodyHtml = false;
                                  message.Body = mail.Message;
-                             });
+                             }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace Supertext.Base.Net.Mail
                              {
                                  message.IsBodyHtml = true;
                                  message.HtmlBody = mail.Message;
-                             });
+                             }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace Supertext.Base.Net.Mail
                     try
                     {
                         attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
-                        await client.SendAsync(msg);
+                        await client.SendAsync(msg).ConfigureAwait(false);
                     }
                     finally
                     {
