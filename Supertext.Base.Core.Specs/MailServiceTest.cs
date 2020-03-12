@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Aspose.Email;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,11 +45,11 @@ namespace Supertext.Base.Net.Specs
         }
 
         [TestMethod]
-        public void EmailService_SendGridDisabled_EmailShouldBeStoredLocally()
+        public async Task EmailService_SendGridDisabled_EmailShouldBeStoredLocally()
         {
             _config.SendGridEnabled = false;
 
-            _testee.Send(_mail);
+            await _testee.Send(_mail);
 
             var directory = new DirectoryInfo(_dir);
 

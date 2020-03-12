@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using Aspose.Email;
 using Aspose.Email.Clients;
@@ -22,11 +22,11 @@ namespace Supertext.Base.Net.Mail
             _configuration = configuration;
         }
 
-        public void Send(EmailInfo mail)
+        public async Task Send(EmailInfo mail)
         {
             try
             {
-                SendInternal(mail,
+                await SendInternal(mail,
                              message =>
                              {
                                  message.IsBodyHtml = false;
@@ -40,11 +40,11 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        public void SendAsHtml(EmailInfo mail)
+        public async Task SendAsHtml(EmailInfo mail)
         {
             try
             {
-                SendInternal(mail,
+                await SendInternal(mail,
                              (message) =>
                              {
                                  message.IsBodyHtml = true;
@@ -58,7 +58,7 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        private void SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
+        private async Task SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
         {
             using (var msg = new MailMessage())
             {
@@ -80,7 +80,7 @@ namespace Supertext.Base.Net.Mail
                     try
                     {
                         attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
-                        client.Send(msg);
+                        await client.SendAsync(msg);
                     }
                     finally
                     {

@@ -1,9 +1,11 @@
-﻿namespace Supertext.Base.Net.Mail
+﻿using System.Threading.Tasks;
+
+namespace Supertext.Base.Net.Mail
 {
     public interface IMailService
     {
-        void Send(EmailInfo mail);
+        Task Send(EmailInfo mail);
 
-        void SendAsHtml(EmailInfo mail);
+        Task SendAsHtml(EmailInfo mail);
     }
 }
