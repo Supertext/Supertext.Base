@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.IO\Supertext.Base.IO.csproj" />
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 

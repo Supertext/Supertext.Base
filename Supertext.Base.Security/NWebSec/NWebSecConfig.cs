@@ -2,6 +2,7 @@
 
 namespace Supertext.Base.Security.NWebSec
 {
+    [ConfigSection("NWebSec")]
     public class NWebSecConfig : IConfiguration
     {
         public int StrictTransportSecurityHeaderMaxAge { get; set; }

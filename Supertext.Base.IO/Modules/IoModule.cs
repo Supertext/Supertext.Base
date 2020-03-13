@@ -4,7 +4,7 @@ using Supertext.Base.IO.StreamHandling;
 
 namespace Supertext.Base.IO.Modules
 {
-    public class BaseModule : Module
+    public class IoModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -12,6 +12,7 @@ namespace Supertext.Base.IO.Modules
             builder.RegisterType<StreamFactory>().As<IStreamFactory>();
             builder.RegisterType<StreamReaderWrapper>().As<IStreamReader>();
             builder.RegisterType<StreamWriterWrapper>().As<IStreamWriter>();
+            builder.RegisterType<XmlFileHelper>().As<IXmlFileHelper>();
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using Autofac;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Core.Configuration;
+using Supertext.Base.IO.Modules;
 using Supertext.Base.Security.NWebSec;
 
 namespace Supertext.Base.Security.Specs.NWebSec
@@ -9,20 +12,25 @@ namespace Supertext.Base.Security.Specs.NWebSec
     [TestClass]
     public class HeaderConfigurationParserTest
     {
-        private HeaderConfigurationParser _testee;
+        private IHeaderConfigurationParser _testee;
+        private ContainerBuilder _builder;
+        private IConfigurationRoot _configuration;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            var config = new NWebSecConfig
-                         {
-                            NWebSecConfigNamespace = "{http://nwebsec.com/HttpHeaderSecurityModuleConfig.xsd}",
-                            StrictTransportSecurityHeaderMaxAge = 365,
-                            NWebSecConfigFilePath = "../../../NWebSec/nwsTestConf.xml",
-                            AllowedRedirectDestinations = new string[] { "google.com", "supertext.ch"}
-                         };
+            var configurationBuilder = new ConfigurationBuilder()
+                                       .AddJsonFile("appsettings.json")
+                                       .AddEnvironmentVariables();
+            _configuration = configurationBuilder.Build();
 
-            _testee = new HeaderConfigurationParser(config);
+            _builder = new ContainerBuilder();
+            _builder.RegisterModule<IoModule>();
+            _builder.RegisterModule<SecurityModule>();
+            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, typeof(NWebSecConfig).Assembly);
+
+            var container = _builder.Build();
+            _testee = container.Resolve<IHeaderConfigurationParser>();
         }
 
         [TestMethod]
