@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using NWebsec.Core.Common.HttpHeaders.Configuration;
 
-namespace Supertext.Base.Security.NWebSec
+namespace Supertext.Base.Security.NWebSec.Web
 {
-    public static class NWebSecExtensions
+    public static class Extensions
     {
-        public static void NwebSecPreStaticFilesSetup(this IApplicationBuilder app)
+        public static void NwebSecWebPreStaticFilesSetup(this IApplicationBuilder app)
         {
             var config = app.ApplicationServices.GetService<NWebSecConfig>();
             app.UseHsts(hsts => hsts.MaxAge(config.StrictTransportSecurityHeaderMaxAge));
@@ -17,7 +17,7 @@ namespace Supertext.Base.Security.NWebSec
             ConfigureContentSecurityPolicy(app);
         }
 
-        public static void NwebSecPostStaticFilesSetup(this IApplicationBuilder app)
+        public static void NwebSecWebPostStaticFilesSetup(this IApplicationBuilder app)
         {
             var config = app.ApplicationServices.GetService<NWebSecConfig>();
             var domainArray = config.AllowedRedirectDestinations;
