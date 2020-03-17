@@ -29,7 +29,7 @@ namespace Supertext.Base.Security.NWebSec
 
             var sourceStrings = currentElement?
                                         .Elements(_xmlNamespace + "add")
-                                        .Select(item => item.Attribute("source")?.Value);
+                                        .Select(item => item.Attribute("source")?.Value) ?? Enumerable.Empty<string>();
 
             return sourceStrings;
         }
