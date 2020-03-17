@@ -4,7 +4,7 @@ namespace Supertext.Base.Net.Mail
 {
     public interface IMailService
     {
-        Task Send(EmailInfo mail);
+        Task SendAsync(EmailInfo mail);
 
         Task SendAsHtml(EmailInfo mail);
     }
