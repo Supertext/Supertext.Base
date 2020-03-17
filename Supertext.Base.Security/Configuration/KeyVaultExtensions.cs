@@ -8,6 +8,15 @@ namespace Supertext.Base.Security.Configuration
     {
         /// <summary>
         /// Adds Azure key vault to the configuration for environments Staging and Production.
+        ///
+        /// Configuration in appsettings.json is mandatory as:
+        /// "KeyVault": {
+        ///     "KeyVaultName": "kv-ne-dev",
+        ///     "AzureADApplicationId": "456776-A386-4324-994A-3242344343",
+        ///     "ClientSecret": "324234234-2222-4545-BF9F-df43534954",
+        ///     "AzureADCertThumbprint": "456a7sad6f54fasdf787a9sdf6",
+        ///     "CertificateName": "kv-dev-supertext-ch"
+        /// }
         /// </summary>
         /// <param name="hostBuilder"></param>
         /// <returns></returns>
