@@ -49,7 +49,7 @@ namespace Supertext.Base.Net.Specs
         {
             _config.SendGridEnabled = false;
 
-            await _testee.Send(_mail);
+            await _testee.SendAsync(_mail);
 
             var directory = new DirectoryInfo(_dir);
 

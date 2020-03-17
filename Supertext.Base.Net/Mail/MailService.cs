@@ -22,7 +22,7 @@ namespace Supertext.Base.Net.Mail
             _configuration = configuration;
         }
 
-        public async Task Send(EmailInfo mail)
+        public async Task SendAsync(EmailInfo mail)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(Send)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError($"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
                 throw;
             }
         }
