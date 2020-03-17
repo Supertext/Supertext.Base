@@ -9,6 +9,9 @@
     <FileVersion>0.0.0.0</FileVersion>
     <Version>1.0.0</Version>
     <Description>Contains basic utilities and helpers.</Description>
+    <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
