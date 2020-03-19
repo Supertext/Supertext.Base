@@ -8,6 +8,7 @@ namespace Supertext.Base.Security.Configuration
     {
         /// <summary>
         /// Adds Azure key vault to the configuration for environments Staging and Production.
+        /// For Development environments it adds user secrets to the Startup class.
         ///
         /// Configuration in appsettings.json is mandatory as:
         /// "KeyVault": {
@@ -20,7 +21,7 @@ namespace Supertext.Base.Security.Configuration
         /// </summary>
         /// <param name="hostBuilder"></param>
         /// <returns></returns>
-        public static IHostBuilder ConfigureKeyVaultAppConfiguration(this IHostBuilder hostBuilder)
+        public static IHostBuilder ConfigureKeyVaultAppConfiguration<TStartup>(this IHostBuilder hostBuilder) where TStartup : class
         {
             return hostBuilder.ConfigureAppConfiguration((context, config) =>
                                                          {
@@ -33,6 +34,10 @@ namespace Supertext.Base.Security.Configuration
                                                                                          vaultConfigSection["AzureADApplicationId"],
                                                                                          vaultConfigSection["ClientSecret"],
                                                                                          new DefaultKeyVaultSecretManager());
+                                                             }
+                                                             else if (context.HostingEnvironment.IsDevelopment())
+                                                             {
+                                                                 config.AddUserSecrets<TStartup>();
                                                              }
                                                          });
         }
