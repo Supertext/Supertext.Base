@@ -36,25 +36,25 @@ namespace Supertext.Base.Security.NWebSec.Web
             var parser = app.ApplicationServices.GetService<IHeaderConfigurationParser>();
 
             app.UseCsp(options => options
-                                  .DefaultSources(GetCspConfigurationFor("default-src", parser))
+                                  .DefaultSources(GetBasicCspConfigurationFor("default-src", parser))
                                   .ScriptSources(GetCspConfigurationFor("script-src", parser))
-                                  .StyleSources(GetCspConfigurationFor("style-src", parser))
-                                  .ImageSources(GetCspConfigurationFor("img-src", parser))
-                                  .ObjectSources(GetCspConfigurationFor("object-src", parser))
-                                  .MediaSources(GetCspConfigurationFor("media-src", parser))
-                                  .FrameSources(GetCspConfigurationFor("frame-src", parser))
-                                  .FontSources(GetCspConfigurationFor("font-src", parser))
-                                  .ConnectSources(GetCspConfigurationFor("connect-src", parser))
-                                  .FrameAncestors(GetCspConfigurationFor("frame-ancestors", parser))
-                                  .BaseUris(GetCspConfigurationFor("base-uri", parser))
-                                  .ChildSources(GetCspConfigurationFor("child-src", parser))
-                                  .FormActions(GetCspConfigurationFor("form-action", parser))
+                                  .StyleSources(GetBasicCspConfigurationFor("style-src", parser))
+                                  .ImageSources(GetBasicCspConfigurationFor("img-src", parser))
+                                  .ObjectSources(GetBasicCspConfigurationFor("object-src", parser))
+                                  .MediaSources(GetBasicCspConfigurationFor("media-src", parser))
+                                  .FrameSources(GetBasicCspConfigurationFor("frame-src", parser))
+                                  .FontSources(GetBasicCspConfigurationFor("font-src", parser))
+                                  .ConnectSources(GetBasicCspConfigurationFor("connect-src", parser))
+                                  .FrameAncestors(GetBasicCspConfigurationFor("frame-ancestors", parser))
+                                  .BaseUris(GetBasicCspConfigurationFor("base-uri", parser))
+                                  .ChildSources(GetBasicCspConfigurationFor("child-src", parser))
+                                  .FormActions(GetBasicCspConfigurationFor("form-action", parser))
                       );
         }
 
-        private static Action<ICspDirectiveBasicConfiguration> GetCspConfigurationFor(string source, IHeaderConfigurationParser parser)
+        private static Action<ICspDirectiveBasicConfiguration> GetBasicCspConfigurationFor(string source, IHeaderConfigurationParser parser)
         {
-            var input = parser.Parse(source);
+            var input = parser.Parse(source).ToList();
 
             if (input.Any())
             {
@@ -62,6 +62,18 @@ namespace Supertext.Base.Security.NWebSec.Web
             }
 
             return s => s.Self();
+        }
+
+        private static Action<ICspDirectiveConfiguration> GetCspConfigurationFor(string source, IHeaderConfigurationParser parser)
+        {
+            var input = parser.Parse(source).ToList();
+
+            if (input.Any())
+            {
+                return s => s.Self().CustomSources(input.ToArray()).UnsafeInline();
+            }
+
+            return s => s.Self().UnsafeInline();
         }
     }
 }
