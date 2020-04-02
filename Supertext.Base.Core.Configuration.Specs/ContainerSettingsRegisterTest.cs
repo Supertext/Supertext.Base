@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Authentication;
 
 namespace Supertext.Base.Core.Configuration.Specs
 {
@@ -65,6 +66,37 @@ namespace Supertext.Base.Core.Configuration.Specs
             var config = container.Resolve<DummyConfig>();
 
             config.AnotherString.Should().Be("some other value");
+        }
+
+        [TestMethod]
+        public void RegisterIdentityAndApiResourceDefinitions_TwoApiResourcesAreDefined_ClientSecretsAreAvailable()
+        {
+            _builder.RegisterIdentityAndApiResourceDefinitions(_configuration);
+
+            var container = _builder.Build();
+            var identity = container.Resolve<Identity>();
+
+            identity.ApiResourceDefinitions.Count.Should().Be(2);
+            var personApiDefinition = identity.GetApiResourceDefinition("Supertext.Person.API");
+            personApiDefinition.Value.ClientSecret.Should().Be("secret1");
+
+            var integrationApiDefinition = identity.GetApiResourceDefinition("Supertext.Integration.API");
+            integrationApiDefinition.Value.ClientSecret.Should().Be("secret2");
+
+            var noneDefinition = identity.GetApiResourceDefinition("Anything");
+            noneDefinition.IsNone.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void RegisterIdentityAndApiResourceDefinitions_IdentityIsDefined_AttributesAreAvailable()
+        {
+            _builder.RegisterIdentityAndApiResourceDefinitions(_configuration);
+
+            var container = _builder.Build();
+            var identity = container.Resolve<Identity>();
+
+            identity.ApiName.Should().Be("Super Api");
+            identity.Authority.Should().Be("Super authority");
         }
     }
 }

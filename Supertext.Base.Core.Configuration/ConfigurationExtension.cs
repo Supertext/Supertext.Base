@@ -7,12 +7,27 @@ using Autofac.Core;
 using Supertext.Base.Common;
 using Supertext.Base.Configuration;
 using Microsoft.Extensions.Configuration;
+using Supertext.Base.Authentication;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Supertext.Base.Core.Configuration
 {
     public static class ConfigurationExtension
     {
+        public static void RegisterIdentityAndApiResourceDefinitions(this ContainerBuilder builder,
+                                                           IConfiguration configuration)
+        {
+            Validate.NotNull(configuration, nameof(configuration));
+
+            builder.RegisterType<Identity>()
+                   .AsSelf()
+                   .OnActivating(setting =>
+                                 {
+                                     SettingActivating(setting, configuration);
+                                     ExchangeClientSecrets(setting, configuration);
+                                 });
+        }
+
         public static void RegisterAllConfigurationsInAssembly(this ContainerBuilder builder,
                                                                IConfiguration configuration,
                                                                Assembly assembly)
@@ -60,6 +75,21 @@ namespace Supertext.Base.Core.Configuration
                 if (keyVaultSecret != null)
                 {
                     SetValueIfSome(propertyInfo, configInstance, configuration, keyVaultSecret.SecretName ?? propertyInfo.Name);
+                }
+            }
+        }
+
+        private static void ExchangeClientSecrets(IActivatingEventArgs<object> args, IConfiguration configuration)
+        {
+            if (args.Instance is Identity identity)
+            {
+                foreach (var apiResourceDefinition in identity.ApiResourceDefinitions)
+                {
+                    var optionalClientSecret = GetSettingsValue(apiResourceDefinition.ClientSecretName, configuration);
+                    if (optionalClientSecret.IsSome)
+                    {
+                        apiResourceDefinition.ClientSecret = optionalClientSecret.Value;
+                    }
                 }
             }
         }
