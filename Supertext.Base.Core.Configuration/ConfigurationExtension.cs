@@ -13,6 +13,20 @@ namespace Supertext.Base.Core.Configuration
 {
     public static class ConfigurationExtension
     {
+        public static void RegisterAllConfigurationsInAssembly(this ContainerBuilder builder,
+                                                               IConfiguration configuration,
+                                                               Assembly assembly)
+        {
+            Validate.NotNull(configuration, nameof(configuration));
+            Validate.NotNull(assembly, nameof(assembly));
+
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(t => t.GetTypeInfo().IsAssignableTo<Base.Configuration.IConfiguration>())
+                   .AsSelf()
+                   .OnActivating(setting => SettingActivating(setting, configuration));
+        }
+
+        [Obsolete("Will soon be deprecated. Use RegisterAllConfigurationsInAssembly() instead.")]
         public static void RegisterConfigurationsWithAppConfigValues(this ContainerBuilder builder,
             IConfiguration configuration, params Assembly[] assemblies)
         {

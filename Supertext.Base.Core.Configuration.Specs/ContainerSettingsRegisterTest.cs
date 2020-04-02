@@ -35,7 +35,7 @@ namespace Supertext.Base.Core.Configuration.Specs
         [TestMethod]
         public void RegisterConfigurationsWithAppConfigValues_SettingsAvailable_RegisteredWithConfiguredValues()
         {
-            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, GetType().Assembly);
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
             var container = _builder.Build();
             var config = container.Resolve<DummyConfig>();
@@ -48,7 +48,7 @@ namespace Supertext.Base.Core.Configuration.Specs
         [TestMethod]
         public void RegisterConfigurationsWithAppConfigValues_PropertyWithKeyVaultSecret_KeyVaultValueAvailable()
         {
-            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, GetType().Assembly);
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
             var container = _builder.Build();
             var config = container.Resolve<DummyConfig>();
@@ -59,7 +59,7 @@ namespace Supertext.Base.Core.Configuration.Specs
         [TestMethod]
         public void RegisterConfigurationsWithAppConfigValues_PropertyWithExplicitNamedKeyVaultSecret_KeyVaultValueAvailable()
         {
-            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, GetType().Assembly);
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
             var container = _builder.Build();
             var config = container.Resolve<DummyConfig>();

@@ -27,7 +27,7 @@ namespace Supertext.Base.Security.Specs.NWebSec
             _builder = new ContainerBuilder();
             _builder.RegisterModule<IoModule>();
             _builder.RegisterModule<SecurityModule>();
-            _builder.RegisterConfigurationsWithAppConfigValues(_configuration, typeof(NWebSecConfig).Assembly);
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(NWebSecConfig).Assembly);
 
             var container = _builder.Build();
             _testee = container.Resolve<IHeaderConfigurationParser>();
