@@ -10,7 +10,9 @@ namespace Supertext.Base.Net
     {
         protected override void Load(ContainerBuilder builder)
         {
+#pragma warning disable 618 // => must be removed, when Supertext.Base.Http.IHttpClientFactory is removed
             builder.RegisterType<HttpClientFactory>().As<IHttpClientFactory>();
+#pragma warning restore 618
             builder.RegisterType<MailService>().As<IMailService>();
         }
     }
