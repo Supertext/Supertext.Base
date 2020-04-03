@@ -11,7 +11,6 @@ namespace Supertext.Base.Specs.Factory
     [TestClass]
     public class AutofacKeyFactoryTest
     {
-
         [TestMethod]
         public void Create_WhenKeySubComponentsExists_ThenKeyFactoryCreatesCorrectSubComponent()
         {
