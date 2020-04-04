@@ -41,19 +41,6 @@ namespace Supertext.Base.Core.Configuration
                    .OnActivating(setting => SettingActivating(setting, configuration));
         }
 
-        [Obsolete("Will soon be deprecated. Use RegisterAllConfigurationsInAssembly() instead.")]
-        public static void RegisterConfigurationsWithAppConfigValues(this ContainerBuilder builder,
-            IConfiguration configuration, params Assembly[] assemblies)
-        {
-            Validate.NotNull(configuration, nameof(configuration));
-            Validate.NotNull(assemblies, nameof(assemblies));
-
-            builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.GetTypeInfo().IsAssignableTo<Base.Configuration.IConfiguration>())
-                .AsSelf()
-                .OnActivating(setting => SettingActivating(setting, configuration));
-        }
-
         private static void SettingActivating(IActivatingEventArgs<object> args, IConfiguration configuration)
         {
             var section = args.Instance.GetType().GetCustomAttribute<ConfigSectionAttribute>();

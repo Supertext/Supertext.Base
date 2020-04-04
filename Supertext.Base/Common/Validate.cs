@@ -67,35 +67,6 @@ namespace Supertext.Base.Common
         }
 
         /// <summary>
-        /// throws ArgumentException if given string is blank
-        /// </summary>
-        /// <param name="str"></param>
-        /// <exception cref="ArgumentException">thrown if string is blank</exception>
-        [Obsolete("Use NotNullOrWhitespace instead")]
-        public static void NotBlank(string str)
-        {
-            if (String.IsNullOrWhiteSpace(str))
-            {
-                throw new ArgumentException(BlankStringMessage);
-            }
-        }
-
-        /// <summary>
-        /// throws ArgumentException(message) if given string is blank
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="parameterName"></param>
-        /// <exception cref="ArgumentException">thrown if string is blank</exception>
-        [Obsolete("Use NotNullOrWhitespace instead")]
-        public static void NotBlank(string str, string parameterName)
-        {
-            if (String.IsNullOrWhiteSpace(str))
-            {
-                throw new ArgumentException(BlankStringMessage, parameterName);
-            }
-        }
-
-        /// <summary>
         /// throws ArgumentException if string is empty
         /// </summary>
         /// <param name="str"></param>
