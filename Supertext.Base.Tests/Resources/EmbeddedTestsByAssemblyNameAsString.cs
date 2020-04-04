@@ -12,7 +12,6 @@ using Exception = System.Exception;
  * This class includes commented-out tests which tested the obsolete versions of the EmbeddedResource methods.
  * These have been commented-out because any calls to obsolete methods will cause the automated build process to stop and flag those methods.
  */
-
 namespace Supertext.Base.Tests.Resources
 {
     [TestClass]
