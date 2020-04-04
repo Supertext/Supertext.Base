@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <Authors>Supertext</Authors>
     <Description>Configuration Support for ASP.NET Core</Description>
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
