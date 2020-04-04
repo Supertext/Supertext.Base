@@ -73,14 +73,18 @@ namespace Supertext.Base.Factory
         {
             if (_registrations.Value.ContainsKey(key))
             {
-                return (T)_componentContext.ResolveComponent(_registrations.Value[key], Enumerable.Empty<Parameter>());
+                var resolveRequest = new ResolveRequest(new UniqueService(), _registrations.Value[key], Enumerable.Empty<Parameter>());
+
+                return (T)_componentContext.ResolveComponent(resolveRequest);
             }
             throw new KeyNotFoundException($"No component registered with key '{key}'" );
         }
 
         private T ResolveDefaultComponentAttributeService()
         {
-            return (T)_componentContext.ResolveComponent(_defaultComponentAttributeRegistration, Enumerable.Empty<Parameter>());
+            var resolveRequest = new ResolveRequest(new UniqueService(), _defaultComponentAttributeRegistration, Enumerable.Empty<Parameter>());
+
+            return (T)_componentContext.ResolveComponent(resolveRequest);
         }
 
         private bool ExistsKeyService(TKey key)

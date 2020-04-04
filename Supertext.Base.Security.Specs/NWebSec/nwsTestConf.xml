@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<httpHeaderSecurityModule xmlns="http://nwebsec.com/HttpHeaderSecurityModuleConfig.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <securityHttpHeaders>
+    <content-Security-Policy enabled="true">
+      <script-src self="true">
+        <add source="www.google.com" />
+      </script-src>
+    </content-Security-Policy>
+  </securityHttpHeaders>
+</httpHeaderSecurityModule>
