@@ -14,18 +14,15 @@ namespace Supertext.Base.Hosting.Queuing
     /// </summary>
     public class QueuedHostedService : BackgroundService
     {
-        private readonly IMailService _mailService;
         private readonly IHostEnvironment _environment;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger _logger;
 
         public QueuedHostedService(IBackgroundTaskQueueObserver taskQueue,
                                    ILoggerFactory loggerFactory,
-                                   IMailService mailService,
                                    IHostEnvironment environment,
                                    ILifetimeScope lifetimeScope)
         {
-            _mailService = mailService;
             _environment = environment;
             _lifetimeScope = lifetimeScope;
             TaskQueue = taskQueue;
@@ -75,8 +72,11 @@ namespace Supertext.Base.Hosting.Queuing
                                          message,
                                          from,
                                          to);
-
-            await _mailService.SendAsync(mailInfo).ConfigureAwait(false);
+            using (var scope = _lifetimeScope.BeginLifetimeScope())
+            {
+                var mailService = scope.Resolve<IMailService>();
+                await mailService.SendAsync(mailInfo).ConfigureAwait(false);
+            }
         }
     }
 }
