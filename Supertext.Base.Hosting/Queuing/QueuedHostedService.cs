@@ -14,18 +14,15 @@ namespace Supertext.Base.Hosting.Queuing
     /// </summary>
     public class QueuedHostedService : BackgroundService
     {
-        private readonly IMailService _mailService;
         private readonly IHostEnvironment _environment;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger _logger;
 
         public QueuedHostedService(IBackgroundTaskQueueObserver taskQueue,
                                    ILoggerFactory loggerFactory,
-                                   IMailService mailService,
                                    IHostEnvironment environment,
                                    ILifetimeScope lifetimeScope)
         {
-            _mailService = mailService;
             _environment = environment;
             _lifetimeScope = lifetimeScope;
             TaskQueue = taskQueue;
@@ -66,17 +63,27 @@ namespace Supertext.Base.Hosting.Queuing
 
         private async Task SendErrorEmail(Exception exception)
         {
-            var subject = $"[{_environment.EnvironmentName.ToUpperInvariant()}] Error occurred while executing queued workitem of application {_environment.ApplicationName}";
-            var message = $"Exception message: {exception.Message}{Environment.NewLine}{Environment.NewLine}StackTrace: {exception.StackTrace}";
-            var from = new PersonInfo($"QueuedHostedService:{_environment.ApplicationName}", "development@supertext.com");
-            var to = new PersonInfo($"Developers", "development@supertext.com");
+            try
+            {
+                var subject = $"[{_environment.EnvironmentName.ToUpperInvariant()}] Error occurred while executing queued workitem of application {_environment.ApplicationName}";
+                var message = $"Exception message: {exception.Message}{Environment.NewLine}{Environment.NewLine}StackTrace: {exception.StackTrace}";
+                var from = new PersonInfo($"QueuedHostedService:{_environment.ApplicationName}", "development@supertext.com");
+                var to = new PersonInfo($"Developers", "development@supertext.com");
 
-            var mailInfo = new EmailInfo(subject,
-                                         message,
-                                         from,
-                                         to);
-
-            await _mailService.SendAsync(mailInfo).ConfigureAwait(false);
+                var mailInfo = new EmailInfo(subject,
+                                             message,
+                                             from,
+                                             to);
+                using (var scope = _lifetimeScope.BeginLifetimeScope())
+                {
+                    var mailService = scope.Resolve<IMailService>();
+                    await mailService.SendAsync(mailInfo).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, $"Sending an email about failing workitem failed");
+            }
         }
     }
 }
