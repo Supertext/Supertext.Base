@@ -2,7 +2,6 @@
 using System.Text;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
-using Supertext.Base.Extensions;
 
 namespace Supertext.Base.Net.Mail
 {
