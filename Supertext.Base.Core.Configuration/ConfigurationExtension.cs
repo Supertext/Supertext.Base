@@ -49,12 +49,11 @@ namespace Supertext.Base.Core.Configuration
                 configuration.GetSection(section.SectionName).Bind(args.Instance);
             }
 
-            SetKeyVaultSecrets(args, configuration);
+            SetKeyVaultSecrets(args.Instance, configuration);
         }
 
-        private static void SetKeyVaultSecrets(IActivatingEventArgs<object> args, IConfiguration configuration)
+        internal static void SetKeyVaultSecrets(object configInstance, IConfiguration configuration)
         {
-            var configInstance = args.Instance;
             var properties = configInstance.GetType().GetProperties();
             foreach (var propertyInfo in properties)
             {
