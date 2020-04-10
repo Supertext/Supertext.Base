@@ -10,15 +10,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Supertext.Base.Extensions;
+using Supertext.Base.Test.Mvc;
 using Supertext.Base.Test.Utils.Logging;
 
+[assembly: HostingStartup(typeof(IntegrationTestWebApplicationFactory))]
 namespace Supertext.Base.Test.Mvc
 {
+    public class IntegrationTestWebApplicationFactory : WebApplicationFactory<IntegrationTestWebApplicationFactory>
+    {
+    }
+
     /// <summary>
     /// Factory for bootstrapping an application in memory for functional end to end tests.
     /// </summary>
     /// <typeparam name="TStartup"></typeparam>
-    public class IntegrationTestWebApplicationFactory<TStartup> : WebApplicationFactory<IntegrationTestWebApplicationFactory<TStartup>> where TStartup : class
+    public class IntegrationTestWebApplicationFactory<TStartup> : IntegrationTestWebApplicationFactory where TStartup : class
     {
         private readonly string _url;
         private readonly IList<Claim> _userClaims;
