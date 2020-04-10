@@ -14,15 +14,11 @@ using Supertext.Base.Test.Utils.Logging;
 
 namespace Supertext.Base.Test.Mvc
 {
-    public class IntegrationTestWebApplicationFactory : WebApplicationFactory<IntegrationTestWebApplicationFactory>
-    {
-    }
-
     /// <summary>
     /// Factory for bootstrapping an application in memory for functional end to end tests.
     /// </summary>
     /// <typeparam name="TStartup"></typeparam>
-    public class IntegrationTestWebApplicationFactory<TStartup> : IntegrationTestWebApplicationFactory where TStartup : class, new()
+    public class IntegrationTestWebApplicationFactory<TStartup> : WebApplicationFactory<IntegrationTestWebApplicationFactory<TStartup>> where TStartup : class
     {
         private readonly string _url;
         private readonly IList<Claim> _userClaims;
