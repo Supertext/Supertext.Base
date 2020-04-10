@@ -10,11 +10,11 @@ namespace Supertext.Base.Net.Http
     internal class ProtectedHttpRequestMessageFactory : IProtectedHttpRequestMessageFactory
     {
         private readonly Identity _identity;
-        private readonly System.Net.Http.IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<ProtectedHttpRequestMessageFactory> _logger;
 
         public ProtectedHttpRequestMessageFactory(Identity identity,
-                                                  System.Net.Http.IHttpClientFactory httpClientFactory,
+                                                  IHttpClientFactory httpClientFactory,
                                                   ILogger<ProtectedHttpRequestMessageFactory> logger)
         {
             _identity = identity;
@@ -58,7 +58,7 @@ namespace Supertext.Base.Net.Http
 
                 if (tokenResponse.IsError)
                 {
-                    var errorMessage = $"Retrieving token for accessing Person.API failed: {tokenResponse.Error}";
+                    var errorMessage = $"Retrieving token for accessing {clientId} failed: {tokenResponse.Error}. Hint: Look in the logfile of Person.Web about further information.";
                     _logger.LogError(errorMessage);
                     throw new Exception(errorMessage);
                 }
