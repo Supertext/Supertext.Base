@@ -5,9 +5,9 @@ using Supertext.Base.Common;
 
 namespace Supertext.Base.Identity.UserInfo
 {
-    internal class UserInfoProvider
+    internal class UserInfoProvider : IUserInfoProvider
     {
-        public Option<long> ObtainSubjectId(ClaimsPrincipal claimsPrincipal)
+        public Option<long> GetSubjectId(ClaimsPrincipal claimsPrincipal)
         {
             var subClaim = claimsPrincipal?.Claims?.SingleOrDefault(claim => claim.Type == "sub");
 
