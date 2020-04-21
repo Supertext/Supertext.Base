@@ -7,7 +7,6 @@ using Autofac.Core;
 using Supertext.Base.Common;
 using Supertext.Base.Configuration;
 using Microsoft.Extensions.Configuration;
-using Supertext.Base.Authentication;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Supertext.Base.Core.Configuration
@@ -19,7 +18,7 @@ namespace Supertext.Base.Core.Configuration
         {
             Validate.NotNull(configuration, nameof(configuration));
 
-            builder.RegisterType<Identity>()
+            builder.RegisterType<Authentication.Identity>()
                    .AsSelf()
                    .OnActivating(setting =>
                                  {
@@ -67,7 +66,7 @@ namespace Supertext.Base.Core.Configuration
 
         private static void ExchangeClientSecrets(IActivatingEventArgs<object> args, IConfiguration configuration)
         {
-            if (args.Instance is Identity identity)
+            if (args.Instance is Authentication.Identity identity)
             {
                 foreach (var apiResourceDefinition in identity.ApiResourceDefinitions)
                 {

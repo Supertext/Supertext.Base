@@ -9,11 +9,11 @@ namespace Supertext.Base.Net.Http
 {
     internal class ProtectedHttpRequestMessageFactory : IProtectedHttpRequestMessageFactory
     {
-        private readonly Identity _identity;
+        private readonly Authentication.Identity _identity;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<ProtectedHttpRequestMessageFactory> _logger;
 
-        public ProtectedHttpRequestMessageFactory(Identity identity,
+        public ProtectedHttpRequestMessageFactory(Authentication.Identity identity,
                                                   IHttpClientFactory httpClientFactory,
                                                   ILogger<ProtectedHttpRequestMessageFactory> logger)
         {

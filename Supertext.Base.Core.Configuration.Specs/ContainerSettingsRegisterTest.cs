@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Authentication;
 
 namespace Supertext.Base.Core.Configuration.Specs
 {
@@ -74,7 +73,7 @@ namespace Supertext.Base.Core.Configuration.Specs
             _builder.RegisterIdentityAndApiResourceDefinitions(_configuration);
 
             var container = _builder.Build();
-            var identity = container.Resolve<Identity>();
+            var identity = container.Resolve<Authentication.Identity>();
 
             identity.ApiResourceDefinitions.Count.Should().Be(2);
             var personApiDefinition = identity.GetApiResourceDefinition("Supertext.Person.API");
@@ -93,7 +92,7 @@ namespace Supertext.Base.Core.Configuration.Specs
             _builder.RegisterIdentityAndApiResourceDefinitions(_configuration);
 
             var container = _builder.Build();
-            var identity = container.Resolve<Identity>();
+            var identity = container.Resolve<Authentication.Identity>();
 
             identity.ApiName.Should().Be("Super Api");
             identity.Authority.Should().Be("Super authority");
