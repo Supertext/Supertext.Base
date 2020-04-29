@@ -40,7 +40,7 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        public async Task SendAsHtml(EmailInfo mail)
+        public async Task SendAsHtmlAsync(EmailInfo mail)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(SendAsHtml)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError($"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
                 throw;
             }
         }
