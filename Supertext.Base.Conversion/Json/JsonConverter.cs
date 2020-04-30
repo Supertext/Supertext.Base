@@ -21,7 +21,6 @@ namespace Supertext.Base.Conversion.Json
         {
             var settings = new JsonSerializerSettings()
                            {
-                               TypeNameHandling = TypeNameHandling.Auto,
                                ContractResolver = new CamelCasePropertyNamesContractResolver()
                            };
             return JsonConvert.SerializeObject(jsonObject, Formatting.None, settings);
