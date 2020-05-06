@@ -45,9 +45,11 @@ namespace Supertext.Base.Hosting.Queuing
                 {
                     using (var scope = _lifetimeScope.BeginLifetimeScope())
                     {
+                        _logger.LogInformation($"Starting with workitem. Target: {workItem.Target}, Method name: {workItem.Method.Name}");
                         var factory = scope.Resolve<IFactory>();
                         await workItem(factory, stoppingToken).ConfigureAwait(false);
                         TaskQueue.WorkItemFinished();
+                        _logger.LogInformation($"Workitem finished. Target: {workItem.Target}");
                     }
                 }
                 catch (Exception ex)
