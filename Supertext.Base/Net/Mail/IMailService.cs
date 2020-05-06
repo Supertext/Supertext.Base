@@ -6,6 +6,6 @@ namespace Supertext.Base.Net.Mail
     {
         Task SendAsync(EmailInfo mail);
 
-        Task SendAsHtml(EmailInfo mail);
+        Task SendAsHtmlAsync(EmailInfo mail);
     }
 }
