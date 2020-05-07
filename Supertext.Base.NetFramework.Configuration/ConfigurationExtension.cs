@@ -99,7 +99,8 @@ namespace Supertext.Base.NetFramework.Configuration
             {
                 if (connectionStringSettings.Name.ToLowerInvariant() == connectionStringKey.ToLowerInvariant())
                 {
-                    return Option<object>.Some(ConfigurationManager.ConnectionStrings[connectionStringSettings.Name]);
+                    var connStringSetting = ConfigurationManager.ConnectionStrings[connectionStringSettings.Name];
+                    return Option<object>.Some(connStringSetting.ConnectionString);
                 }
             }
 
