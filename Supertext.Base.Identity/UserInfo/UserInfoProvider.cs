@@ -19,5 +19,27 @@ namespace Supertext.Base.Identity.UserInfo
 
             return Option<long>.None();
         }
+
+        public Option<string> GetFirstName(ClaimsPrincipal claimsPrincipal)
+        {
+            return GetStringValue(claimsPrincipal, "given_name");
+        }
+
+        public Option<string> GetLastName(ClaimsPrincipal claimsPrincipal)
+        {
+            return GetStringValue(claimsPrincipal, "family_name");
+        }
+
+        private static Option<string> GetStringValue(ClaimsPrincipal claimsPrincipal, string claimName)
+        {
+            var nameClaim = claimsPrincipal?.Claims?.SingleOrDefault(claim => claim.Type == claimName);
+
+            if (nameClaim != null)
+            {
+                return Option<string>.Some(nameClaim.Value);
+            }
+
+            return Option<string>.None();
+        }
     }
 }
