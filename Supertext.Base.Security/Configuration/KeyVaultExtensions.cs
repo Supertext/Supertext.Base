@@ -33,12 +33,14 @@ namespace Supertext.Base.Security.Configuration
                                                                  var builtConfig = config.Build();
                                                                  var vaultConfigSection = builtConfig.GetSection("KeyVault");
                                                                  var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
+                                                                 var clientId = vaultConfigSection["AzureADApplicationId"];
+                                                                 var clientSecret = vaultConfigSection["ClientSecret"];
 
                                                                  using (var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
                                                                                                                     AuthenticationCallback(authority,
                                                                                                                                            resource,
-                                                                                                                                           vaultConfigSection["AzureADApplicationId"],
-                                                                                                                                           vaultConfigSection["ClientSecret"]
+                                                                                                                                           clientId,
+                                                                                                                                           clientSecret
                                                                                                                                            )))
                                                                  {
                                                                      config.AddAzureKeyVault(vaultUrl,
