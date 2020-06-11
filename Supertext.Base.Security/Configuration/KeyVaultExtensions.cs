@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace Supertext.Base.Security.Configuration
 {
@@ -30,16 +33,34 @@ namespace Supertext.Base.Security.Configuration
                                                                  var builtConfig = config.Build();
                                                                  var vaultConfigSection = builtConfig.GetSection("KeyVault");
                                                                  var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
-                                                                 config.AddAzureKeyVault(vaultUrl,
-                                                                                         vaultConfigSection["AzureADApplicationId"],
-                                                                                         vaultConfigSection["ClientSecret"],
-                                                                                         new DefaultKeyVaultSecretManager());
+
+                                                                 using (var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
+                                                                                                                    AuthenticationCallback(authority,
+                                                                                                                                           resource,
+                                                                                                                                           vaultConfigSection["AzureADApplicationId"],
+                                                                                                                                           vaultConfigSection["ClientSecret"]
+                                                                                                                                           )))
+                                                                 {
+                                                                     config.AddAzureKeyVault(vaultUrl,
+                                                                                             keyVaultClient,
+                                                                                             new DefaultKeyVaultSecretManager());
+                                                                 }
                                                              }
                                                              else if (context.HostingEnvironment.IsDevelopment())
                                                              {
                                                                  config.AddUserSecrets<TStartup>();
                                                              }
                                                          });
+        }
+
+        private static async Task<string> AuthenticationCallback(string authority, string resource, string clientId, string clientSecret)
+        {
+            var clientCredential = new ClientCredential(clientId, clientSecret);
+
+            var context = new AuthenticationContext(authority, TokenCache.DefaultShared);
+            var result = await context.AcquireTokenAsync(resource, clientCredential);
+
+            return result.AccessToken;
         }
     }
 }
