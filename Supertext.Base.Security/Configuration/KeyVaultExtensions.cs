@@ -36,17 +36,16 @@ namespace Supertext.Base.Security.Configuration
                                                                  var clientId = vaultConfigSection["AzureADApplicationId"];
                                                                  var clientSecret = vaultConfigSection["ClientSecret"];
 
-                                                                 using (var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
-                                                                                                                    AuthenticationCallback(authority,
-                                                                                                                                           resource,
-                                                                                                                                           clientId,
-                                                                                                                                           clientSecret
-                                                                                                                                           )))
-                                                                 {
-                                                                     config.AddAzureKeyVault(vaultUrl,
-                                                                                             keyVaultClient,
-                                                                                             new DefaultKeyVaultSecretManager());
-                                                                 }
+                                                                 var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
+                                                                                                             AuthenticationCallback(authority,
+                                                                                                                                    resource,
+                                                                                                                                    clientId,
+                                                                                                                                    clientSecret));
+
+                                                                 config.AddAzureKeyVault(vaultUrl,
+                                                                                         keyVaultClient,
+                                                                                         new DefaultKeyVaultSecretManager());
+
                                                              }
                                                              else if (context.HostingEnvironment.IsDevelopment())
                                                              {
