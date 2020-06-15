@@ -8,7 +8,7 @@ namespace Supertext.Base.Common
     public static class Random
     {
         private static readonly Lazy<CultureInfo[]> AllCultures = new Lazy<CultureInfo[]>(() => CultureInfo.GetCultures(CultureTypes.AllCultures));
-        private static readonly System.Random Rdm = new System.Random(54321);
+        private static readonly System.Random Rdm = new System.Random();
 
         /// <summary>
         /// Generates a collection of random bytes.
