@@ -15,6 +15,7 @@ namespace Supertext.Base.Security.Configuration
         ///
         /// Configuration in appsettings.json is mandatory as:
         /// "KeyVault": {
+        ///     "ReadSecretsFromKeyVault": true,
         ///     "KeyVaultName": "kv-ne-dev",
         ///     "AzureADApplicationId": "456776-A386-4324-994A-3242344343",
         ///     "ClientSecret": "324234234-2222-4545-BF9F-df43534954",
@@ -32,20 +33,24 @@ namespace Supertext.Base.Security.Configuration
                                                              {
                                                                  var builtConfig = config.Build();
                                                                  var vaultConfigSection = builtConfig.GetSection("KeyVault");
-                                                                 var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
-                                                                 var clientId = vaultConfigSection["AzureADApplicationId"];
-                                                                 var clientSecret = vaultConfigSection["ClientSecret"];
+                                                                 var readSecretsFromKeyVault = vaultConfigSection.GetValue<bool>("ReadSecretsFromKeyVault");
 
-                                                                 var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
-                                                                                                             AuthenticationCallback(authority,
-                                                                                                                                    resource,
-                                                                                                                                    clientId,
-                                                                                                                                    clientSecret));
+                                                                 if (readSecretsFromKeyVault)
+                                                                 {
+                                                                     var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
+                                                                     var clientId = vaultConfigSection["AzureADApplicationId"];
+                                                                     var clientSecret = vaultConfigSection["ClientSecret"];
 
-                                                                 config.AddAzureKeyVault(vaultUrl,
-                                                                                         keyVaultClient,
-                                                                                         new DefaultKeyVaultSecretManager());
+                                                                     var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
+                                                                                                                 AuthenticationCallback(authority,
+                                                                                                                                        resource,
+                                                                                                                                        clientId,
+                                                                                                                                        clientSecret));
 
+                                                                     config.AddAzureKeyVault(vaultUrl,
+                                                                                             keyVaultClient,
+                                                                                             new DefaultKeyVaultSecretManager());
+                                                                 }
                                                              }
                                                              else if (context.HostingEnvironment.IsDevelopment())
                                                              {
