@@ -11,6 +11,6 @@ namespace Supertext.Base.Security.KeyVault
     /// </remarks>
     public interface IKeyVaultKeysProvider
     {
-        Task<string> GetRsaKeyAsync();
+        Task<string> GetRsaKeyAsync(string keyName);
     }
 }

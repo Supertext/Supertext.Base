@@ -14,12 +14,12 @@ namespace Supertext.Base.Security.KeyVault.Keys
             _keyVaultSettings = keyVaultSettings;
         }
 
-        public async Task<string> GetRsaKeyAsync()
+        public async Task<string> GetRsaKeyAsync(string keyName)
         {
             var credential = new ClientSecretCredential(_keyVaultSettings.TenantId, _keyVaultSettings.AzureAdApplicationId, _keyVaultSettings.ClientSecret);
             var vaultUrl = $"https://{_keyVaultSettings.KeyVaultName}.vault.azure.net/";
             var keyClient = new KeyClient(new Uri(vaultUrl), credential);
-            var key = await keyClient.GetKeyAsync(_keyVaultSettings.KeyVaultName).ConfigureAwait(false);
+            var key = await keyClient.GetKeyAsync(keyName).ConfigureAwait(false);
             return key.Value.Key.ToRSA().ToString();
         }
     }
