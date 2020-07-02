@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace Supertext.Base.Security.KeyVault
 {
@@ -11,6 +12,6 @@ namespace Supertext.Base.Security.KeyVault
     /// </remarks>
     public interface IKeyVaultKeysProvider
     {
-        Task<string> GetRsaKeyAsync(string keyName);
+        Task<RSA> GetRsaKeyAsync(string keyName);
     }
 }
