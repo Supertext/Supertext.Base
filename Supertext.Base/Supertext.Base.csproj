@@ -5,8 +5,6 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Company>Supertext</Company>
     <Authors>Supertext</Authors>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
     <Version>1.0.0</Version>
     <Description>Contains basic utilities and helpers.</Description>
     <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->

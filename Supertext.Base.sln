@@ -64,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Mvc", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.EntityFrameworkCore", "Supertext.Base.EntityFrameworkCore\Supertext.Base.EntityFrameworkCore.csproj", "{87B055FF-E3E2-4D01-A1F3-EACDC6699606}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Security.KeyVault", "Supertext.Base.Security.KeyVault\Supertext.Base.Security.KeyVault.csproj", "{D42D7BA4-F7F1-495F-B183-7379B620BE35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.KeyVault", "Supertext.Base.Security.KeyVault\Supertext.Base.Security.KeyVault.csproj", "{D42D7BA4-F7F1-495F-B183-7379B620BE35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
