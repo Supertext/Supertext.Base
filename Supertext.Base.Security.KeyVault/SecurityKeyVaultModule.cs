@@ -8,6 +8,7 @@ namespace Supertext.Base.Security.KeyVault
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<KeyVaultKeysProvider>().As<IKeyVaultKeysProvider>();
+            builder.RegisterType<AzureKeyReader>().As<IAzureKeyReader>();
         }
     }
 }
