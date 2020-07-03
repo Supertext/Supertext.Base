@@ -64,8 +64,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Mvc", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.EntityFrameworkCore", "Supertext.Base.EntityFrameworkCore\Supertext.Base.EntityFrameworkCore.csproj", "{87B055FF-E3E2-4D01-A1F3-EACDC6699606}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.KeyVault", "Supertext.Base.Security.KeyVault\Supertext.Base.Security.KeyVault.csproj", "{D42D7BA4-F7F1-495F-B183-7379B620BE35}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,10 +174,6 @@ Global
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D42D7BA4-F7F1-495F-B183-7379B620BE35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D42D7BA4-F7F1-495F-B183-7379B620BE35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D42D7BA4-F7F1-495F-B183-7379B620BE35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D42D7BA4-F7F1-495F-B183-7379B620BE35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -211,7 +205,6 @@ Global
 		{ECD5CF0E-0A7A-40E3-86F0-47FB12FB7A80} = {9433911D-A932-4266-B7CE-A95A9276FF35}
 		{81C92EE9-4DD7-4F1C-A23A-F8160A1BE8DC} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
-		{D42D7BA4-F7F1-495F-B183-7379B620BE35} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {843F013D-AF27-4651-9FBC-620FB8340202}
