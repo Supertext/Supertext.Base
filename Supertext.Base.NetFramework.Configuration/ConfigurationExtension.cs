@@ -89,12 +89,6 @@ namespace Supertext.Base.NetFramework.Configuration
                 return Option<object>.Some(value);
             }
 
-            if (SupertextConfigurationManager.AppSettings.AllKeys.Any(key => key == settingsKey))
-            {
-                var value = SupertextConfigurationManager.AppSettings[settingsKey];
-                return Option<object>.Some(value);
-            }
-
             Console.WriteLine($"Key {settingsKey} not available");
             return Option<object>.None();
         }
