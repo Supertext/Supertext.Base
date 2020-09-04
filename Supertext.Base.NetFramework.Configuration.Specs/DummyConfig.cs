@@ -13,5 +13,8 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
 
         [ConnectionStringName("Supertext")]
         public string ConnectionString { get; set; }
+
+        [SettingsKey("supertextSectionConfig")]
+        public string SupertextSectionConfig { get; set; }
     }
 }

@@ -27,6 +27,7 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
             config.SomeInt.Should().Be(4711);
             config.DoubleValue.Should().Be(0);
             config.ConnectionString.Should().Be("bla");
+            config.SupertextSectionConfig.Should().Be("1234");
         }
     }
 }
