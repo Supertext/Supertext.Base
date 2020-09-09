@@ -44,14 +44,14 @@ namespace Supertext.Base.Net.Http
                 throw new Exception($"Discovering oidc document on {_identity.Authority} for retrieving token failed: {disco.Error}");
             }
 
-            var optionalApiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
+            var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new ClientCredentialsTokenRequest
                                       {
                                           Address = disco.TokenEndpoint,
                                           ClientId = clientId,
-                                          ClientSecret = optionalApiResourceDefinition.Value.ClientSecret,
-                                          Scope = optionalApiResourceDefinition.Value.Scope
+                                          ClientSecret = apiResourceDefinition.Value.ClientSecret,
+                                          Scope = apiResourceDefinition.Value.Scope
                                       })
             {
                 var tokenResponse = await client.RequestClientCredentialsTokenAsync(tokenRequest).ConfigureAwait(false);
