@@ -1,22 +1,15 @@
 ﻿using System.Data;
-using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
+using System.Data.SqlClient;
 
 namespace Supertext.Base.Dal.SqlServer.Utils
 {
     internal class SqlConnectionFactory : ISqlConnectionFactory
     {
-        private readonly IRetryPolicyProvider _retryPolicyProvider;
-
-        public SqlConnectionFactory(IRetryPolicyProvider retryPolicyProvider)
-        {
-            _retryPolicyProvider = retryPolicyProvider;
-        }
-
         public IDbConnection CreateOpenedReliableConnection(string connectionString)
         {
-            var conn = new ReliableSqlConnection(connectionString, _retryPolicyProvider.RetryPolicy);
+            var conn = new SqlConnection(connectionString);
 
-            conn.Open(_retryPolicyProvider.RetryPolicy);
+            conn.Open();
 
             return conn;
         }
