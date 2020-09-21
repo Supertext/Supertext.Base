@@ -62,7 +62,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.Spe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Mvc", "Supertext.Base.Test.Mvc\Supertext.Base.Test.Mvc.csproj", "{81C92EE9-4DD7-4F1C-A23A-F8160A1BE8DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.EntityFrameworkCore", "Supertext.Base.EntityFrameworkCore\Supertext.Base.EntityFrameworkCore.csproj", "{87B055FF-E3E2-4D01-A1F3-EACDC6699606}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.EntityFrameworkCore", "Supertext.Base.EntityFrameworkCore\Supertext.Base.EntityFrameworkCore.csproj", "{87B055FF-E3E2-4D01-A1F3-EACDC6699606}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

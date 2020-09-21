@@ -12,9 +12,6 @@ namespace Supertext.Base.Dal.SqlServer.Modules
         {
             builder.RegisterType<SqlConnectionFactory>().As<ISqlConnectionFactory>();
 
-            // Default Retry Policy provider
-            builder.RegisterType<StrategyPolicyProvider>().As<IRetryPolicyProvider>().SingleInstance();
-
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
             builder.RegisterType<UnitOfWorkFactory>().As<IUnitOfWorkFactory>();
 

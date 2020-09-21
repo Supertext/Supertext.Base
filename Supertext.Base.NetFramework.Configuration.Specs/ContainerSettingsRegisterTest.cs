@@ -24,7 +24,9 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
             var config = container.Resolve<DummyConfig>();
 
             config.Value.Should().Be("any Value");
+            config.AnotherValue.Should().Be("another value");
             config.SomeInt.Should().Be(4711);
+            config.AnotherInt.Should().Be(9712);
             config.DoubleValue.Should().Be(0);
             config.ConnectionString.Should().Be("bla");
         }

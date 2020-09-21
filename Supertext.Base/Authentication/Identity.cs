@@ -13,7 +13,6 @@ namespace Supertext.Base.Authentication
             ApiResourceDefinitions = new List<ApiResourceDefinition>();
         }
 
-        public string ApiName { get; set; }
         public string Authority { get; set; }
 
         public ICollection<ApiResourceDefinition> ApiResourceDefinitions { get; set;}

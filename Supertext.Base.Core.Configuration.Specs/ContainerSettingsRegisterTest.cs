@@ -94,7 +94,6 @@ namespace Supertext.Base.Core.Configuration.Specs
             var container = _builder.Build();
             var identity = container.Resolve<Authentication.Identity>();
 
-            identity.ApiName.Should().Be("Super Api");
             identity.Authority.Should().Be("Super authority");
         }
     }
