@@ -8,6 +8,10 @@
         /// </summary>
         public string ClientSecretName { get; set; }
         public string ClientSecret { get; set; }
+
+        /// <summary>
+        /// Space separated list of the requested scopes
+        /// </summary>
         public string Scope { get; set; }
     }
 }
