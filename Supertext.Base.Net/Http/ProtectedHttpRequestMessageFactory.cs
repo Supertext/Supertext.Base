@@ -22,28 +22,45 @@ namespace Supertext.Base.Net.Http
             _logger = logger;
         }
 
-        public async Task<HttpRequestMessage> CreateHttpRequestMessageProtectedWithBearerToken(HttpMethod method,
-                                                                                               string requestUri,
-                                                                                               HttpContent content,
-                                                                                               string clientId)
+        public async Task<HttpRequestMessage> CreateHttpRequestMessageWithTokenClientCredentials(HttpMethod method,
+                                                                                                 string requestUri,
+                                                                                                 string clientId,
+                                                                                                 HttpContent content = null)
         {
-            var request = new HttpRequestMessage(method, requestUri) { Content = content };
+            var request = new HttpRequestMessage(method, requestUri) {Content = content};
             var token = await RequestClientCredentialsTokenAsync(clientId).ConfigureAwait(false);
             request.SetBearerToken(token);
             return request;
         }
 
+        public async Task<HttpRequestMessage> CreateHttpRequestMessageWithTokenDelegation(HttpMethod method,
+                                                                                                 string requestUri,
+                                                                                                 string clientId,
+                                                                                                 string sub,
+                                                                                                 HttpContent content = null)
+        {
+            var request = new HttpRequestMessage(method, requestUri) {Content = content};
+            var token = await RequestDelegationTokenAsync(clientId, sub).ConfigureAwait(false);
+            request.SetBearerToken(token);
+            return request;
+        }
+
+        [Obsolete("Use CreateHttpRequestMessageWithTokenClientCredentials instead.")]
+        public Task<HttpRequestMessage> CreateHttpRequestMessageProtectedWithBearerToken(HttpMethod method,
+                                                                                               string requestUri,
+                                                                                               HttpContent content,
+                                                                                               string clientId)
+        {
+            return CreateHttpRequestMessageWithTokenClientCredentials(method,
+                                                                      requestUri,
+                                                                      clientId,
+                                                                      content);
+        }
+
         private async Task<string> RequestClientCredentialsTokenAsync(string clientId)
         {
             var client = _httpClientFactory.CreateClient(nameof(ProtectedHttpRequestMessageFactory));
-
-            var disco = await client.GetDiscoveryDocumentAsync(_identity.Authority).ConfigureAwait(false);
-            if (disco.IsError)
-            {
-                _logger.LogError(disco.Error);
-                throw new Exception($"Discovering oidc document on {_identity.Authority} for retrieving token failed: {disco.Error}");
-            }
-
+            var disco = await GetDiscoveryDocument(client);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new ClientCredentialsTokenRequest
@@ -65,6 +82,46 @@ namespace Supertext.Base.Net.Http
 
                 return tokenResponse.AccessToken;
             }
+        }
+
+        private async Task<string> RequestDelegationTokenAsync(string clientId, string sub)
+        {
+            var client = _httpClientFactory.CreateClient(nameof(ProtectedHttpRequestMessageFactory));
+            var disco = await GetDiscoveryDocument(client);
+            var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
+
+            using (var tokenRequest = new TokenRequest
+                                      {
+                                          Address = disco.TokenEndpoint,
+                                          ClientId = clientId,
+                                          GrantType = "delegation",
+                                          ClientSecret = apiResourceDefinition.Value.ClientSecret,
+                                          Parameters = { { "sub", sub } }
+                                      })
+            {
+                var tokenResponse = await client.RequestTokenAsync(tokenRequest).ConfigureAwait(false);
+
+                if (tokenResponse.IsError)
+                {
+                    var errorMessage = $"Retrieving token for grant type 'delegation' with client id '{clientId}' failed: {tokenResponse.Error}. Hint: Look in the logfile of Person.Web about further information.";
+                    _logger.LogError(errorMessage);
+                    throw new Exception(errorMessage);
+                }
+
+                return tokenResponse.AccessToken;
+            }
+        }
+
+        private async Task<DiscoveryDocumentResponse> GetDiscoveryDocument(HttpClient client)
+        {
+            var disco = await client.GetDiscoveryDocumentAsync(_identity.Authority).ConfigureAwait(false);
+            if (disco.IsError)
+            {
+                _logger.LogError(disco.Error);
+                throw new Exception($"Discovering oidc document on {_identity.Authority} for retrieving token failed: {disco.Error}");
+            }
+
+            return disco;
         }
     }
 }
