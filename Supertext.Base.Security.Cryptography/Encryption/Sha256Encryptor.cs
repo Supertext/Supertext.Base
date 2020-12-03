@@ -28,7 +28,7 @@ namespace Supertext.Base.Security.Cryptography.Encryption
             // Create a SHA256   
             using (var sha256Hash = SHA256.Create())
             {
-                var rawData = salt + apiToken + _encryptionConfig.Pepper;
+                var rawData = salt + apiToken + _encryptionConfig.LegacyTokenEncryptionPepper;
 
                 // ComputeHash - returns byte array with the hashed data 
                 var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
