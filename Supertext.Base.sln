@@ -64,7 +64,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Mvc", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.EntityFrameworkCore", "Supertext.Base.EntityFrameworkCore\Supertext.Base.EntityFrameworkCore.csproj", "{87B055FF-E3E2-4D01-A1F3-EACDC6699606}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Security.Cryptography", "Supertext.Base.Security.Cryptography\Supertext.Base.Security.Cryptography.csproj", "{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.Cryptography", "Supertext.Base.Security.Cryptography\Supertext.Base.Security.Cryptography.csproj", "{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Security.Cryptography.Tests", "Supertext.Base.Security.Cryptography.Specs\Supertext.Base.Security.Cryptography.Tests.csproj", "{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -180,6 +182,10 @@ Global
 		{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,6 +218,7 @@ Global
 		{81C92EE9-4DD7-4F1C-A23A-F8160A1BE8DC} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
+		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D} = {9433911D-A932-4266-B7CE-A95A9276FF35}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {843F013D-AF27-4651-9FBC-620FB8340202}
