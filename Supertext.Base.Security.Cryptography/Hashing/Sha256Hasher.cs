@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using Supertext.Base.Security.Cryptography.Hashing.Salt;
 using Supertext.Base.Security.Hashing;
@@ -28,27 +29,19 @@ namespace Supertext.Base.Security.Cryptography.Hashing
 
         private HashingResult ComputeSha256HashWithSaltAndPepper(string rawData, string salt, string pepper)
         {
-            // Create a SHA256   
-            using (var sha256Hash = SHA256.Create())
-            {
-                var spicedRawData = salt + rawData + pepper;
+            var encoding = new UnicodeEncoding();
+            var rawData = salt + apiToken + pepper;
+            var bytes = encoding.GetBytes(rawData);
+            var sha256 = new SHA256Managed();
+            var hashedBytes = sha256.ComputeHash(bytes);
+            
 
-                // ComputeHash - returns byte array with the hashed data 
-                var hashedBytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(spicedRawData));
-
-                // Convert byte array to a string   
-                var builder = new StringBuilder();
-                foreach (var bt in hashedBytes)
-                {
-                    builder.Append(bt.ToString("x2"));
-                }
-
-                return new HashingResult
+            return new HashingResult
                        {
-                           HashedValue = builder.ToString(), 
+                           HashedValue = Convert.ToBase64String(hashedBytes), 
                            Salt = salt
                        };
-            }
+            
         }
     }
 }
