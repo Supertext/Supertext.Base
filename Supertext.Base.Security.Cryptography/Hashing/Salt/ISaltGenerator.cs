@@ -1,6 +1,8 @@
-﻿namespace Supertext.Base.Security.Cryptography.Hashing.Salt
+﻿using System.Runtime.CompilerServices;
+
+namespace Supertext.Base.Security.Cryptography.Hashing.Salt
 {
-    internal interface ISaltGenerator
+    public interface ISaltGenerator
     {
         string Generate();
     }

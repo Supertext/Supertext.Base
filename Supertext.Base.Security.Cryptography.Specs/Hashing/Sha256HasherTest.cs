@@ -23,23 +23,37 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
             };
 
             _saltCreator = A.Fake<ISaltGenerator>();
-
-            _testee = new Sha256Hasher(_saltCreator, encryptionConfig);
+            _testee = new Sha256Hasher(encryptionConfig, _saltCreator);
         }
 
         [TestMethod]
         public void HashLegacyToken_Returns_hashed_string_and_salt()
         {
-            var expectedHashSize = 64; //SHA256 always returns a 256 bit string with 64 characters
+            var expectedHashSize44 = 44; //SHA256 always returns a 256 bit string with 64 characters
             var legacyToken = "Generated API token";
-            var expectedSalt = "ExpectedSalt";
+            var salt = "Salt";
 
-            A.CallTo(() => _saltCreator.Generate()).Returns(expectedSalt);
+            A.CallTo(() => _saltCreator.Generate()).Returns(salt);
 
             var result = _testee.HashLegacyToken(legacyToken);
 
-            result.HashedValue.Length.Should().Be(expectedHashSize);
-            result.Salt.Should().Be(expectedSalt);
+            result.HashedValue.Length.Should().Be(expectedHashSize44);
+            result.Salt.Should().Be(salt);
+        }
+
+        [TestMethod]
+        public void HashPassword_Returns_hashed_string_and_salt()
+        {
+            var expectedHashSize44 = 44;
+            var legacyToken = "Password123";
+            var salt = "Salt";
+
+            A.CallTo(() => _saltCreator.Generate()).Returns(salt);
+
+            var result = _testee.HashLegacyToken(legacyToken);
+
+            result.HashedValue.Length.Should().Be(expectedHashSize44);
+            result.Salt.Should().Be(salt);
         }
     }
 }

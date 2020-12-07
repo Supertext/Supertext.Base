@@ -11,7 +11,7 @@ namespace Supertext.Base.Security.Cryptography.Hashing
         private readonly ISaltGenerator _saltGenerator;
         private readonly HashingConfig _hashingConfig;
 
-        public Sha256Hasher(ISaltGenerator saltGenerator, HashingConfig hashingConfig)
+        public Sha256Hasher(HashingConfig hashingConfig, ISaltGenerator saltGenerator)
         {
             _saltGenerator = saltGenerator;
             _hashingConfig = hashingConfig;
@@ -27,21 +27,19 @@ namespace Supertext.Base.Security.Cryptography.Hashing
             return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.PasswordHashingPepper);
         }
 
-        private HashingResult ComputeSha256HashWithSaltAndPepper(string rawData, string salt, string pepper)
+        public HashingResult ComputeSha256HashWithSaltAndPepper(string rawData, string salt, string pepper)
         {
             var encoding = new UnicodeEncoding();
-            var rawData = salt + apiToken + pepper;
-            var bytes = encoding.GetBytes(rawData);
+            var spicedRawData = salt + rawData + pepper;
+            var bytes = encoding.GetBytes(spicedRawData);
             var sha256 = new SHA256Managed();
             var hashedBytes = sha256.ComputeHash(bytes);
-            
 
             return new HashingResult
-                       {
-                           HashedValue = Convert.ToBase64String(hashedBytes), 
-                           Salt = salt
-                       };
-            
+                   {
+                       HashedValue = Convert.ToBase64String(hashedBytes), 
+                       Salt = salt
+                   };
         }
     }
 }
