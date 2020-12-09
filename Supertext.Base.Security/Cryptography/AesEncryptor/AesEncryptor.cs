@@ -7,7 +7,7 @@ namespace Supertext.Base.Security.Cryptography.AesEncryptor
 {
     public class AesEncryptor : IAesEncryptor
     {
-        private ILogger<IAesEncryptor> _logger;
+        private static ILogger<IAesEncryptor> _logger;
         private readonly AesCryptoServiceProvider _cryptoServiceProvider;
         private const int InputOffset = 0;
 

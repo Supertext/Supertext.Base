@@ -1,6 +1,9 @@
 ﻿using System;
+using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Security.Cryptography;
 using Supertext.Base.Security.Cryptography.AesEncryptor;
 
 namespace MonoCms.Client.Tests.Common
@@ -11,12 +14,14 @@ namespace MonoCms.Client.Tests.Common
         private AesEncryptor _testee;
         private string _referenceId;
         private EncryptionConfig _config;
+        private ILogger<IAesEncryptor> _logger;
 
         [TestInitialize]
         public void TestInitialize()
         {
+            _logger = A.Fake<ILogger<IAesEncryptor>>();
             _config = new EncryptionConfig() { Key = "MyEncryptionText", Iv = "IVsAreVeryNiceOk" };
-            _testee = new AesEncryptor(_config);
+            _testee = new AesEncryptor(_config, _logger);
             _referenceId = "test";
         }
 
@@ -34,7 +39,7 @@ namespace MonoCms.Client.Tests.Common
         {
             var encryptedReference = _testee.Encrypt(_referenceId);
             _config = new EncryptionConfig() { Key = "MyEncryptionText", Iv = "ThisIsDifferent!" };
-            _testee = new AesEncryptor(_config);
+            _testee = new AesEncryptor(_config, _logger);
 
             var decryptedReference = _testee.Decrypt(encryptedReference);
 
@@ -46,7 +51,7 @@ namespace MonoCms.Client.Tests.Common
         {
             var encryptedReference = _testee.Encrypt(_referenceId);
             _config = new EncryptionConfig() { Key = "NewEncryptionKey", Iv = "IVsAreVeryNiceOk" };
-            _testee = new AesEncryptor(_config);
+            _testee = new AesEncryptor(_config, _logger);
 
             var decryptedReference = _testee.Decrypt(encryptedReference);
 
