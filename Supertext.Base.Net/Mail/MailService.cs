@@ -35,7 +35,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
                 throw;
             }
         }
@@ -53,7 +53,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
                 throw;
             }
         }
