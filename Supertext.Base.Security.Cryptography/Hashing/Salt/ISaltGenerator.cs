@@ -2,7 +2,7 @@
 
 namespace Supertext.Base.Security.Cryptography.Hashing.Salt
 {
-    public interface ISaltGenerator
+    internal interface ISaltGenerator
     {
         string Generate();
     }

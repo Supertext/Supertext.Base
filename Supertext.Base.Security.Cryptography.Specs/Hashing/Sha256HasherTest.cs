@@ -1,3 +1,4 @@
+using System;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,13 +13,15 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
     {
         private ISha256Hasher _testee;
         private ISaltGenerator _saltCreator;
+        private readonly int  _expectedHashSize44 = 44; //SHA256 always returns a 256 bit string with 64 characters
+        private readonly string _salt = "Salt";
 
         [TestInitialize]
         public void TestInitialize()
         {
             var encryptionConfig = new HashingConfig()
                                    {
-                                       LegacyTokenHashingPepper = nameof(HashingConfig.LegacyTokenHashingPepper),
+                                       TokenHashingPepper = nameof(HashingConfig.TokenHashingPepper),
                                        PasswordHashingPepper = nameof(HashingConfig.PasswordHashingPepper)
             };
 
@@ -27,33 +30,62 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
         }
 
         [TestMethod]
-        public void HashLegacyToken_Returns_hashed_string_and_salt()
+        public void HashToken_ValidToken_ReturnsHashingResult()
         {
-            var expectedHashSize44 = 44; //SHA256 always returns a 256 bit string with 64 characters
-            var legacyToken = "Generated API token";
-            var salt = "Salt";
+            var token = "token";
 
-            A.CallTo(() => _saltCreator.Generate()).Returns(salt);
+            A.CallTo(() => _saltCreator.Generate()).Returns(_salt);
 
-            var result = _testee.HashLegacyToken(legacyToken);
+            var result = _testee.HashToken(token);
 
-            result.HashedValue.Length.Should().Be(expectedHashSize44);
-            result.Salt.Should().Be(salt);
+            result.HashedValue.Length.Should().Be(_expectedHashSize44);
+            result.Salt.Should().Be(_salt);
         }
 
         [TestMethod]
-        public void HashPassword_Returns_hashed_string_and_salt()
+        public void HashToken_GivenEmptyToken_ThrowsArgumentException()
         {
-            var expectedHashSize44 = 44;
+            var token = "";
+
+            _testee.Invoking(testee => testee.HashToken(token)).Should()
+                   .Throw<ArgumentException>().WithMessage("string is null or whitespace");
+        }
+
+        [TestMethod]
+        public void HashToken_GivenNull_ThrowsArgumentException()
+        {
+            _testee.Invoking(testee => testee.HashToken(null)).Should()
+                   .Throw<ArgumentException>().WithMessage("string is null or whitespace");
+        }
+
+        [TestMethod]
+        public void HashPassword_ValidPassword_ReturnsHashingResult()
+        {
             var legacyToken = "Password123";
-            var salt = "Salt";
 
-            A.CallTo(() => _saltCreator.Generate()).Returns(salt);
+            A.CallTo(() => _saltCreator.Generate()).Returns(_salt);
 
-            var result = _testee.HashLegacyToken(legacyToken);
+            var result = _testee.HashToken(legacyToken);
 
-            result.HashedValue.Length.Should().Be(expectedHashSize44);
-            result.Salt.Should().Be(salt);
+            result.HashedValue.Length.Should().Be(_expectedHashSize44);
+            result.Salt.Should().Be(_salt);
+        }
+
+        [TestMethod]
+        public void HashPassword_GivenEmptyToken_ThrowsArgumentException()
+        {
+            var password = "";
+
+            _testee.Invoking(testee => testee.HashPassword(password)).Should()
+                   .Throw<ArgumentException>().WithMessage("string is null or whitespace");
+        }
+
+
+        [TestMethod]
+        public void HashPassword_GivenNull_ThrowsArgumentException()
+        {
+            _testee.Invoking(testee => testee.HashPassword(null)).Should()
+                   .Throw<ArgumentException>().WithMessage("string is null or whitespace");
         }
     }
 }

@@ -6,17 +6,17 @@ namespace Supertext.Base.Security.Cryptography.Hashing
     internal class Sha256HashValidator : ISha256HashValidator
     {
         private readonly HashingConfig _hashingConfig;
-        private readonly ISha256Hasher _sha256Hasher;
+        private readonly ISha256InternalHasher _sha256Hasher;
 
-        public Sha256HashValidator(HashingConfig hashingConfig, ISha256Hasher sha256Hasher)
+        public Sha256HashValidator(HashingConfig hashingConfig, ISha256InternalHasher sha256Hasher)
         {
             _hashingConfig = hashingConfig;
             _sha256Hasher = sha256Hasher;
         }
 
-        public bool IsLegacyTokenValid(string legacyToken, string salt, string hashedLegacyToken)
+        public bool IsTokenValid(string token, string salt, string hashedToken)
         {
-            return IsHashValid(legacyToken, salt, _hashingConfig.LegacyTokenHashingPepper, hashedLegacyToken);
+            return IsHashValid(token, salt, _hashingConfig.TokenHashingPepper, hashedToken);
         }
 
         public bool IsPasswordValid(string password, string salt, string hashedPassword)

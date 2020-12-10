@@ -5,6 +5,7 @@ using Supertext.Base.Security.Cryptography.Hashing.Salt;
 using Supertext.Base.Security.Hashing;
 
 [assembly: InternalsVisibleTo("Supertext.Base.Security.Cryptography.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Supertext.Base.Security.Cryptography
 {
     public class CryptographyModule : Module

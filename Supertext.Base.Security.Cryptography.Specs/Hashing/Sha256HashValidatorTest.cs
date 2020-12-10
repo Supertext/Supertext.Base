@@ -9,98 +9,90 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
     [TestClass]
     public class Sha256HashValidatorTest
     {
-        private ISha256Hasher _sha256Hasher;
+        private ISha256InternalHasher _sha256Hasher;
         private Sha256HashValidator _testee;
         private HashingConfig _encryptionConfig;
+        private readonly string _salt = "Salt";
+        private readonly string _expectedHash = "Expected Hash";
 
         [TestInitialize]
         public void TestInitialize()
         {
             _encryptionConfig = new HashingConfig()
                                    {
-                                       LegacyTokenHashingPepper = nameof(HashingConfig.LegacyTokenHashingPepper),
+                                       TokenHashingPepper = nameof(HashingConfig.TokenHashingPepper),
                                        PasswordHashingPepper = nameof(HashingConfig.PasswordHashingPepper)
             };
-            _sha256Hasher = A.Fake<ISha256Hasher>();
+            _sha256Hasher = A.Fake<ISha256InternalHasher>();
             _testee = new Sha256HashValidator(_encryptionConfig, _sha256Hasher);
         }
 
         [TestMethod]
-        public void IsLegacyTokenValid_Returns_True_Legacy_Token_Corresponds_Hash()
+        public void IsTokenValid_TokenCorrespondsHash_ReturnsTrue()
         {
-            var legacyToken = "Generated API token";
-            var salt = "Salt";
-            var expectedHash = "Expected Hash";
+            var token = "Token";
             var expectedHashingResult = new HashingResult
                                         {
-                                            HashedValue = expectedHash,
-                                            Salt = salt
-            };
+                                            HashedValue = _expectedHash,
+                                            Salt = _salt
+                                        };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(legacyToken, salt, _encryptionConfig.LegacyTokenHashingPepper)).Returns(expectedHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.TokenHashingPepper)).Returns(expectedHashingResult);
 
-            var isValid = _testee.IsLegacyTokenValid(legacyToken, salt, expectedHash);
+            var isValid = _testee.IsTokenValid(token, _salt, _expectedHash);
 
             isValid.Should().Be(true);
         }
 
-
         [TestMethod]
-        public void IsLegacyTokenValid_Returns_False_Legacy_Token_Does_Not_Correspond_Hash()
+        public void IsTokenValid_TokenDoesNotCorrespondHash_ReturnsFalse()
         {
-            var legacyToken = "Generated API token";
-            var salt = "Salt";
-            var expectedHash = "Expected Hash";
+            var token = "Token";
             var mismatchingHash = "Mismatching Hash";
             var mismatchingHashingResult = new HashingResult
                                            {
                                                HashedValue = mismatchingHash,
-                                               Salt = salt
-                                           };
+                                               Salt = _salt
+            };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(legacyToken, salt, _encryptionConfig.LegacyTokenHashingPepper)).Returns(mismatchingHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.TokenHashingPepper)).Returns(mismatchingHashingResult);
 
-            var isValid = _testee.IsLegacyTokenValid(legacyToken, salt, expectedHash);
+            var isValid = _testee.IsTokenValid(token, _salt, _expectedHash);
 
             isValid.Should().Be(false);
         }
 
         [TestMethod]
-        public void IsLegacyTokenValid_Returns_True_Password_Corresponds_Hash()
+        public void IsTokenValid_PasswordCorrespondsHash_ReturnsTrue()
         {
             var password = "Password123";
-            var salt = "Salt";
-            var expectedHash = "Expected Hash";
             var expectedHashingResult = new HashingResult
                                         {
-                                            HashedValue = expectedHash,
-                                            Salt = salt
-                                        };
+                                            HashedValue = _expectedHash,
+                                            Salt = _salt
+            };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, salt, _encryptionConfig.LegacyTokenHashingPepper)).Returns(expectedHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.TokenHashingPepper)).Returns(expectedHashingResult);
 
-            var isValid = _testee.IsLegacyTokenValid(password, salt, expectedHash);
+            var isValid = _testee.IsTokenValid(password, _salt, _expectedHash);
 
             isValid.Should().Be(true);
         }
 
-
         [TestMethod]
-        public void IsPasswordValid_Returns_False_Password_Does_Not_Correspond_Hash()
+        public void IsPasswordValid_PasswordDoesNotCorrespondHash_ReturnsFalse()
         {
             var password = "Password123";
-            var salt = "Salt";
-            var expectedHash = "Expected Hash";
             var mismatchingHash = "Mismatching Hash";
             var mismatchingHashingResult = new HashingResult
                                         {
                                             HashedValue = mismatchingHash,
-                                            Salt = salt
-                                        };
+                                            Salt = _salt
+            };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, salt, _encryptionConfig.LegacyTokenHashingPepper)).Returns(mismatchingHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.TokenHashingPepper)).Returns(mismatchingHashingResult);
 
-            var isValid = _testee.IsLegacyTokenValid(password, salt, expectedHash);
+            var isValid = _testee.IsTokenValid(password, _salt, _expectedHash);
 
             isValid.Should().Be(false);
         }

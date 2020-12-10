@@ -5,8 +5,8 @@ namespace Supertext.Base.Security.Cryptography.Hashing
     [ConfigSection("EncryptionSettings")]
     public class HashingConfig
     {
-        [KeyVaultSecret("Legacy-Token-Hashing-Pepper")]
-        public string LegacyTokenHashingPepper { get; set; }
+        [KeyVaultSecret("Token-Hashing-Pepper")]
+        public string TokenHashingPepper { get; set; }
 
 
         [KeyVaultSecret("Password-Hashing-Pepper")]

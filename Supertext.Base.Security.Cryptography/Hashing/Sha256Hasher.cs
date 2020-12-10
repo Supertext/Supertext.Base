@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using Supertext.Base.Common;
+using Supertext.Base.Extensions;
 using Supertext.Base.Security.Cryptography.Hashing.Salt;
 using Supertext.Base.Security.Hashing;
 
 namespace Supertext.Base.Security.Cryptography.Hashing
 {
-    internal class Sha256Hasher : ISha256Hasher
+    internal class Sha256Hasher : ISha256Hasher, ISha256InternalHasher
     {
         private readonly ISaltGenerator _saltGenerator;
         private readonly HashingConfig _hashingConfig;
@@ -17,13 +19,17 @@ namespace Supertext.Base.Security.Cryptography.Hashing
             _hashingConfig = hashingConfig;
         }
 
-        public HashingResult HashLegacyToken(string entry)
+        public HashingResult HashToken(string entry)
         {
-            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.LegacyTokenHashingPepper);
+            Validate.NotNullOrWhitespace(entry);
+
+            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.TokenHashingPepper);
         }
 
         public HashingResult HashPassword(string entry)
         {
+            Validate.NotNullOrWhitespace(entry);
+
             return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.PasswordHashingPepper);
         }
 
