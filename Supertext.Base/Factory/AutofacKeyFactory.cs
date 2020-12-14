@@ -109,6 +109,19 @@ namespace Supertext.Base.Factory
 
         private IDictionary<TKey, IComponentRegistration> CollectRegistrations()
         {
+            var registrations = GetComponentsWithComponentKeyAttribute();
+            if (registrations.Any())
+            {
+                return registrations;
+            }
+
+            // If nothing can be loaded, try to resolve type and recollect again.
+            _componentContext.Resolve<T>();
+            return GetComponentsWithComponentKeyAttribute();
+        }
+
+        private Dictionary<TKey, IComponentRegistration> GetComponentsWithComponentKeyAttribute()
+        {
             var registrations = new Dictionary<TKey, IComponentRegistration>();
 
             foreach (var registration in _componentContext.ComponentRegistry.Registrations
@@ -124,16 +137,17 @@ namespace Supertext.Base.Factory
                         {
                             throw new ConfigurationException($"Two default-Components registered for Type={typeof(T)} and Key={attribute.Key}");
                         }
+
                         _defaultComponentAttributeRegistration = registration;
                     }
                     else
                     {
-                        registrations.Add((TKey)attribute.Key, registration);
+                        registrations.Add((TKey) attribute.Key, registration);
                     }
                 }
             }
+
             return registrations;
         }
-
     }
 }
