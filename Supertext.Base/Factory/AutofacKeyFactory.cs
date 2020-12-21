@@ -116,7 +116,7 @@ namespace Supertext.Base.Factory
             }
 
             // If nothing can be loaded, try to resolve type and recollect again.
-            _componentContext.Resolve<T>();
+            _componentContext.TryResolve(typeof(T), out var instance);
             return GetComponentsWithComponentKeyAttribute();
         }
 
