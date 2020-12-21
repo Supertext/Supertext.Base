@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
+using Autofac.Core;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Factory;
@@ -75,6 +77,28 @@ namespace Supertext.Base.Specs.Factory
             resultOne.Should().BeEquivalentTo(DefaultAttributeComponentToCreate.ReturnValue);
         }
 
+        [TestMethod]
+        public void ComponentExists_WhenComponentWithNotRegisteredDependency_ThenTrue()
+        {
+            var context = CreateComponentContext();
+
+            var testee = context.Resolve<IKeyFactory<string, IAttributeComponentToCreate>>();
+
+            var result = testee.ComponentExists("dependencies");
+
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void CreateComponent_WhenComponentWithNotRegisteredDependency_ThenException()
+        {
+            var context = CreateComponentContext();
+
+            var testee = context.Resolve<IKeyFactory<string, IAttributeComponentToCreate>>();
+
+            testee.Invoking(factory => factory.CreateComponent("dependencies")).Should().Throw<DependencyResolutionException>();
+        }
+
         private static IComponentContext CreateComponentContext()
         {
             var containerBuilder = new ContainerBuilder();
@@ -92,6 +116,7 @@ namespace Supertext.Base.Specs.Factory
             containerBuilder.RegisterType<AttributeTwoComponentToCreate>().As<IAttributeComponentToCreate>();
             containerBuilder.RegisterType<DefaultAttributeComponentToCreate>().As<IAttributeComponentToCreate>();
             containerBuilder.RegisterType<AttributeComponentDispatcher>().As<IAttributeComponentDispatcher>();
+            containerBuilder.RegisterType<AttributeComponentWithDependencies>().As<IAttributeComponentToCreate>();
         }
 
         private static void RegisterKeyServices(ContainerBuilder containerBuilder)
