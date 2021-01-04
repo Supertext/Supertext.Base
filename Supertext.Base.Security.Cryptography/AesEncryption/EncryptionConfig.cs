@@ -1,6 +1,6 @@
 ﻿using Supertext.Base.Configuration;
 
-namespace Supertext.Base.Security.Cryptography.AesEncryptor
+namespace Supertext.Base.Security.Cryptography.AesEncryption
 {
     [ConfigSection("Encryption")]
     public class EncryptionConfig : IConfiguration

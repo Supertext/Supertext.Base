@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace Supertext.Base.Security.Cryptography.AesEncryptor
+namespace Supertext.Base.Security.Cryptography.AesEncryption
 {
     public class AesEncryptor : IAesEncryptor
     {

@@ -3,10 +3,9 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Security.Cryptography;
-using Supertext.Base.Security.Cryptography.AesEncryptor;
+using Supertext.Base.Security.Cryptography.AesEncryption;
 
-namespace MonoCms.Client.Tests.Common
+namespace Supertext.Base.Security.Cryptography.Tests.AesEncryption
 {
     [TestClass]
     public class AesEncryptorTest
