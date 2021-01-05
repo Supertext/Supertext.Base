@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Logging;
 
 namespace Supertext.Base.Security.Cryptography.AesEncryption
 {
     public class AesEncryptor : IAesEncryptor
     {
-        private static ILogger<IAesEncryptor> _logger;
         private readonly AesCryptoServiceProvider _cryptoServiceProvider;
         private const int InputOffset = 0;
 
-        public AesEncryptor(EncryptionConfig config, ILogger<IAesEncryptor> logger)
+        public AesEncryptor(EncryptionConfig config)
         {
             _cryptoServiceProvider = new AesCryptoServiceProvider
                                      {
@@ -22,7 +20,6 @@ namespace Supertext.Base.Security.Cryptography.AesEncryption
                                          Key = Encoding.UTF8.GetBytes(config.Key),
                                          IV = Encoding.UTF8.GetBytes(config.Iv)
                                      };
-            _logger = logger;
         }
 
         public string Encrypt(string text)
@@ -44,7 +41,8 @@ namespace Supertext.Base.Security.Cryptography.AesEncryption
             }
             catch
             {
-                _logger.LogError($"Error decrypting Reference {encryptedText}. Key or IV may be different.");
+                //ILogger isn't used here because of problems with ILogger and .Net Framework
+                Console.WriteLine($"Error decrypting Reference {encryptedText}. Key or IV may be different.");
             }
             return Encoding.UTF8.GetString(decryptedBytes);
         }

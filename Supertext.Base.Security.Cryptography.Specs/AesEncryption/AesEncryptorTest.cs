@@ -1,7 +1,6 @@
 ﻿using System;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Security.Cryptography.AesEncryption;
 
@@ -13,14 +12,12 @@ namespace Supertext.Base.Security.Cryptography.Tests.AesEncryption
         private AesEncryptor _testee;
         private string _referenceId;
         private EncryptionConfig _config;
-        private ILogger<IAesEncryptor> _logger;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _logger = A.Fake<ILogger<IAesEncryptor>>();
             _config = new EncryptionConfig() { Key = "MyEncryptionText", Iv = "IVsAreVeryNiceOk" };
-            _testee = new AesEncryptor(_config, _logger);
+            _testee = new AesEncryptor(_config);
             _referenceId = "test";
         }
 
@@ -38,7 +35,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.AesEncryption
         {
             var encryptedReference = _testee.Encrypt(_referenceId);
             _config = new EncryptionConfig() { Key = "MyEncryptionText", Iv = "ThisIsDifferent!" };
-            _testee = new AesEncryptor(_config, _logger);
+            _testee = new AesEncryptor(_config);
 
             var decryptedReference = _testee.Decrypt(encryptedReference);
 
@@ -50,7 +47,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.AesEncryption
         {
             var encryptedReference = _testee.Encrypt(_referenceId);
             _config = new EncryptionConfig() { Key = "NewEncryptionKey", Iv = "IVsAreVeryNiceOk" };
-            _testee = new AesEncryptor(_config, _logger);
+            _testee = new AesEncryptor(_config);
 
             var decryptedReference = _testee.Decrypt(encryptedReference);
 
