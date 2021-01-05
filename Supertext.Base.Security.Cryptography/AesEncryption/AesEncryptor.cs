@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Supertext.Base.Security.Cryptography.AesEncryption
 {
-    public class AesEncryptor : IAesEncryptor
+    internal class AesEncryptor : IAesEncryptor
     {
         private readonly AesCryptoServiceProvider _cryptoServiceProvider;
         private const int InputOffset = 0;
