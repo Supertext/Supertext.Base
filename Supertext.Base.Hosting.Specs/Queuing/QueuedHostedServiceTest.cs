@@ -37,7 +37,7 @@ namespace Supertext.Base.Hosting.Specs.Queuing
         }
 
         [TestMethod]
-        public async Task StartAsync_BackgroundTaskIsDequeued_BackgroundWorkCanExecute()
+        public async Task ScheduleJob_BackgroundTaskIsDequeued_BackgroundWorkCanExecute()
         {
             var backgroundTaskQueue = _container.Resolve<IBackgroundTaskQueue>();
             IAnyComponent component = null;
@@ -56,7 +56,7 @@ namespace Supertext.Base.Hosting.Specs.Queuing
         }
 
         [TestMethod]
-        public async Task StartAsync_WorkitemThrowsException_EmailIsSent()
+        public async Task ScheduleJob_WorkitemThrowsException_EmailIsSent()
         {
             EmailInfo sentEmailInfo = null;
             A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0));
