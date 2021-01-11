@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Supertext.Base.Extensions;
 using Supertext.Base.Factory;
 using Supertext.Base.Net.Mail;
 using Supertext.Base.Scheduling;
@@ -34,10 +35,7 @@ namespace Supertext.Base.Hosting.Scheduling
             _logger.LogInformation($"{nameof(SchedulerHostedService<TJobPayload>)} started. Environment: {_environment.EnvironmentName}; ApplicationName: {_environment.ApplicationName}");
         }
 
-        public int GetScheduledJobs()
-        {
-            return _scheduledJobs.Count;
-        }
+        public bool IsScheduledJobsQueueEmpty => _scheduledJobs.IsEmpty();
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

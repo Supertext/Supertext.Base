@@ -56,7 +56,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             do
             {
                 await Task.Delay(20);
-            } while (_testee.GetScheduledJobs() > 0);
+            } while (!_testee.IsScheduledJobsQueueEmpty);
 
             payload.Should().Be(job.Payload);
         }
@@ -91,7 +91,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             do
             {
                 await Task.Delay(20);
-            } while (_testee.GetScheduledJobs() > 0);
+            } while (!_testee.IsScheduledJobsQueueEmpty);
 
             payload1.Should().Be(job1.Payload);
             payload2.Should().Be(job2.Payload);
@@ -117,7 +117,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             do
             {
                 await Task.Delay(20);
-            } while (_testee.GetScheduledJobs() > 0);
+            } while (!_testee.IsScheduledJobsQueueEmpty);
 
             sentEmailInfo.Should().NotBeNull();
             sentEmailInfo.Subject.Should().Be("[DEVELOPMENT] Error occurred while executing a scheduled job of application TestApplication");
@@ -155,7 +155,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             do
             {
                 await Task.Delay(20);
-            } while (_testee.GetScheduledJobs() > 0);
+            } while (!_testee.IsScheduledJobsQueueEmpty);
 
             payload1.Should().Be(default(Guid));
             payload2.Should().Be(job2.Payload);
