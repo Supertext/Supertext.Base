@@ -47,6 +47,10 @@ namespace Supertext.Base.Core.Configuration
             {
                 configuration.GetSection(section.SectionName).Bind(args.Instance);
             }
+            else
+            {
+                configuration.Bind(args.Instance);
+            }
 
             SetKeyVaultSecrets(args.Instance, configuration);
         }
