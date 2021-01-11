@@ -14,6 +14,10 @@ using Timer = System.Threading.Timer;
 
 namespace Supertext.Base.Hosting.Scheduling
 {
+    /// <summary>
+    /// Service class for scheduling long running tasks. Implements <see cref="T:Microsoft.Extensions.Hosting.IHostedService" />.
+    /// </summary>
+    /// <typeparam name="TJobPayload">Generic type, which is representing the type of the payload, used for the scheduled job.</typeparam>
     public class SchedulerHostedService<TJobPayload> : BackgroundService
     {
         private readonly IHostEnvironment _environment;
