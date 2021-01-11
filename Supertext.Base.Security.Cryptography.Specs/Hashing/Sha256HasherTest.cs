@@ -21,8 +21,8 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
         {
             var encryptionConfig = new HashingConfig()
                                    {
-                                       TokenHashingPepper = nameof(HashingConfig.TokenHashingPepper),
-                                       PasswordHashingPepper = nameof(HashingConfig.PasswordHashingPepper)
+                                       HashingPepperForToken = nameof(HashingConfig.HashingPepperForToken),
+                                       HashingPepperForPassword = nameof(HashingConfig.HashingPepperForPassword)
             };
 
             _saltCreator = A.Fake<ISaltGenerator>();

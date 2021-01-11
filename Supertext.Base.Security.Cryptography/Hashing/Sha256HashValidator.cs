@@ -16,12 +16,12 @@ namespace Supertext.Base.Security.Cryptography.Hashing
 
         public bool IsTokenValid(string token, string salt, string hashedToken)
         {
-            return IsHashValid(token, salt, _hashingConfig.TokenHashingPepper, hashedToken);
+            return IsHashValid(token, salt, _hashingConfig.HashingPepperForToken, hashedToken);
         }
 
         public bool IsPasswordValid(string password, string salt, string hashedPassword)
         {
-            return IsHashValid(password, salt, _hashingConfig.PasswordHashingPepper, hashedPassword);
+            return IsHashValid(password, salt, _hashingConfig.HashingPepperForPassword, hashedPassword);
         }
 
         private bool IsHashValid(string rawData, string salt, string pepper, string hashedData)

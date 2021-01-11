@@ -20,8 +20,8 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
         {
             _encryptionConfig = new HashingConfig()
                                    {
-                                       TokenHashingPepper = nameof(HashingConfig.TokenHashingPepper),
-                                       PasswordHashingPepper = nameof(HashingConfig.PasswordHashingPepper)
+                                       HashingPepperForToken = nameof(HashingConfig.HashingPepperForToken),
+                                       HashingPepperForPassword = nameof(HashingConfig.HashingPepperForPassword)
             };
             _sha256Hasher = A.Fake<ISha256InternalHasher>();
             _testee = new Sha256HashValidator(_encryptionConfig, _sha256Hasher);
@@ -37,7 +37,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
                                             Salt = _salt
                                         };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.TokenHashingPepper)).Returns(expectedHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.HashingPepperForToken)).Returns(expectedHashingResult);
 
             var isValid = _testee.IsTokenValid(token, _salt, _expectedHash);
 
@@ -55,7 +55,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
                                                Salt = _salt
             };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.TokenHashingPepper)).Returns(mismatchingHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(token, _salt, _encryptionConfig.HashingPepperForToken)).Returns(mismatchingHashingResult);
 
             var isValid = _testee.IsTokenValid(token, _salt, _expectedHash);
 
@@ -72,7 +72,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
                                             Salt = _salt
             };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.TokenHashingPepper)).Returns(expectedHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.HashingPepperForToken)).Returns(expectedHashingResult);
 
             var isValid = _testee.IsTokenValid(password, _salt, _expectedHash);
 
@@ -90,7 +90,7 @@ namespace Supertext.Base.Security.Cryptography.Tests.Hashing
                                             Salt = _salt
             };
 
-            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.TokenHashingPepper)).Returns(mismatchingHashingResult);
+            A.CallTo(() => _sha256Hasher.ComputeSha256HashWithSaltAndPepper(password, _salt, _encryptionConfig.HashingPepperForToken)).Returns(mismatchingHashingResult);
 
             var isValid = _testee.IsTokenValid(password, _salt, _expectedHash);
 

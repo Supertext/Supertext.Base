@@ -23,14 +23,14 @@ namespace Supertext.Base.Security.Cryptography.Hashing
         {
             Validate.NotNullOrWhitespace(entry);
 
-            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.TokenHashingPepper);
+            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.HashingPepperForToken);
         }
 
         public HashingResult HashPassword(string entry)
         {
             Validate.NotNullOrWhitespace(entry);
 
-            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.PasswordHashingPepper);
+            return ComputeSha256HashWithSaltAndPepper(entry, _saltGenerator.Generate(), _hashingConfig.HashingPepperForPassword);
         }
 
         public HashingResult ComputeSha256HashWithSaltAndPepper(string rawData, string salt, string pepper)
