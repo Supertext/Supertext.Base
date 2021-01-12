@@ -8,7 +8,7 @@ namespace Supertext.Base.Hosting.Extensions
 {
     public static class JobSchedulerResumingExtension
     {
-        public static IHost ResumeShutdownJobs<TJobResumer>(this IHost host) where TJobResumer : IScheduledsJobResumer
+        public static IHost ResumeShutdownJobs<TJobResumer>(this IHost host) where TJobResumer : IScheduledJobsResumer
         {
             using (var scope = host.Services.CreateScope())
             {

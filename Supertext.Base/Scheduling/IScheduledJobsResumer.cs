@@ -4,7 +4,7 @@ using Supertext.Base.Factory;
 
 namespace Supertext.Base.Scheduling
 {
-    public interface IScheduledsJobResumer
+    public interface IScheduledJobsResumer
     {
         Task ResumeAsync(IFactory factory, CancellationToken cancellationToken);
     }
