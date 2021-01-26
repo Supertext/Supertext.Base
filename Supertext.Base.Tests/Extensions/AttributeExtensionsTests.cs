@@ -92,7 +92,7 @@ namespace Supertext.Base.Tests.Extensions
             }
         }
 
-        [AttributeUsage(AttributeTargets.Field)]
+        [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
         private class TestEnumAttribute : Attribute
         {
             public string StringValue { get; }
@@ -110,6 +110,15 @@ namespace Supertext.Base.Tests.Extensions
         private enum TestEnum
         {
             [TestEnum("test-value-1")]
+            TestValue1,
+
+            TestValue2
+        }
+
+        private enum MultipleTestEnum
+        {
+            [TestEnum("test-value-1")]
+            [TestEnum("test-value-2")]
             TestValue1,
 
             TestValue2
@@ -173,6 +182,36 @@ namespace Supertext.Base.Tests.Extensions
             }
 
             Assert.Fail("The expected exception was not thrown.");
+        }
+
+        [TestMethod]
+        public void GetAttributesOfType_On_Enum_Returns_Expected_Values()
+        {
+            // Arrange
+            const MultipleTestEnum multipleTestEnum = MultipleTestEnum.TestValue1;
+
+            // Act
+            var vals = multipleTestEnum.GetAttributesOfType<TestEnumAttribute>();
+            
+            // Assert
+            vals.Should().NotBeNull();
+            vals.Count().Should().Be(2);
+            vals.SingleOrDefault(val => val.StringValue == "test-value-1").Should().NotBeNull();
+            vals.SingleOrDefault(val => val.StringValue == "test-value-2").Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public void GetAttributesOfType_On_Enum_Returns_Empty_Collection_When_None_Specified()
+        {
+            // Arrange
+            const MultipleTestEnum multipleTestEnum = MultipleTestEnum.TestValue2;
+
+            // Act
+            var vals = multipleTestEnum.GetAttributesOfType<TestEnumAttribute>();
+
+            // Assert
+            vals.Should().NotBeNull();
+            vals.Should().BeEmpty();
         }
 
         [TestMethod]
