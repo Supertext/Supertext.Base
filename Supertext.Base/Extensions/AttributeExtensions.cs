@@ -54,6 +54,22 @@ namespace Supertext.Base.Extensions
         }
 
         /// <summary>
+        /// Gets a collection of attributes on an enum field value.
+        /// </summary>
+        /// <typeparam name="T">The type of the attribute you want to retrieve.</typeparam>
+        /// <param name="enumVal">The enum value.</param>
+        /// <returns>The attributes of type T that exists on the enum value.</returns>
+        /// <example><![CDATA[string desc = myEnumVariable.GetAttributesOfType<DescriptionAttribute>().Description;]]></example>
+        public static IEnumerable<T> GetAttributesOfType<T>(this Enum enumVal) where T : Attribute
+        {
+            return enumVal.GetType()
+                          .GetMember(enumVal.ToString())
+                          .FirstOrDefault()
+                          ?.GetCustomAttributes(typeof(T), false)
+                          .Cast<T>();
+        }
+
+        /// <summary>
         /// Returns the values of attributes for a class.
         /// </summary>
         /// <example>
