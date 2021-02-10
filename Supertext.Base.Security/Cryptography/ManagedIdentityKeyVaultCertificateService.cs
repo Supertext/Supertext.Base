@@ -14,19 +14,18 @@ namespace Supertext.Base.Security.Cryptography
     {
 
         private readonly string _keyVaultEndpoint;
-        private readonly string _certificateName;
 
-        public ManagedIdentityKeyVaultCertificateService(string keyVaultEndpoint, string certificateName)
+        public ManagedIdentityKeyVaultCertificateService(string keyVaultEndpoint)
         {
             Validate.NotEmpty(keyVaultEndpoint, nameof(keyVaultEndpoint));
-            Validate.NotEmpty(certificateName, nameof(certificateName));
 
             _keyVaultEndpoint = keyVaultEndpoint;
-            _certificateName = certificateName;
         }
 
-        public async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificatesFromKeyVault()
+        public async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificatesFromKeyVaultAsync(string certificateName)
         {
+            Validate.NotEmpty(certificateName, nameof(certificateName));
+
             var credential = new DefaultAzureCredential();
             var keyVaultUri = new Uri(_keyVaultEndpoint);
 
@@ -36,24 +35,24 @@ namespace Supertext.Base.Security.Cryptography
 
             (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = (null, null);
 
-            var certificateItems = GetAllEnabledCertificateVersions(certificateClient);
+            var certificateItems = GetAllEnabledCertificateVersions(certificateClient, certificateName);
             var item = certificateItems.FirstOrDefault();
             if (item != null)
             {
-                certs.ActiveCertificate = await GetCertificateAsync(secretClient, _certificateName, item.Version);
+                certs.ActiveCertificate = await GetCertificateAsync(secretClient, certificateName, item.Version);
             }
 
             if (certificateItems.Count > 1)
             {
-                certs.SecondaryCertificate = await GetCertificateAsync(secretClient, _certificateName, certificateItems[1].Version);
+                certs.SecondaryCertificate = await GetCertificateAsync(secretClient, certificateName, certificateItems[1].Version);
             }
 
             return certs;
         }
 
-        private List<CertificateProperties> GetAllEnabledCertificateVersions(CertificateClient certificateClient)
+        private List<CertificateProperties> GetAllEnabledCertificateVersions(CertificateClient certificateClient, string certificateName)
         {
-            var certificateVersions = certificateClient.GetPropertiesOfCertificateVersions(_certificateName);
+            var certificateVersions = certificateClient.GetPropertiesOfCertificateVersions(certificateName);
 
             return certificateVersions
                    .Where(certVersion => certVersion.Enabled.HasValue && certVersion.Enabled.Value)
