@@ -63,9 +63,12 @@ namespace Supertext.Base.Hosting.Scheduling
 
         private void Cleanup(Guid jobId)
         {
-            _scheduledJobs[jobId].CancellationTokenSource.Cancel();
-            _scheduledJobs[jobId].Timer.Dispose();
-            _scheduledJobs.Remove(jobId);
+            if(_scheduledJobs.ContainsKey(jobId))
+            {
+                _scheduledJobs[jobId].CancellationTokenSource.Cancel();
+                _scheduledJobs[jobId].Timer.Dispose();
+                _scheduledJobs.Remove(jobId);
+            }
         }
 
         private void ExecuteJob(object state)
