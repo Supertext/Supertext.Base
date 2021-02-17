@@ -2,7 +2,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using Supertext.Base.Common;
-using Supertext.Base.Extensions;
 using Supertext.Base.Security.Cryptography.Hashing.Salt;
 using Supertext.Base.Security.Hashing;
 
