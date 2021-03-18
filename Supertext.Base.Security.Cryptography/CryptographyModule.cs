@@ -14,7 +14,7 @@ namespace Supertext.Base.Security.Cryptography
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<SaltGenerator>().As<ISaltGenerator>();
-            builder.RegisterType<Sha256Hasher>().As<ISha256Hasher>();
+            builder.RegisterType<Sha256Hasher>().As<ISha256Hasher>().As<ISha256InternalHasher>();
             builder.RegisterType<Sha256HashValidator>().As<ISha256HashValidator>();
             builder.RegisterType<AesEncryptor>().As<IAesEncryptor>();
         }
