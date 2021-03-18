@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Supertext.Base.Authentication
@@ -16,12 +15,6 @@ namespace Supertext.Base.Authentication
     /// </remarks>
     public interface IProtectedHttpRequestMessageFactory
     {
-        [Obsolete("Use CreateHttpRequestMessageWithTokenClientCredentials instead.")]
-        Task<HttpRequestMessage> CreateHttpRequestMessageProtectedWithBearerToken(HttpMethod method,
-                                                                                  string requestUri,
-                                                                                  HttpContent content,
-                                                                                  string clientId);
-
         /// <summary>
         /// Creates an HttpRequestMessage with obtaining a bearer token with client credentials (client id and client secret).
         /// </summary>
