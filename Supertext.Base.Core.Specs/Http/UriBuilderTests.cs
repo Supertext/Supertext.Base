@@ -35,7 +35,7 @@ namespace Supertext.Base.Net.Specs.Http
         public void CreateAbsoluteUri_UrlWithSubdomainAndApiMethodIsGiven_Created()
         {
             const string relative = "api/v1/order/1234";
-            SetupHttpContext("https://www.cat.supertext.ch/api/v1/order/1234");
+            SetupHttpContext("https://www.cat.supertext.ch/api/v1/person/42");
 
             var result = _testee.CreateAbsoluteUri(relative);
 
@@ -46,7 +46,7 @@ namespace Supertext.Base.Net.Specs.Http
         public void CreateAbsoluteUri_UrlWithQueryStringIsGiven_Created()
         {
             const string relative = "/api/v1/order?orderId=123123";
-            SetupHttpContext("https://dev.supertext.ch/api/v1/order?orderId=123123");
+            SetupHttpContext("https://dev.supertext.ch/api/v1/quote?ordertype=23");
 
             var result = _testee.CreateAbsoluteUri(relative);
 
