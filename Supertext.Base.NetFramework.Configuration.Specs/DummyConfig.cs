@@ -21,5 +21,8 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
 
         [SettingsKey("supertextSectionConfig")]
         public string SupertextSectionConfig { get; set; }
+
+        [KeyVaultSecret("Super-Secret")]
+        public string SuperSecret { get; set; }
     }
 }

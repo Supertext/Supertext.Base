@@ -40,6 +40,13 @@ namespace Supertext.Base.NetFramework.Configuration
                     continue;
                 }
 
+                var keyVaultKey = propertyInfo.GetCustomAttributes<KeyVaultSecretAttribute>().SingleOrDefault();
+                if (keyVaultKey != null)
+                {
+                    SetValueIfSome(propertyInfo, configInstance, keyVaultKey.SecretName);
+                    continue;
+                }
+
                 if (SettingConnectionStringWhenAvailable(propertyInfo, configInstance))
                 {
                     continue;
