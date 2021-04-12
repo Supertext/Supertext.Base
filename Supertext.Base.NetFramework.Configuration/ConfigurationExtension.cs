@@ -36,20 +36,24 @@ namespace Supertext.Base.NetFramework.Configuration
                 var settingKey = propertyInfo.GetCustomAttributes<SettingsKeyAttribute>().SingleOrDefault();
                 if (settingKey != null)
                 {
-                    SetValueIfSome(propertyInfo, configInstance, settingKey.AppSettingsKey);
+                    if (SetValueIfSome(propertyInfo, configInstance, settingKey.AppSettingsKey))
+                    {
+                        continue;
+                    }
+                }
+
+                if (SettingConnectionStringWhenAvailable(propertyInfo, configInstance))
+                {
                     continue;
                 }
 
                 var keyVaultKey = propertyInfo.GetCustomAttributes<KeyVaultSecretAttribute>().SingleOrDefault();
                 if (keyVaultKey != null)
                 {
-                    SetValueIfSome(propertyInfo, configInstance, keyVaultKey.SecretName);
-                    continue;
-                }
-
-                if (SettingConnectionStringWhenAvailable(propertyInfo, configInstance))
-                {
-                    continue;
+                    if (SetValueIfSome(propertyInfo, configInstance, keyVaultKey.SecretName))
+                    {
+                        continue;
+                    }
                 }
 
                 SetValueIfSome(propertyInfo, configInstance, propertyInfo.Name);
@@ -72,7 +76,7 @@ namespace Supertext.Base.NetFramework.Configuration
             return false;
         }
 
-        private static void SetValueIfSome(PropertyInfo propertyInfo, object configInstance,
+        private static bool SetValueIfSome(PropertyInfo propertyInfo, object configInstance,
             string appsettingsKey)
         {
             var valueOption = GetSettingsValue(appsettingsKey);
@@ -80,6 +84,8 @@ namespace Supertext.Base.NetFramework.Configuration
             {
                 propertyInfo.SetValue(configInstance, Convert(valueOption.Value, propertyInfo.PropertyType));
             }
+
+            return valueOption.IsSome;
         }
 
         private static object Convert(object value, Type targetType)
