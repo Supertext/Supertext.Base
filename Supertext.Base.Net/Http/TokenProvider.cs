@@ -34,8 +34,8 @@ namespace Supertext.Base.Net.Http
 
         private async Task<string> RequestClientCredentialsTokenAsync(string clientId)
         {
-            var client = _httpClientFactory.CreateClient(nameof(ProtectedHttpRequestMessageFactory));
-            var disco = await GetDiscoveryDocument(client);
+            var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
+            var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new ClientCredentialsTokenRequest
@@ -61,8 +61,8 @@ namespace Supertext.Base.Net.Http
 
         private async Task<string> RequestDelegationTokenAsync(string clientId, string sub)
         {
-            var client = _httpClientFactory.CreateClient(nameof(ProtectedHttpRequestMessageFactory));
-            var disco = await GetDiscoveryDocument(client);
+            var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
+            var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new TokenRequest
@@ -87,7 +87,7 @@ namespace Supertext.Base.Net.Http
             }
         }
 
-        private async Task<DiscoveryDocumentResponse> GetDiscoveryDocument(HttpClient client)
+        private async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(HttpClient client)
         {
             var disco = await client.GetDiscoveryDocumentAsync(_identity.Authority).ConfigureAwait(false);
             if (disco.IsError)
