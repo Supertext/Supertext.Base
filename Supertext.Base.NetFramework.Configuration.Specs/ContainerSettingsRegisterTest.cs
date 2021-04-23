@@ -29,6 +29,7 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
             config.AnotherInt.Should().Be(9712);
             config.DoubleValue.Should().Be(0);
             config.ConnectionString.Should().Be("bla");
+            config.SuperSecret.Should().Be("very secret value");
         }
     }
 }

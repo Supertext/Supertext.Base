@@ -9,6 +9,9 @@
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -20,6 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.Net\Supertext.Base.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Http\" />
   </ItemGroup>
 
 </Project>
