@@ -33,9 +33,9 @@ namespace Supertext.Base.NetFramework.Configuration
         {
             var appSetting = AppSettings[key];
 
-            return appSetting != null && fallbackToAppSettings
+            return appSetting == null && fallbackToAppSettings
                        ? ConfigurationManager.AppSettings[key]
-                       : null;
+                       : appSetting;
         }
     }
 }
