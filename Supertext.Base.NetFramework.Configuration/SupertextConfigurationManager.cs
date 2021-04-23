@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using System.Configuration;
 
 namespace Supertext.Base.NetFramework.Configuration
 {
@@ -26,6 +27,15 @@ namespace Supertext.Base.NetFramework.Configuration
 
                 return _allSettings;
             }
+        }
+
+        public static string GetAppSetting(string key, bool fallbackToAppSettings = true)
+        {
+            var appSettings = AppSettings[key];
+
+            return appSettings != null && fallbackToAppSettings
+                       ? ConfigurationManager.AppSettings[key]
+                       : null;
         }
     }
 }
