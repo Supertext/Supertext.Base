@@ -31,9 +31,9 @@ namespace Supertext.Base.NetFramework.Configuration
 
         public static string GetAppSetting(string key, bool fallbackToAppSettings = true)
         {
-            var appSettings = AppSettings[key];
+            var appSetting = AppSettings[key];
 
-            return appSettings != null && fallbackToAppSettings
+            return appSetting != null && fallbackToAppSettings
                        ? ConfigurationManager.AppSettings[key]
                        : null;
         }
