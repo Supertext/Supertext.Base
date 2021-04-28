@@ -19,7 +19,7 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
         public void AppSettings_AppSettingUnavailable_ReturnsNull()
         {
             var appSettings = Configuration.SupertextConfigurationManager.AppSettings;
-            appSettings["UnavailableKey"].Should().Be(null);
+            appSettings["UnavailableKey"].Should().BeNull();
         }
 
         [TestMethod]
@@ -40,14 +40,14 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
         public void GetAppSetting_AppSettingAvailableInFallBackConfigurationManagerButFallbackSetToFalse_ReturnsNull()
         {
             var appSetting = Configuration.SupertextConfigurationManager.GetAppSetting("SomeInt", false);
-            appSetting.Should().Be(null);
+            appSetting.Should().BeNull();
         }
 
         [TestMethod]
         public void GetAppSetting_AppSettingUnavailable_ReturnsNull()
         {
             var appSetting = Configuration.SupertextConfigurationManager.GetAppSetting("UnavailableKey");
-            appSetting.Should().Be(null);
+            appSetting.Should().BeNull();
         }
     }
 }
