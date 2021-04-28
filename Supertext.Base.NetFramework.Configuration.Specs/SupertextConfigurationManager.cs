@@ -1,5 +1,4 @@
-﻿using Autofac;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Supertext.Base.NetFramework.Configuration.Specs
