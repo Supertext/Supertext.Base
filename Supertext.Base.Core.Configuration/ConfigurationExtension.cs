@@ -28,6 +28,17 @@ namespace Supertext.Base.Core.Configuration
         }
 
         public static void RegisterAllConfigurationsInAssembly(this ContainerBuilder builder,
+                                                               Assembly assembly)
+        {
+            Validate.NotNull(assembly, nameof(assembly));
+
+            builder.RegisterAssemblyTypes(assembly)
+                   .Where(t => t.GetTypeInfo().IsAssignableTo<Base.Configuration.IConfiguration>())
+                   .AsSelf()
+                   .OnActivating(setting => SettingActivating(setting));
+        }
+
+        public static void RegisterAllConfigurationsInAssembly(this ContainerBuilder builder,
                                                                IConfiguration configuration,
                                                                Assembly assembly)
         {
@@ -38,6 +49,12 @@ namespace Supertext.Base.Core.Configuration
                    .Where(t => t.GetTypeInfo().IsAssignableTo<Base.Configuration.IConfiguration>())
                    .AsSelf()
                    .OnActivating(setting => SettingActivating(setting, configuration));
+        }
+
+        private static void SettingActivating(IActivatingEventArgs<object> args)
+        {
+            var configuration = args.Context.Resolve<IConfiguration>();
+            SettingActivating(args, configuration);
         }
 
         private static void SettingActivating(IActivatingEventArgs<object> args, IConfiguration configuration)
