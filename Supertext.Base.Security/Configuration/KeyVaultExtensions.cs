@@ -25,7 +25,8 @@ namespace Supertext.Base.Security.Configuration
         ///     "ClientSecret": "324234234-2222-4545-BF9F-df43534954",
         ///     "AzureADCertThumbprint": "456a7sad6f54fasdf787a9sdf6",
         ///     "CertificateName": "kv-dev-supertext-ch"
-        /// }
+        /// },
+        /// "IsUsingManagedIdentity": false
         /// </summary>
         /// <param name="hostBuilder"></param>
         /// <returns></returns>
@@ -35,7 +36,7 @@ namespace Supertext.Base.Security.Configuration
                                                          {
                                                              if (context.HostingEnvironment.IsStaging() || context.HostingEnvironment.IsProduction())
                                                              {
-                                                                 ConfigureConfigWithKeyVaultValues(config);
+                                                                 config.ConfigureConfigWithKeyVaultSecrets();
                                                              }
                                                              else if (context.HostingEnvironment.IsDevelopment())
                                                              {
@@ -44,7 +45,18 @@ namespace Supertext.Base.Security.Configuration
                                                          });
         }
 
-        private static void ConfigureConfigWithKeyVaultValues(IConfigurationBuilder config)
+        /// <summary>
+        /// Adds secrets from the key vault to the IConfigurationBuilder.
+        ///
+        /// Configuration in appsettings.json is mandatory as:
+        /// "KeyVault": {
+        ///     "ReadSecretsFromKeyVault": true,
+        ///     "KeyVaultName": "kv-ne-dev",
+        /// },
+        /// "IsUsingManagedIdentity": true
+        /// </summary>
+        /// <param name="config"></param>
+        public static void ConfigureConfigWithKeyVaultSecrets(this IConfigurationBuilder config)
         {
             var builtConfig = config.Build();
             var vaultConfigSection = builtConfig.GetSection("KeyVault");
