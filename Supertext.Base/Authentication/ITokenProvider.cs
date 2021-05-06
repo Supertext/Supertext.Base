@@ -18,5 +18,7 @@ namespace Supertext.Base.Authentication
         /// Also register Supertext.Base.Net.NetModule with Autofac.
         /// </remarks>
         Task<string> RetrieveAccessTokenAsync(string clientId, string delegationSub = "");
+
+        Task<TokenResponseDto> RetrieveTokensAsync(string clientId, string delegationSub = "");
     }
 }

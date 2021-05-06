@@ -22,17 +22,29 @@ namespace Supertext.Base.Net.Http
             _logger = logger;
         }
 
-        public Task<string> RetrieveAccessTokenAsync(string clientId, string delegationSub = "")
+        public async Task<string> RetrieveAccessTokenAsync(string clientId, string delegationSub = "")
         {
             if (String.IsNullOrWhiteSpace(delegationSub))
             {
-                return RequestClientCredentialsTokenAsync(clientId);
+                return (await RequestClientCredentialsTokenAsync(clientId).ConfigureAwait(false)).AccessToken;
             }
 
-            return RequestDelegationTokenAsync(clientId, delegationSub);
+            return (await RequestDelegationTokenAsync(clientId, delegationSub).ConfigureAwait(false)).AccessToken;
         }
 
-        private async Task<string> RequestClientCredentialsTokenAsync(string clientId)
+        public async Task<TokenResponseDto> RetrieveTokensAsync(string clientId, string delegationSub = "")
+        {
+            if (String.IsNullOrWhiteSpace(delegationSub))
+            {
+                var credentialsResponse = await RequestClientCredentialsTokenAsync(clientId).ConfigureAwait(false);
+                return MapTokenResponse(credentialsResponse);
+            }
+
+            var response = await RequestDelegationTokenAsync(clientId, delegationSub).ConfigureAwait(false);
+            return MapTokenResponse(response);
+        }
+
+        private async Task<TokenResponse> RequestClientCredentialsTokenAsync(string clientId)
         {
             var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
             var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
@@ -55,11 +67,11 @@ namespace Supertext.Base.Net.Http
                     throw new Exception(errorMessage);
                 }
 
-                return tokenResponse.AccessToken;
+                return tokenResponse;
             }
         }
 
-        private async Task<string> RequestDelegationTokenAsync(string clientId, string sub)
+        private async Task<TokenResponse> RequestDelegationTokenAsync(string clientId, string sub)
         {
             var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
             var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
@@ -83,7 +95,7 @@ namespace Supertext.Base.Net.Http
                     throw new Exception(errorMessage);
                 }
 
-                return tokenResponse.AccessToken;
+                return tokenResponse;
             }
         }
 
@@ -97,6 +109,21 @@ namespace Supertext.Base.Net.Http
             }
 
             return disco;
+        }
+
+        private TokenResponseDto MapTokenResponse(TokenResponse response)
+        {
+            return new TokenResponseDto
+                   {
+                       AccessToken = response.AccessToken,
+                       ErrorDescription = response.ErrorDescription,
+                       ExpiresIn = response.ExpiresIn,
+                       IdentityToken = response.IdentityToken,
+                       IssuedTokenType = response.IssuedTokenType,
+                       RefreshToken = response.RefreshToken,
+                       Scope = response.Scope,
+                       TokenType = response.TokenType
+                   };
         }
     }
 }
