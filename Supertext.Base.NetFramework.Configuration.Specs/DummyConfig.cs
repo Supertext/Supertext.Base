@@ -1,4 +1,5 @@
 ﻿using Supertext.Base.Configuration;
+using System.Collections.Generic;
 
 namespace Supertext.Base.NetFramework.Configuration.Specs
 {
@@ -24,5 +25,11 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
 
         [KeyVaultSecret("Super-Secret")]
         public string SuperSecret { get; set; }
+
+        [JsonStructureKey("aJsonStructureWithInts")]
+        public IEnumerable<KeyValuePair<string, int>> JsonWithInts { get; set; }
+
+        [JsonStructureKey("aJsonStructureWithStrings")]
+        public IEnumerable<KeyValuePair<string, string>> JsonWithStrings { get; set; }
     }
 }
