@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
+using Newtonsoft.Json;
 using Supertext.Base.Common;
 using Supertext.Base.Configuration;
 
@@ -56,6 +59,15 @@ namespace Supertext.Base.NetFramework.Configuration
                     }
                 }
 
+                var jsonStructureKey = propertyInfo.GetCustomAttributes<JsonStructureKeyAttribute>().SingleOrDefault();
+                if (jsonStructureKey != null)
+                {
+                    if (DeserializeAndSetValueIfSome(propertyInfo, configInstance, jsonStructureKey.AppSettingsKey))
+                    {
+                        continue;
+                    }
+                }
+
                 SetValueIfSome(propertyInfo, configInstance, propertyInfo.Name);
             }
         }
@@ -76,8 +88,37 @@ namespace Supertext.Base.NetFramework.Configuration
             return false;
         }
 
-        private static bool SetValueIfSome(PropertyInfo propertyInfo, object configInstance,
-            string appsettingsKey)
+        private static bool DeserializeAndSetValueIfSome(PropertyInfo propertyInfo, object configInstance, string appsettingsKey)
+        {
+            var valueOption = GetSettingsValue(appsettingsKey);
+            if (valueOption.IsSome)
+            {
+                var errorMessage = $"{propertyInfo.Name} has been decorated with {nameof(JsonStructureKeyAttribute)} and its type must therefore be implementation of IEnumerable<KeyValuePair<string, T>>.";
+
+                if (!typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType))
+                {
+                    throw new ArgumentException(errorMessage);
+                }
+
+                var typeKeyValuePair = propertyInfo.PropertyType.GetGenericArguments()[0];
+                var keyValuePair = Activator.CreateInstance(typeKeyValuePair);
+                var genericsArgs = keyValuePair.GetType().GetGenericArguments();
+                if (genericsArgs[0] != typeof(string))
+                {
+                    throw new ArgumentException(errorMessage);
+                }
+
+                var genericKeyValuePair = typeof(Dictionary<,>);
+                var constructedType = genericKeyValuePair.MakeGenericType(genericsArgs);
+
+                var deserializedValue = JsonConvert.DeserializeObject(valueOption.Value.ToString(), constructedType);
+                propertyInfo.SetValue(configInstance, deserializedValue);
+            }
+
+            return valueOption.IsSome;
+        }
+
+        private static bool SetValueIfSome(PropertyInfo propertyInfo, object configInstance, string appsettingsKey)
         {
             var valueOption = GetSettingsValue(appsettingsKey);
             if (valueOption.IsSome)
