@@ -93,23 +93,23 @@ namespace Supertext.Base.NetFramework.Configuration
             var valueOption = GetSettingsValue(appsettingsKey);
             if (valueOption.IsSome)
             {
-                var errorMessage = $"{propertyInfo.Name} has been decorated with {nameof(JsonStructureKeyAttribute)} and its type must therefore be implementation of IEnumerable<KeyValuePair<string, T>>.";
+                var errorMessage = $"{propertyInfo.Name} has been decorated with {nameof(JsonStructureKeyAttribute)} and its type must therefore be implementation of Dictionary<string, T>.";
 
-                if (!typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType))
+                if (!propertyInfo.PropertyType.IsGenericType || propertyInfo.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
                 {
                     throw new ArgumentException(errorMessage);
                 }
 
-                var typeKeyValuePair = propertyInfo.PropertyType.GetGenericArguments()[0];
-                var keyValuePair = Activator.CreateInstance(typeKeyValuePair);
-                var genericsArgs = keyValuePair.GetType().GetGenericArguments();
+                var typeDictionary = propertyInfo.PropertyType;
+                var dictionary = Activator.CreateInstance(typeDictionary);
+                var genericsArgs = dictionary.GetType().GetGenericArguments();
                 if (genericsArgs[0] != typeof(string))
                 {
                     throw new ArgumentException(errorMessage);
                 }
 
-                var genericKeyValuePair = typeof(Dictionary<,>);
-                var constructedType = genericKeyValuePair.MakeGenericType(genericsArgs);
+                var genericDictionary = typeof(Dictionary<,>);
+                var constructedType = genericDictionary.MakeGenericType(genericsArgs);
 
                 var deserializedValue = JsonConvert.DeserializeObject(valueOption.Value.ToString(), constructedType);
                 propertyInfo.SetValue(configInstance, deserializedValue);
