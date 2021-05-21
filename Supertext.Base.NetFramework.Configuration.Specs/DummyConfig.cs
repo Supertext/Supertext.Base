@@ -27,9 +27,9 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
         public string SuperSecret { get; set; }
 
         [JsonStructureKey("aJsonStructureWithInts")]
-        public IEnumerable<KeyValuePair<string, int>> JsonWithInts { get; set; }
+        public Dictionary<string, int> JsonWithInts { get; set; }
 
         [JsonStructureKey("aJsonStructureWithStrings")]
-        public IEnumerable<KeyValuePair<string, string>> JsonWithStrings { get; set; }
+        public Dictionary<string, string> JsonWithStrings { get; set; }
     }
 }
