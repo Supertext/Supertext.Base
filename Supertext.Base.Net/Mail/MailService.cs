@@ -82,6 +82,10 @@ namespace Supertext.Base.Net.Mail
                         attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
                         await client.SendAsync(msg).ConfigureAwait(false);
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Sending an email to {mail.To.Email} with subject '{mail.Subject}' failed");
+                    }
                     finally
                     {
                         // dispose of each of the attachment streams
