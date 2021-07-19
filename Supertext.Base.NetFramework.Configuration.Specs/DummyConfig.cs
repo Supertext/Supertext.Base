@@ -31,5 +31,8 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
 
         [JsonStructureKey("aJsonStructureWithStrings")]
         public Dictionary<string, string> JsonWithStrings { get; set; }
+
+        [DictionaryPrefix("testPrefix")]
+        public Dictionary<string, string> Dictionary { get; set; }
     }
 }
