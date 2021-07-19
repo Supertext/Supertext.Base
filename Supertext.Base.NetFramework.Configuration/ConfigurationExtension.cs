@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using Autofac;
+﻿using Autofac;
 using Autofac.Core;
 using Newtonsoft.Json;
 using Supertext.Base.Common;
 using Supertext.Base.Configuration;
+using Supertext.Base.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Configuration;
+using System.Linq;
+using System.Reflection;
 
 namespace Supertext.Base.NetFramework.Configuration
 {
@@ -68,6 +69,15 @@ namespace Supertext.Base.NetFramework.Configuration
                     }
                 }
 
+                var dictionaryPrefix = propertyInfo.GetCustomAttributes<DictionaryPrefixAttribute>().SingleOrDefault();
+                if (dictionaryPrefix != null)
+                {
+                    if (CollectIntoDictionaryIfSome(propertyInfo, configInstance, dictionaryPrefix))
+                    {
+                        continue;
+                    }
+                }
+
                 SetValueIfSome(propertyInfo, configInstance, propertyInfo.Name);
             }
         }
@@ -118,6 +128,31 @@ namespace Supertext.Base.NetFramework.Configuration
             return valueOption.IsSome;
         }
 
+        private static bool CollectIntoDictionaryIfSome(PropertyInfo propertyInfo, object instance, DictionaryPrefixAttribute dictionaryPrefixAttribute)
+        {
+            // Convert each value to match the target type.
+            var errorMessage = $"{propertyInfo.Name} has been decorated with {nameof(DictionaryPrefixAttribute)} and its type must therefore be implementation of Dictionary<string, string>.";
+
+            if (!propertyInfo.PropertyType.IsGenericType || propertyInfo.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
+            {
+                throw new ArgumentException(errorMessage);
+            }
+
+            var genericsArgs = propertyInfo.PropertyType.GetGenericArguments();
+            if (genericsArgs[0] != typeof(string) || genericsArgs[1] != typeof(string))
+            {
+                throw new ArgumentException(errorMessage);
+            }
+
+            var optSettingsValues = GetSettingsValues(dictionaryPrefixAttribute.AppSettingPrefix);
+            if (optSettingsValues.IsSome)
+            {
+                propertyInfo.SetValue(instance, optSettingsValues.Value);
+            }
+
+            return optSettingsValues.IsSome;
+        }
+
         private static bool SetValueIfSome(PropertyInfo propertyInfo, object configInstance, string appsettingsKey)
         {
             var valueOption = GetSettingsValue(appsettingsKey);
@@ -151,6 +186,27 @@ namespace Supertext.Base.NetFramework.Configuration
 
             Console.WriteLine($"Key {settingsKey} not available");
             return Option<object>.None();
+        }
+
+        private static Option<Dictionary<string, string>> GetSettingsValues(string settingsPrefix)
+        {
+            Dictionary<string, string> AddFromNameValueCollection(NameValueCollection appSettings)
+            {
+                return appSettings.AllKeys.Where(key => key.StartsWith(settingsPrefix))
+                                  .ToDictionary(keyWithPrefix => keyWithPrefix, keyWithPrefix => appSettings[keyWithPrefix]);
+            }
+
+            var applicableSettings = AddFromNameValueCollection(ConfigurationManager.AppSettings)
+                                     .Concat(AddFromNameValueCollection(SupertextConfigurationManager.AppSettings))
+                                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            if (applicableSettings.None())
+            {
+                Console.WriteLine($"Key {settingsPrefix} not available");
+                return Option<Dictionary<string, string>>.None();
+            }
+
+            return Option<Dictionary<string, string>>.Some(applicableSettings);
         }
 
         private static Option<object> GetConnectionStringValue(string connectionStringKey)
