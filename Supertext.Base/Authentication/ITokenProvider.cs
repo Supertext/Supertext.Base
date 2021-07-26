@@ -10,7 +10,7 @@ namespace Supertext.Base.Authentication
         /// </summary>
         /// <param name="clientId"></param>
         /// <param name="delegationSub"></param>
-        /// <param name="alternativeAuthority"></param>
+        /// <param name="alternativeAuthorityDetails"></param>
         /// <returns></returns>
         /// <remarks>
         /// In appsettings.json Identity with ApiResourceDefinitions must be configured as well as registered
@@ -18,8 +18,8 @@ namespace Supertext.Base.Authentication
         /// 
         /// Also register Supertext.Base.Net.NetModule with Autofac.
         /// </remarks>
-        Task<string> RetrieveAccessTokenAsync(string clientId, string delegationSub = "", string alternativeAuthority = null);
+        Task<string> RetrieveAccessTokenAsync(string clientId, string delegationSub = "", AlternativeAuthorityDetails alternativeAuthorityDetails = null);
 
-        Task<TokenResponseDto> RetrieveTokensAsync(string clientId, string delegationSub = "", string alternativeAuthority = null);
+        Task<TokenResponseDto> RetrieveTokensAsync(string clientId, string delegationSub = "", AlternativeAuthorityDetails alternativeAuthorityDetails = null);
     }
 }
