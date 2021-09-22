@@ -13,6 +13,13 @@ namespace Supertext.Base.Scheduling
             Id = id;
         }
 
+        /// <summary>
+        /// Job
+        /// </summary>
+        /// <param name="id">Must be unique. Jobs can be cancelled with that id.</param>
+        /// <param name="dueTime"></param>
+        /// <param name="payload"></param>
+        /// <param name="workItem"></param>
         public Job(Guid id, TimeSpan dueTime, TPayload payload,
                    Func<IFactory, TPayload, CancellationToken, Task> workItem)
         {
@@ -27,6 +34,9 @@ namespace Supertext.Base.Scheduling
             WorkItem = workItem;
         }
 
+        /// <summary>
+        /// Unique Id to schedule a job.
+        /// </summary>
         public Guid Id { get; }
 
         public TimeSpan DueTime { get; }
