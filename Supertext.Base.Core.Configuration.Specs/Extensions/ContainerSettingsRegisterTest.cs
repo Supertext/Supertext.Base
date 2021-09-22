@@ -96,5 +96,16 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
 
             identity.Authority.Should().Be("Super authority");
         }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_ConfigDerivesFormBaseClass_AttributesAreAvailable()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<InheritedConfig>();
+
+            config.Url.Should().Be("localhost");
+        }
     }
 }
