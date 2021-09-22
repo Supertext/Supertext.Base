@@ -126,7 +126,8 @@ namespace Supertext.Base.Factory
 
             foreach (var registration in _componentContext.ComponentRegistry.Registrations
                                                           .Where(x => x.Services.OfType<TypedService>()
-                                                                       .Any(y => y.ServiceType == typeof(T))))
+                                                                       .Any(y => y.ServiceType == typeof(T) ||
+                                                                                 typeof(T).IsAssignableFrom(y.ServiceType))))
             {
                 var attribute = registration.Activator.LimitType.GetCustomAttribute<ComponentKeyAttribute>(false);
                 if (attribute != null)

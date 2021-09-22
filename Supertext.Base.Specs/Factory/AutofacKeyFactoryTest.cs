@@ -100,7 +100,7 @@ namespace Supertext.Base.Specs.Factory
 
             testee.Invoking(factory => factory.CreateComponent("dependencies")).Should().Throw<DependencyResolutionException>();
         }
-        
+
         [TestMethod]
         public void CreateComponent_DerivedConfigTypeHasComponentKey_ThenResolved()
         {
