@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.Azure.KeyVault;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Azure.Identity;
+using Azure.Security.KeyVault.Certificates;
+using Azure.Security.KeyVault.Secrets;
 
 namespace Supertext.Base.Security.Cryptography
 {
     public class KeyVaultCertificateService : ICertificateService
     {
+        private readonly string _tenantId;
         private readonly string _vaultAddress;
         private readonly string _vaultClientId;
         private readonly string _vaultClientSecret;
 
-        public KeyVaultCertificateService(string vaultAddress, string vaultClientId, string vaultClientSecret)
+        public KeyVaultCertificateService(string tenantId, string vaultAddress, string vaultClientId, string vaultClientSecret)
         {
+            _tenantId = tenantId;
             _vaultAddress = vaultAddress;
             _vaultClientId = vaultClientId;
             _vaultClientSecret = vaultClientSecret;
@@ -21,28 +24,25 @@ namespace Supertext.Base.Security.Cryptography
 
         public X509Certificate2 GetCertificateFromKeyVault(string vaultCertificateName)
         {
-            using (var keyVaultClient = new KeyVaultClient(AuthenticationCallback))
-            {
-                var certBundle = keyVaultClient.GetCertificateAsync(_vaultAddress, vaultCertificateName)
-                                               .GetAwaiter()
-                                               .GetResult();
-                var certContent = keyVaultClient.GetSecretAsync(certBundle.SecretIdentifier.Identifier)
-                                                .GetAwaiter()
-                                                .GetResult();
-                var certBytes = Convert.FromBase64String(certContent.Value);
-
-                return new X509Certificate2(certBytes, String.Empty, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
-            }
+            return RetrieveX509Certificate2(vaultCertificateName)
+                   .GetAwaiter()
+                   .GetResult();
         }
 
-        private async Task<string> AuthenticationCallback(string authority, string resource, string scope)
+        private async Task<X509Certificate2> RetrieveX509Certificate2(string vaultCertificateName)
         {
-            var clientCredential = new ClientCredential(_vaultClientId, _vaultClientSecret);
+            var credential = new ClientSecretCredential(_tenantId, _vaultClientId, _vaultClientSecret);
+            var secretClient = new SecretClient(new Uri(_vaultAddress), credential);
+            var certificateClient = new CertificateClient(new Uri(_vaultAddress), credential);
 
-            var context = new AuthenticationContext(authority, TokenCache.DefaultShared);
-            var result = await context.AcquireTokenAsync(resource, clientCredential);
+            var certBundle = await certificateClient.GetCertificateAsync(vaultCertificateName)
+                                                    .ConfigureAwait(false);
+            var identifier = new KeyVaultSecretIdentifier(certBundle.Value.SecretId);
+            var secretResponse = await secretClient.GetSecretAsync(identifier.Name, identifier.Version);
+            var secret = secretResponse.Value;
+            var privateKeyBytes = Convert.FromBase64String(secret.Value);
 
-            return result.AccessToken;
+            return new X509Certificate2(privateKeyBytes, String.Empty, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
         }
     }
 }
