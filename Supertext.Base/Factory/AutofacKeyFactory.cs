@@ -109,11 +109,25 @@ namespace Supertext.Base.Factory
 
         private IDictionary<TKey, IComponentRegistration> CollectRegistrations()
         {
+            var registrations = GetComponentsWithComponentKeyAttribute();
+            if (registrations.Any())
+            {
+                return registrations;
+            }
+
+            // If nothing can be loaded, try to resolve type and recollect again.
+            _componentContext.TryResolve(typeof(T), out var instance);
+            return GetComponentsWithComponentKeyAttribute();
+        }
+
+        private Dictionary<TKey, IComponentRegistration> GetComponentsWithComponentKeyAttribute()
+        {
             var registrations = new Dictionary<TKey, IComponentRegistration>();
 
             foreach (var registration in _componentContext.ComponentRegistry.Registrations
                                                           .Where(x => x.Services.OfType<TypedService>()
-                                                                       .Any(y => y.ServiceType == typeof(T))))
+                                                                       .Any(y => y.ServiceType == typeof(T) ||
+                                                                                 typeof(T).IsAssignableFrom(y.ServiceType))))
             {
                 var attribute = registration.Activator.LimitType.GetCustomAttribute<ComponentKeyAttribute>(false);
                 if (attribute != null)
@@ -124,16 +138,17 @@ namespace Supertext.Base.Factory
                         {
                             throw new ConfigurationException($"Two default-Components registered for Type={typeof(T)} and Key={attribute.Key}");
                         }
+
                         _defaultComponentAttributeRegistration = registration;
                     }
                     else
                     {
-                        registrations.Add((TKey)attribute.Key, registration);
+                        registrations.Add((TKey) attribute.Key, registration);
                     }
                 }
             }
+
             return registrations;
         }
-
     }
 }

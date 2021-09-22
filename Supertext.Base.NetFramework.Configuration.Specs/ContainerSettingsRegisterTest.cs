@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Supertext.Base.NetFramework.Configuration.Specs
 {
@@ -29,6 +31,32 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
             config.AnotherInt.Should().Be(9712);
             config.DoubleValue.Should().Be(0);
             config.ConnectionString.Should().Be("bla");
+            config.SuperSecret.Should().Be("very secret value");
+
+            config.JsonWithStrings.Should().NotBeNull();
+            config.JsonWithStrings.Should().BeAssignableTo<IEnumerable<KeyValuePair<string, string>>>();
+            config.JsonWithStrings.Count.Should().Be(2);
+            config.JsonWithStrings.SingleOrDefault(kvp => kvp.Key == "Prop1").Should().NotBeNull();
+            config.JsonWithStrings.Single(kvp => kvp.Key == "Prop1").Value.Should().Be("string 1");
+            config.JsonWithStrings.SingleOrDefault(kvp => kvp.Key == "Prop2").Should().NotBeNull();
+            config.JsonWithStrings.Single(kvp => kvp.Key == "Prop2").Value.Should().Be("string 2");
+
+            config.JsonWithInts.Should().NotBeNull();
+            config.JsonWithInts.Should().BeAssignableTo<IEnumerable<KeyValuePair<string, int>>>();
+            config.JsonWithInts.Count.Should().Be(2);
+            config.JsonWithInts.SingleOrDefault(kvp => kvp.Key == "Prop1").Should().NotBeNull();
+            config.JsonWithInts.Single(kvp => kvp.Key == "Prop1").Value.Should().Be(19);
+            config.JsonWithInts.SingleOrDefault(kvp => kvp.Key == "Prop2").Should().NotBeNull();
+            config.JsonWithInts.Single(kvp => kvp.Key == "Prop2").Value.Should().Be(20);
+
+            config.Dictionary.Should().NotBeNull();
+            config.Dictionary.Count.Should().Be(3);
+            config.Dictionary.SingleOrDefault(kvp => kvp.Key == "testPrefix1").Should().NotBeNull();
+            config.Dictionary.Single(kvp => kvp.Key == "testPrefix1").Value.Should().Be("test prefix 1");
+            config.Dictionary.SingleOrDefault(kvp => kvp.Key == "testPrefix2").Should().NotBeNull();
+            config.Dictionary.Single(kvp => kvp.Key == "testPrefix2").Value.Should().Be("test prefix 2");
+            config.Dictionary.SingleOrDefault(kvp => kvp.Key == "testPrefix3").Should().NotBeNull();
+            config.Dictionary.Single(kvp => kvp.Key == "testPrefix3").Value.Should().Be("test prefix 3");
         }
     }
 }

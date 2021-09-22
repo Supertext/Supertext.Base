@@ -44,6 +44,7 @@ namespace Supertext.Base.Security.NWebSec.Web
                                   .MediaSources(GetBasicCspConfigurationFor("media-src", parser))
                                   .FrameSources(GetBasicCspConfigurationFor("frame-src", parser))
                                   .FontSources(GetBasicCspConfigurationFor("font-src", parser))
+                                  .ManifestSources(GetBasicCspConfigurationFor("manifest-src", parser))
                                   .ConnectSources(GetBasicCspConfigurationFor("connect-src", parser))
                                   .FrameAncestors(GetBasicCspConfigurationFor("frame-ancestors", parser))
                                   .BaseUris(GetBasicCspConfigurationFor("base-uri", parser))

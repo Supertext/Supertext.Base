@@ -3,13 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspose.Email;
+using FakeItEasy;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Net.Mail;
-using FakeItEasy;
-using FluentAssertions;
 
-namespace Supertext.Base.Net.Specs
+namespace Supertext.Base.Net.Specs.Mail
 {
     [TestClass]
     public class MailServiceTest

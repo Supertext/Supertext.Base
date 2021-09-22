@@ -1,6 +1,6 @@
 ﻿using Supertext.Base.Configuration;
 
-namespace Supertext.Base.Core.Configuration.Specs
+namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
     [ConfigSection("TestConfig")]
     public class DummyConfig : IConfiguration

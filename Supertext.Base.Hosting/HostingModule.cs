@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Supertext.Base.BackgroundTasks;
 using Supertext.Base.Hosting.Queuing;
+using Supertext.Base.Hosting.Scheduling;
+using Supertext.Base.Scheduling;
 
 namespace Supertext.Base.Hosting
 {
@@ -10,7 +12,13 @@ namespace Supertext.Base.Hosting
         {
             builder.RegisterType<BackgroundTaskQueue>()
                    .As<IBackgroundTaskQueueObserver>()
-                   .As<IBackgroundTaskQueue>().SingleInstance();
+                   .As<IBackgroundTaskQueue>()
+                   .SingleInstance();
+
+            builder.RegisterGeneric(typeof(JobSchedulingQueue<>))
+                   .As(typeof(IJobSchedulingObserver<>))
+                   .As(typeof(IJobScheduler<>))
+                   .SingleInstance();
         }
     }
 }
