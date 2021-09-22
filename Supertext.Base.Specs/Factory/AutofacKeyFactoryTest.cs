@@ -2,7 +2,9 @@
 using Autofac;
 using Autofac.Core;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Core.Configuration;
 using Supertext.Base.Factory;
 using Supertext.Base.Modularity;
 using Supertext.Base.Specs.Factory.AttributeComponents;
@@ -99,7 +101,37 @@ namespace Supertext.Base.Specs.Factory
             testee.Invoking(factory => factory.CreateComponent("dependencies")).Should().Throw<DependencyResolutionException>();
         }
 
+        [TestMethod]
+        public void CreateComponent_DerivedConfigTypeHasComponentKey_ThenResolved()
+        {
+            var context = CreateComponentContextWithConfigRegistration();
+
+            var testee = context.Resolve<IKeyFactory<string, ConfigBase>>();
+
+            var result = testee.CreateComponent("test");
+
+            result.Url.Should().Be("localhost");
+        }
+
         private static IComponentContext CreateComponentContext()
+        {
+            var containerBuilder = CreateContainerBuilderWithDefaultRegistrations();
+            return containerBuilder.Build();
+        }
+
+        private IComponentContext CreateComponentContextWithConfigRegistration()
+        {
+            var configurationBuilder = new ConfigurationBuilder()
+                                       .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                                       .AddJsonFile("appsettings.json");
+            var configuration = configurationBuilder.Build();
+
+            var containerBuilder = CreateContainerBuilderWithDefaultRegistrations();
+            containerBuilder.RegisterAllConfigurationsInAssembly(configuration, GetType().Assembly);
+            return containerBuilder.Build();
+        }
+
+        private static ContainerBuilder CreateContainerBuilderWithDefaultRegistrations()
         {
             var containerBuilder = new ContainerBuilder();
 
@@ -107,7 +139,7 @@ namespace Supertext.Base.Specs.Factory
             RegisterAttributedServices(containerBuilder);
 
             containerBuilder.RegisterGeneric(typeof(AutofacKeyFactory<,>)).As(typeof(IKeyFactory<,>));
-            return containerBuilder.Build();
+            return containerBuilder;
         }
 
         private static void RegisterAttributedServices(ContainerBuilder containerBuilder)
