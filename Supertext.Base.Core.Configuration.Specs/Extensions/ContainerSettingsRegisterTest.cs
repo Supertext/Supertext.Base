@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Supertext.Base.Core.Configuration.Specs
+namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
     [TestClass]
     public class ContainerSettingsRegisterTest
