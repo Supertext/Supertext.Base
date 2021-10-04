@@ -56,12 +56,13 @@ namespace Supertext.Base.Extensions
                 text = Encoding.UTF8.GetString(b, 3, b.Length - 3);
                 return Encoding.UTF8; // UTF-8
             }
-
+#if NETSTANDARD2_0
             if (b.Length >= 3 && b[0] == 0x2b && b[1] == 0x2f && b[2] == 0x76)
             {
                 text = Encoding.UTF7.GetString(b, 3, b.Length - 3);
                 return Encoding.UTF7; // UTF-7
             }
+#endif
 
             //////////// If the code reaches here, no BOM/signature was found, so now
             //////////// we need to 'taste' the file to see if can manually discover

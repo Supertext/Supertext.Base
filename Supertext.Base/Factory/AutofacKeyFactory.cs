@@ -15,13 +15,13 @@ namespace Supertext.Base.Factory
     internal sealed class AutofacKeyFactory<TKey, T> : IKeyFactory<TKey, T>
     {
         private readonly IComponentContext _componentContext;
-        private readonly Lazy<IDictionary<TKey, IComponentRegistration>> _registrations;
-        private IComponentRegistration _defaultComponentAttributeRegistration;
+        private readonly Lazy<IDictionary<TKey, ServiceRegistration>> _registrations;
+        private ServiceRegistration _defaultComponentAttributeRegistration;
 
         public AutofacKeyFactory(IComponentContext componentContext)
         {
             _componentContext = componentContext;
-            _registrations = new Lazy<IDictionary<TKey, IComponentRegistration>>(CollectRegistrations);
+            _registrations = new Lazy<IDictionary<TKey, ServiceRegistration>>(CollectRegistrations);
         }
 
         public bool ComponentExists(TKey key)
@@ -104,10 +104,10 @@ namespace Supertext.Base.Factory
 
         private bool ExistsDefaultComponentAttributeService()
         {
-            return _defaultComponentAttributeRegistration != null;
+            return _defaultComponentAttributeRegistration != default;
         }
 
-        private IDictionary<TKey, IComponentRegistration> CollectRegistrations()
+        private IDictionary<TKey, ServiceRegistration> CollectRegistrations()
         {
             var registrations = GetComponentsWithComponentKeyAttribute();
             if (registrations.Any())
@@ -120,9 +120,9 @@ namespace Supertext.Base.Factory
             return GetComponentsWithComponentKeyAttribute();
         }
 
-        private Dictionary<TKey, IComponentRegistration> GetComponentsWithComponentKeyAttribute()
+        private Dictionary<TKey, ServiceRegistration> GetComponentsWithComponentKeyAttribute()
         {
-            var registrations = new Dictionary<TKey, IComponentRegistration>();
+            var registrations = new Dictionary<TKey, ServiceRegistration>();
 
             foreach (var registration in _componentContext.ComponentRegistry.Registrations
                                                           .Where(x => x.Services.OfType<TypedService>()
@@ -134,16 +134,16 @@ namespace Supertext.Base.Factory
                 {
                     if (attribute.IsDefault)
                     {
-                        if (_defaultComponentAttributeRegistration != null)
+                        if (_defaultComponentAttributeRegistration != default)
                         {
                             throw new ConfigurationException($"Two default-Components registered for Type={typeof(T)} and Key={attribute.Key}");
                         }
 
-                        _defaultComponentAttributeRegistration = registration;
+                        _defaultComponentAttributeRegistration = new ServiceRegistration(registration.ResolvePipeline, registration);
                     }
                     else
                     {
-                        registrations.Add((TKey) attribute.Key, registration);
+                       registrations.Add((TKey) attribute.Key, new ServiceRegistration(registration.ResolvePipeline, registration));
                     }
                 }
             }
