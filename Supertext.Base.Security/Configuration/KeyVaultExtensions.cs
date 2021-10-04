@@ -19,6 +19,7 @@ namespace Supertext.Base.Security.Configuration
         ///     "KeyVaultName": "kv-ne-dev",
         ///     "AzureADApplicationId": "456776-A386-4324-994A-3242344343",
         ///     "ClientSecret": "324234234-2222-4545-BF9F-df43534954",
+        ///     "TenantId": "324234234-2222-4545-BF9F-234324234",
         ///     "AzureADCertThumbprint": "456a7sad6f54fasdf787a9sdf6",
         ///     "CertificateName": "kv-dev-supertext-ch"
         /// },
