@@ -1,4 +1,5 @@
 ﻿using Supertext.Base.Configuration;
+using System.Collections.Generic;
 
 namespace Supertext.Base.NetFramework.Configuration.Specs
 {
@@ -21,5 +22,17 @@ namespace Supertext.Base.NetFramework.Configuration.Specs
 
         [SettingsKey("supertextSectionConfig")]
         public string SupertextSectionConfig { get; set; }
+
+        [KeyVaultSecret("Super-Secret")]
+        public string SuperSecret { get; set; }
+
+        [JsonStructureKey("aJsonStructureWithInts")]
+        public Dictionary<string, int> JsonWithInts { get; set; }
+
+        [JsonStructureKey("aJsonStructureWithStrings")]
+        public Dictionary<string, string> JsonWithStrings { get; set; }
+
+        [DictionaryPrefix("testPrefix")]
+        public Dictionary<string, string> Dictionary { get; set; }
     }
 }

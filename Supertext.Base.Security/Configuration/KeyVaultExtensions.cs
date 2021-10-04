@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Azure.KeyVault;
+﻿using System;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace Supertext.Base.Security.Configuration
 {
@@ -19,9 +19,11 @@ namespace Supertext.Base.Security.Configuration
         ///     "KeyVaultName": "kv-ne-dev",
         ///     "AzureADApplicationId": "456776-A386-4324-994A-3242344343",
         ///     "ClientSecret": "324234234-2222-4545-BF9F-df43534954",
+        ///     "TenantId": "324234234-2222-4545-BF9F-234324234",
         ///     "AzureADCertThumbprint": "456a7sad6f54fasdf787a9sdf6",
         ///     "CertificateName": "kv-dev-supertext-ch"
-        /// }
+        /// },
+        /// "IsUsingManagedIdentity": false
         /// </summary>
         /// <param name="hostBuilder"></param>
         /// <returns></returns>
@@ -31,26 +33,7 @@ namespace Supertext.Base.Security.Configuration
                                                          {
                                                              if (context.HostingEnvironment.IsStaging() || context.HostingEnvironment.IsProduction())
                                                              {
-                                                                 var builtConfig = config.Build();
-                                                                 var vaultConfigSection = builtConfig.GetSection("KeyVault");
-                                                                 var readSecretsFromKeyVault = vaultConfigSection.GetValue<bool>("ReadSecretsFromKeyVault");
-
-                                                                 if (readSecretsFromKeyVault)
-                                                                 {
-                                                                     var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
-                                                                     var clientId = vaultConfigSection["AzureADApplicationId"];
-                                                                     var clientSecret = vaultConfigSection["ClientSecret"];
-
-                                                                     var keyVaultClient = new KeyVaultClient((authority, resource, scope) =>
-                                                                                                                 AuthenticationCallback(authority,
-                                                                                                                                        resource,
-                                                                                                                                        clientId,
-                                                                                                                                        clientSecret));
-
-                                                                     config.AddAzureKeyVault(vaultUrl,
-                                                                                             keyVaultClient,
-                                                                                             new DefaultKeyVaultSecretManager());
-                                                                 }
+                                                                 config.ConfigureConfigWithKeyVaultSecrets();
                                                              }
                                                              else if (context.HostingEnvironment.IsDevelopment())
                                                              {
@@ -59,14 +42,46 @@ namespace Supertext.Base.Security.Configuration
                                                          });
         }
 
-        private static async Task<string> AuthenticationCallback(string authority, string resource, string clientId, string clientSecret)
+        /// <summary>
+        /// Adds secrets from the key vault to the IConfigurationBuilder.
+        ///
+        /// Configuration in appsettings.json is mandatory as:
+        /// "KeyVault": {
+        ///     "ReadSecretsFromKeyVault": true,
+        ///     "KeyVaultName": "kv-ne-dev",
+        /// },
+        /// "IsUsingManagedIdentity": true
+        /// </summary>
+        /// <param name="config"></param>
+        public static void ConfigureConfigWithKeyVaultSecrets(this IConfigurationBuilder config)
         {
-            var clientCredential = new ClientCredential(clientId, clientSecret);
+            var builtConfig = config.Build();
+            var vaultConfigSection = builtConfig.GetSection("KeyVault");
+            var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
+            var isUsingManagedIdentity = builtConfig.GetValue<bool>("IsUsingManagedIdentity");
 
-            var context = new AuthenticationContext(authority, TokenCache.DefaultShared);
-            var result = await context.AcquireTokenAsync(resource, clientCredential);
+            if (isUsingManagedIdentity)
+            {
+                var secretClient = new SecretClient(new Uri(vaultUrl),
+                                                new DefaultAzureCredential());
+                config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+            }
+            else
+            {
+                var readSecretsFromKeyVault = vaultConfigSection.GetValue<bool>("ReadSecretsFromKeyVault");
 
-            return result.AccessToken;
+                if (readSecretsFromKeyVault)
+                {
+                    var clientId = vaultConfigSection["AzureADApplicationId"];
+                    var clientSecret = vaultConfigSection["ClientSecret"];
+                    var tenantId = vaultConfigSection["TenantId"];
+                    var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                    var secretClient = new SecretClient(new Uri(vaultUrl), credential);
+
+                    config.AddAzureKeyVault(secretClient,
+                                            new KeyVaultSecretManager());
+                }
+            }
         }
     }
 }

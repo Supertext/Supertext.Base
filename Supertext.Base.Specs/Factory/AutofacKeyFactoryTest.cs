@@ -1,6 +1,10 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
+using Autofac.Core;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Core.Configuration;
 using Supertext.Base.Factory;
 using Supertext.Base.Modularity;
 using Supertext.Base.Specs.Factory.AttributeComponents;
@@ -75,7 +79,59 @@ namespace Supertext.Base.Specs.Factory
             resultOne.Should().BeEquivalentTo(DefaultAttributeComponentToCreate.ReturnValue);
         }
 
+        [TestMethod]
+        public void ComponentExists_WhenComponentWithNotRegisteredDependency_ThenTrue()
+        {
+            var context = CreateComponentContext();
+
+            var testee = context.Resolve<IKeyFactory<string, IAttributeComponentToCreate>>();
+
+            var result = testee.ComponentExists("dependencies");
+
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void CreateComponent_WhenComponentWithNotRegisteredDependency_ThenException()
+        {
+            var context = CreateComponentContext();
+
+            var testee = context.Resolve<IKeyFactory<string, IAttributeComponentToCreate>>();
+
+            testee.Invoking(factory => factory.CreateComponent("dependencies")).Should().Throw<DependencyResolutionException>();
+        }
+
+        [TestMethod]
+        public void CreateComponent_DerivedConfigTypeHasComponentKey_ThenResolved()
+        {
+            var context = CreateComponentContextWithConfigRegistration();
+
+            var testee = context.Resolve<IKeyFactory<string, ConfigBase>>();
+
+            var result = testee.CreateComponent("test");
+
+            result.Url.Should().Be("localhost");
+        }
+
         private static IComponentContext CreateComponentContext()
+        {
+            var containerBuilder = CreateContainerBuilderWithDefaultRegistrations();
+            return containerBuilder.Build();
+        }
+
+        private IComponentContext CreateComponentContextWithConfigRegistration()
+        {
+            var configurationBuilder = new ConfigurationBuilder()
+                                       .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                                       .AddJsonFile("appsettings.json");
+            var configuration = configurationBuilder.Build();
+
+            var containerBuilder = CreateContainerBuilderWithDefaultRegistrations();
+            containerBuilder.RegisterAllConfigurationsInAssembly(configuration, GetType().Assembly);
+            return containerBuilder.Build();
+        }
+
+        private static ContainerBuilder CreateContainerBuilderWithDefaultRegistrations()
         {
             var containerBuilder = new ContainerBuilder();
 
@@ -83,7 +139,7 @@ namespace Supertext.Base.Specs.Factory
             RegisterAttributedServices(containerBuilder);
 
             containerBuilder.RegisterGeneric(typeof(AutofacKeyFactory<,>)).As(typeof(IKeyFactory<,>));
-            return containerBuilder.Build();
+            return containerBuilder;
         }
 
         private static void RegisterAttributedServices(ContainerBuilder containerBuilder)
@@ -92,6 +148,7 @@ namespace Supertext.Base.Specs.Factory
             containerBuilder.RegisterType<AttributeTwoComponentToCreate>().As<IAttributeComponentToCreate>();
             containerBuilder.RegisterType<DefaultAttributeComponentToCreate>().As<IAttributeComponentToCreate>();
             containerBuilder.RegisterType<AttributeComponentDispatcher>().As<IAttributeComponentDispatcher>();
+            containerBuilder.RegisterType<AttributeComponentWithDependencies>().As<IAttributeComponentToCreate>();
         }
 
         private static void RegisterKeyServices(ContainerBuilder containerBuilder)

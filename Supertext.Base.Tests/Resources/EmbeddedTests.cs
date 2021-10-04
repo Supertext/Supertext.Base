@@ -23,7 +23,7 @@ namespace Supertext.Base.Tests.Resources
         public static void ClassInit(TestContext context)
         {
             _assembly = Assembly.GetAssembly(typeof(EmbeddedTests));
-            var codebase = _assembly.CodeBase.Replace("file:///", String.Empty);
+            var codebase = _assembly.Location.Replace("file:///", String.Empty);
             var diProject = new FileInfo(codebase).Directory; //.Parent.Parent;
             _diTestDir = new DirectoryInfo(Path.Combine(diProject.FullName,
                                                         "Resources",
@@ -128,7 +128,7 @@ namespace Supertext.Base.Tests.Resources
             Func<Task<IEnumerable<byte>>> func = async () => await testee.ReadContentsAsByteArrayAsync();
 
             // Assert
-            func.Should().Throw<MissingManifestResourceException>();
+            func.Should().ThrowAsync<MissingManifestResourceException>();
         }
 
         [TestMethod]

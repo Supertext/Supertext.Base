@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters.Binary;
 using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
@@ -35,7 +34,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
                 throw;
             }
         }
@@ -53,7 +52,7 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}", ex);
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
                 throw;
             }
         }
@@ -76,16 +75,23 @@ namespace Supertext.Base.Net.Mail
                         client.PickupDirectoryLocation = _configuration.LocalEmailDirectory;
                     }
 
-                    var attachFileStreamsWithNames = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToFileStream(att.Content), att.Name)).ToList();
+                    var attachmentStreams = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name)).ToList();
                     try
                     {
-                        attachFileStreamsWithNames.ForEach(attachment => msg.AddAttachment(new Attachment(attachment.Item1, attachment.Item2)));
+                        foreach (var namedStream in attachmentStreams)
+                        {
+                            msg.AddAttachment(new Attachment(namedStream.Item1, namedStream.Item2));
+                        }
                         await client.SendAsync(msg).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Sending an email to {mail.To.Email} with subject '{mail.Subject}' failed");
                     }
                     finally
                     {
                         // dispose of each of the attachment streams
-                        foreach (var attachFileStreamWithName in attachFileStreamsWithNames)
+                        foreach (var attachFileStreamWithName in attachmentStreams)
                         {
                             attachFileStreamWithName.Item1.Dispose();
                         }
@@ -155,13 +161,12 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        private static FileStream ConvertToFileStream(byte[] content)
+        private static Stream ConvertToStream(byte[] content)
         {
             var memStream = new MemoryStream();
-            var binForm = new BinaryFormatter();
             memStream.Write(content, 0, content.Length);
             memStream.Seek(0, SeekOrigin.Begin);
-            return (FileStream) binForm.Deserialize(memStream);
+            return memStream;
         }
     }
 }

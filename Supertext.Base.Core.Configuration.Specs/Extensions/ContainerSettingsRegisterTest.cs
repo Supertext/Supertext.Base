@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Supertext.Base.Core.Configuration.Specs
+namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
     [TestClass]
     public class ContainerSettingsRegisterTest
@@ -95,6 +95,17 @@ namespace Supertext.Base.Core.Configuration.Specs
             var identity = container.Resolve<Authentication.Identity>();
 
             identity.Authority.Should().Be("Super authority");
+        }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_ConfigDerivesFormBaseClass_AttributesAreAvailable()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<InheritedConfig>();
+
+            config.Url.Should().Be("localhost");
         }
     }
 }
