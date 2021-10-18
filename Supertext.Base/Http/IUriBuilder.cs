@@ -7,7 +7,7 @@ namespace Supertext.Base.Http
         Uri CreateAbsoluteUri(string relativeUrl);
 
         /// <summary>
-        /// To use ResolveUrl method, URL should have place holder {domain}, 
+        /// To use ResolveUrl, the URL template should contain the place holder {domain}
         /// </summary>
         /// <param name="urlTemplate"></param>
         /// <returns></returns>

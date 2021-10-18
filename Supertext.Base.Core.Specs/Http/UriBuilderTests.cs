@@ -1,7 +1,4 @@
-﻿using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UriBuilder = Supertext.Base.Net.Http.UriBuilder;
 
@@ -11,12 +8,10 @@ namespace Supertext.Base.Net.Specs.Http
     public class UriBuilderTests
     {
         private UriBuilder _testee;
-        private IHttpContextAccessor _contextAccessor;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _contextAccessor = A.Fake<IHttpContextAccessor>();
             _testee = new UriBuilder();
         }
 
@@ -85,24 +80,6 @@ namespace Supertext.Base.Net.Specs.Http
             var result = _testee.ResolveUrl(relative);
 
             result.AbsoluteUri.Should().Be("https://dev.supertext.ch/api/v1/order?orderId=123123");
-        }
-
-        private void SetupHttpContext(string url)
-        {
-            UriHelper.FromAbsolute(url,
-                                   out var scheme,
-                                   out var host,
-                                   out var path,
-                                   out var query,
-                                   fragment: out var _);
-
-            var context = new DefaultHttpContext();
-            context.Request.Scheme = scheme;
-            context.Request.Host = host;
-            context.Request.Path = path;
-            context.Request.QueryString = query;
-
-            A.CallTo(() => _contextAccessor.HttpContext).Returns(context);
         }
     }
 }

@@ -10,7 +10,8 @@ namespace Supertext.Base.Net.Http
 
         public Uri CreateAbsoluteUri(string relativeUrl)
         {
-            return new Uri($"https://{_currentDomain}/{relativeUrl}");
+            var baseUrl = new Uri($"https://{_currentDomain}");
+            return new Uri(baseUrl, relativeUrl);
         }
 
         public Uri ResolveUrl(string urlTemplate)
