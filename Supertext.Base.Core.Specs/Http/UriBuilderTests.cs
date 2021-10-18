@@ -17,14 +17,14 @@ namespace Supertext.Base.Net.Specs.Http
         public void TestInitialize()
         {
             _contextAccessor = A.Fake<IHttpContextAccessor>();
-            _testee = new UriBuilder(_contextAccessor);
+            _testee = new UriBuilder();
         }
 
         [TestMethod]
         public void CreateAbsoluteUri_SimpleUrlIsGiven_Created()
         {
             const string relative = "api/v1/order/1234";
-            SetupHttpContext("https://www.supertext.ch");
+            _testee.AddDomain("www.supertext.ch");
 
             var result = _testee.CreateAbsoluteUri(relative);
 
@@ -35,7 +35,7 @@ namespace Supertext.Base.Net.Specs.Http
         public void CreateAbsoluteUri_UrlWithSubdomainAndApiMethodIsGiven_Created()
         {
             const string relative = "api/v1/order/1234";
-            SetupHttpContext("https://www.cat.supertext.ch/api/v1/person/42");
+            _testee.AddDomain("www.cat.supertext.ch");
 
             var result = _testee.CreateAbsoluteUri(relative);
 
@@ -45,72 +45,46 @@ namespace Supertext.Base.Net.Specs.Http
         [TestMethod]
         public void CreateAbsoluteUri_UrlWithQueryStringIsGiven_Created()
         {
-            const string relative = "/api/v1/order?orderId=123123";
-            SetupHttpContext("https://dev.supertext.ch/api/v1/quote?ordertype=23");
+            const string relative = "api/v1/order?orderId=123123";
+            _testee.AddDomain("dev.supertext.ch");
 
             var result = _testee.CreateAbsoluteUri(relative);
 
             result.AbsoluteUri.Should().Be("https://dev.supertext.ch/api/v1/order?orderId=123123");
         }
 
+
         [TestMethod]
-        public void BaseUri_SimpleUrlIsGiven_BaseUriIsReturned()
+        public void ResolveUrl_SimpleUrlIsGiven_Created()
         {
-            SetupHttpContext("https://www.supertext.ch");
+            const string relative = "https://{domain}/api/v1/order/1234";
+            _testee.AddDomain("www.supertext.ch");
 
-            var result = _testee.BaseUri;
+            var result = _testee.ResolveUrl(relative);
 
-            result.AbsoluteUri.Should().Be("https://www.supertext.ch/");
+            result.AbsoluteUri.Should().Be("https://www.supertext.ch/api/v1/order/1234");
         }
 
         [TestMethod]
-        public void BaseUri_SimpleUrlAndApiMethodIsGiven_BaseUriIsReturned()
+        public void ResolveUrl_UrlWithSubdomainAndApiMethodIsGiven_Created()
         {
-            SetupHttpContext("https://www.supertext.ch/api/v1/order/1234");
+            const string relative = "https://www.cat.{domain}/api/v1/order/1234";
+            _testee.AddDomain("supertext.ch");
 
-            var result = _testee.BaseUri;
+            var result = _testee.ResolveUrl(relative);
 
-            result.AbsoluteUri.Should().Be("https://www.supertext.ch/");
+            result.AbsoluteUri.Should().Be("https://www.cat.supertext.ch/api/v1/order/1234");
         }
 
         [TestMethod]
-        public void BaseUri_UrlWithSubdomainIsGiven_BaseUriIsReturned()
+        public void ResolveUrl_UrlWithQueryStringIsGiven_Created()
         {
-            SetupHttpContext("https://www.cat.supertext.ch");
+            const string relative = "https://{domain}/api/v1/order?orderId=123123";
+            _testee.AddDomain("dev.supertext.ch");
 
-            var result = _testee.BaseUri;
+            var result = _testee.ResolveUrl(relative);
 
-            result.AbsoluteUri.Should().Be("https://www.cat.supertext.ch/");
-        }
-
-        [TestMethod]
-        public void BaseUri_UrlWithSubdomainAndApiMethodIsGiven_BaseUriIsReturned()
-        {
-            SetupHttpContext("https://www.cat.supertext.ch/api/v1/order/1234");
-
-            var result = _testee.BaseUri;
-
-            result.AbsoluteUri.Should().Be("https://www.cat.supertext.ch/");
-        }
-
-        [TestMethod]
-        public void BaseUri_UrlWithSubdomain2AndApiMethodIsGiven_BaseUriIsReturned()
-        {
-            SetupHttpContext("https://dev.supertext.ch/api/v1/order/1234");
-
-            var result = _testee.BaseUri;
-
-            result.AbsoluteUri.Should().Be("https://dev.supertext.ch/");
-        }
-
-        [TestMethod]
-        public void BaseUri_UrlWithQueryStringIsGiven_BaseUriIsReturned()
-        {
-            SetupHttpContext("https://dev.supertext.ch/api/v1/order?orderId=123123");
-
-            var result = _testee.BaseUri;
-
-            result.AbsoluteUri.Should().Be("https://dev.supertext.ch/");
+            result.AbsoluteUri.Should().Be("https://dev.supertext.ch/api/v1/order?orderId=123123");
         }
 
         private void SetupHttpContext(string url)
