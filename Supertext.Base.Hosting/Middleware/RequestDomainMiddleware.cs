@@ -10,22 +10,20 @@ namespace Supertext.Base.Hosting.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestDomainMiddleware> _logger;
-        private readonly IDomainInitializer _urlResolver;
 
-        public RequestDomainMiddleware(RequestDelegate next, IDomainInitializer urlResolver, ILogger<RequestDomainMiddleware> logger)
+        public RequestDomainMiddleware(RequestDelegate next, ILogger<RequestDomainMiddleware> logger)
         {
             _next = next;
-            _urlResolver = urlResolver;
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, IDomainInitializer urlResolver)
         {
             var domain = context.Request.Host.Host;
 
             if (!String.IsNullOrWhiteSpace(domain))
             {
-                _urlResolver.AddDomain(domain);
+                urlResolver.AddDomain(domain);
                 _logger.LogInformation($"{nameof(RequestDomainMiddleware)} {nameof(domain)}={domain}");
             }
 
