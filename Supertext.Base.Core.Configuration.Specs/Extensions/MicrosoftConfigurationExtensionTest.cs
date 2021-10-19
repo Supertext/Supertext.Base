@@ -1,8 +1,8 @@
 ﻿using System;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
@@ -10,13 +10,13 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
     [TestClass]
     public class MicrosoftConfigurationExtensionTest
     {
-        private IHostingEnvironment _environment;
+        private IHostEnvironment _environment;
         private IConfigurationRoot _testee;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _environment = A.Fake<IHostingEnvironment>();
+            _environment = A.Fake<IHostEnvironment>();
             A.CallTo(() => _environment.ContentRootPath).Returns(AppDomain.CurrentDomain.BaseDirectory);
             A.CallTo(() => _environment.EnvironmentName).Returns("Development");
 
