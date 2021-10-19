@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.Core.Configuration\Supertext.Base.Core.Configuration.csproj" />
+    <ProjectReference Include="..\Supertext.Base.Security\Supertext.Base.Security.csproj" />
   </ItemGroup>
 
 </Project>

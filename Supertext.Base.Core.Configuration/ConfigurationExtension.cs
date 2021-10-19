@@ -92,7 +92,7 @@ namespace Supertext.Base.Core.Configuration
         private static bool IsPrimitiveType(PropertyInfo propertyInfo)
         {
             var type = propertyInfo.PropertyType;
-            return type.IsPrimitive || type == typeof(string);
+            return type.IsPrimitive || type == typeof(string) || type.IsArray;
         }
 
         private static void SetKeyVaultSecret(object configInstance, IConfiguration configuration, PropertyInfo propertyInfo)

@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Security.NWebSec;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
@@ -77,6 +78,17 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
 
             config.Hierarchy2.Secret.Should().Be("secret1");
             config.Hierarchy2.Hierarchy3.Secret.Should().Be("secret2");
+        }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_NWebSecConfig_CanHandleArrayProperties()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(NWebSecConfig).Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<NWebSecConfig>();
+
+            config.StrictTransportSecurityHeaderMaxAge.Should().Be(365);
         }
 
         [TestMethod]
