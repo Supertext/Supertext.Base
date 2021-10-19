@@ -68,6 +68,18 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_ConfigWithCascadedInnerConfigsWithKeyVaultSecret_KeyVaultValuesAvailable()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<TopHierarchyConfig>();
+
+            config.Hierarchy2.Secret.Should().Be("secret1");
+            config.Hierarchy2.Hierarchy3.Secret.Should().Be("secret2");
+        }
+
+        [TestMethod]
         public void RegisterIdentityAndApiResourceDefinitions_TwoApiResourcesAreDefined_ClientSecretsAreAvailable()
         {
             _builder.RegisterIdentityAndApiResourceDefinitions(_configuration);
