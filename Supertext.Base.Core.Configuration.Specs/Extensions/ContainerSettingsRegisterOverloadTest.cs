@@ -11,13 +11,13 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
     [TestClass]
     public class ContainerSettingsRegisterOverloadTest
     {
-        private IHostingEnvironment _environment;
+        private IHostEnvironment _environment;
         private ContainerBuilder _builder;
 
         [TestInitialize]
         public void Setup()
         {
-            _environment = A.Fake<IHostingEnvironment>();
+            _environment = A.Fake<IHostEnvironment>();
             A.CallTo(() => _environment.ContentRootPath).Returns(AppDomain.CurrentDomain.BaseDirectory);
             A.CallTo(() => _environment.EnvironmentName).Returns("debug");
 

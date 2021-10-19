@@ -2,8 +2,8 @@
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Security.NWebSec;
 
@@ -14,12 +14,12 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
     {
         private ContainerBuilder _builder;
         private IConfiguration _configuration;
-        private IHostingEnvironment _environment;
+        private IHostEnvironment _environment;
 
         [TestInitialize]
         public void Setup()
         {
-            _environment = A.Fake<IHostingEnvironment>();
+            _environment = A.Fake<IHostEnvironment>();
             A.CallTo(() => _environment.ContentRootPath).Returns(AppDomain.CurrentDomain.BaseDirectory);
             A.CallTo(() => _environment.EnvironmentName).Returns("debug");
 
