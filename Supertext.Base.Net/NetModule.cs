@@ -15,7 +15,7 @@ namespace Supertext.Base.Net
             builder.RegisterType<MailService>().As<IMailService>();
             builder.RegisterType<ProtectedHttpRequestMessageFactory>().As<IProtectedHttpRequestMessageFactory>();
             builder.RegisterType<TokenProvider>().As<ITokenProvider>();
-            builder.RegisterType<UriBuilder>().As<IUriBuilder>();
+            builder.RegisterType<UriBuilder>().As<IUriBuilder>().As<IDomainInitializer>().InstancePerLifetimeScope();
         }
     }
 }

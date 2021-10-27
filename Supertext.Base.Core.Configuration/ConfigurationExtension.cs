@@ -69,19 +69,41 @@ namespace Supertext.Base.Core.Configuration
                 configuration.Bind(args.Instance);
             }
 
-            SetKeyVaultSecrets(args.Instance, configuration);
+            SetKeyVaultSecrets(args.Instance, args.Instance.GetType().GetProperties(), configuration);
         }
 
-        internal static void SetKeyVaultSecrets(object configInstance, IConfiguration configuration)
+        internal static void SetKeyVaultSecrets(object configInstance, PropertyInfo[] instancePropertyInfos, IConfiguration configuration)
         {
-            var properties = configInstance.GetType().GetProperties();
-            foreach (var propertyInfo in properties)
+            foreach (var propertyInfo in instancePropertyInfos)
             {
-                var keyVaultSecret = propertyInfo.GetCustomAttributes<KeyVaultSecretAttribute>().SingleOrDefault();
-                if (keyVaultSecret != null)
+                if (IsPrimitiveType(propertyInfo))
                 {
-                    SetValueIfSome(propertyInfo, configInstance, configuration, keyVaultSecret.SecretName ?? propertyInfo.Name);
+                    SetKeyVaultSecret(configInstance, configuration, propertyInfo);
                 }
+                else
+                {
+                    SetKeyVaultSecrets(propertyInfo.GetValue(configInstance),
+                                       propertyInfo.PropertyType.GetProperties(),
+                                       configuration);
+                }
+            }
+        }
+
+        private static bool IsPrimitiveType(PropertyInfo propertyInfo)
+        {
+            var type = propertyInfo.PropertyType;
+            return type.IsPrimitive || type == typeof(string) || type.IsArray;
+        }
+
+        private static void SetKeyVaultSecret(object configInstance, IConfiguration configuration, PropertyInfo propertyInfo)
+        {
+            var keyVaultSecret = propertyInfo.GetCustomAttributes<KeyVaultSecretAttribute>().SingleOrDefault();
+            if (keyVaultSecret != null)
+            {
+                SetValueIfSome(propertyInfo,
+                               configInstance,
+                               configuration,
+                               keyVaultSecret.SecretName ?? propertyInfo.Name);
             }
         }
 

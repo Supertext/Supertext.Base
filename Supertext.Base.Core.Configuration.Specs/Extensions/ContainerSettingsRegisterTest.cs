@@ -2,9 +2,10 @@
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Security.NWebSec;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
@@ -13,12 +14,12 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
     {
         private ContainerBuilder _builder;
         private IConfiguration _configuration;
-        private IHostingEnvironment _environment;
+        private IHostEnvironment _environment;
 
         [TestInitialize]
         public void Setup()
         {
-            _environment = A.Fake<IHostingEnvironment>();
+            _environment = A.Fake<IHostEnvironment>();
             A.CallTo(() => _environment.ContentRootPath).Returns(AppDomain.CurrentDomain.BaseDirectory);
             A.CallTo(() => _environment.EnvironmentName).Returns("debug");
 
@@ -65,6 +66,29 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             var config = container.Resolve<DummyConfig>();
 
             config.AnotherString.Should().Be("some other value");
+        }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_ConfigWithCascadedInnerConfigsWithKeyVaultSecret_KeyVaultValuesAvailable()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<TopHierarchyConfig>();
+
+            config.Hierarchy2.Secret.Should().Be("secret1");
+            config.Hierarchy2.Hierarchy3.Secret.Should().Be("secret2");
+        }
+
+        [TestMethod]
+        public void RegisterConfigurationsWithAppConfigValues_NWebSecConfig_CanHandleArrayProperties()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(NWebSecConfig).Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<NWebSecConfig>();
+
+            config.StrictTransportSecurityHeaderMaxAge.Should().Be(365);
         }
 
         [TestMethod]

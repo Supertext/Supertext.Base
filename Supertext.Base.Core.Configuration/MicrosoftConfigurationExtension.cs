@@ -18,7 +18,7 @@ namespace Supertext.Base.Core.Configuration
                 configuration.GetSection(section.SectionName).Bind(settings);
             }
 
-            ConfigurationExtension.SetKeyVaultSecrets(settings, configuration);
+            ConfigurationExtension.SetKeyVaultSecrets(settings, settings.GetType().GetProperties(), configuration);
 
             return settings;
         }
