@@ -103,8 +103,20 @@ namespace Supertext.Base.Core.Configuration
                 SetValueIfSome(propertyInfo,
                                configInstance,
                                configuration,
-                               keyVaultSecret.SecretName ?? propertyInfo.Name);
+                               GetSecretName(configInstance, propertyInfo, keyVaultSecret));
             }
+        }
+
+        private static string GetSecretName(object configInstance, PropertyInfo propertyInfo, KeyVaultSecretAttribute keyVaultSecret)
+        {
+            if (keyVaultSecret.UsePropertyValueAsSecretName)
+            {
+                var propertyValue = propertyInfo.GetValue(configInstance)?.ToString();
+
+                return !String.IsNullOrWhiteSpace(propertyValue) ? propertyValue : propertyInfo.Name;
+            }
+
+            return keyVaultSecret.SecretName ?? propertyInfo.Name;
         }
 
         private static void ExchangeClientSecrets(IActivatingEventArgs<object> args, IConfiguration configuration)
