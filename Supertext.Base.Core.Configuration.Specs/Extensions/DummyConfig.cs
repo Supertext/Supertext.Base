@@ -1,10 +1,16 @@
-﻿using Supertext.Base.Configuration;
+﻿using System.Collections.Generic;
+using Supertext.Base.Configuration;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {
     [ConfigSection("TestConfig")]
     public class DummyConfig : IConfiguration
     {
+        public DummyConfig()
+        {
+            Clients = new List<Client>();
+        }
+
         public int SomeInt { get; set; }
 
         public string Value { get; set; }
@@ -19,5 +25,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
 
         [KeyVaultSecret("AuthenticationConnectionString")]
         public string AnotherString { get; set; }
+
+        public ICollection<Client> Clients { get; set; }
     }
 }

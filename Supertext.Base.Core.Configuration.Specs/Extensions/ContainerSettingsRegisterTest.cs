@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
@@ -92,7 +93,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterAllConfigurationsInAssembly_NWebSecConfig_CanHandleArrayProperties()
+        public void RegisterAllConfigurationsInAssembly_NWebSecConfig_CanHandlePrimitiveArrayProperties()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(NWebSecConfig).Assembly);
 
@@ -100,6 +101,18 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             var config = container.Resolve<NWebSecConfig>();
 
             config.StrictTransportSecurityHeaderMaxAge.Should().Be(365);
+        }
+
+        [TestMethod]
+        public void RegisterAllConfigurationsInAssembly_DummyConfigWithClients_CanHandleComplexArrays()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(DummyConfig).Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<DummyConfig>();
+
+            config.Clients.Count.Should().Be(1);
+            config.Clients.First().Secret.Should().Be("secret1");
         }
 
         [TestMethod]
