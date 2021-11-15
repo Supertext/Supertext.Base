@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
@@ -34,7 +35,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_SettingsAvailable_RegisteredWithConfiguredValues()
+        public void RegisterAllConfigurationsInAssembly_SettingsAvailable_RegisteredWithConfiguredValues()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
@@ -47,7 +48,18 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_PropertyWithKeyVaultSecret_KeyVaultValueAvailable()
+        public void RegisterAllConfigurationsInAssembly_KeyVaultSecretContainsValue_ValueIsBeingUsedToFetchSecretFromKeyVault()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<DummyConfig>();
+
+            config.Secret.Should().Be("secret2");
+        }
+
+        [TestMethod]
+        public void RegisterAllConfigurationsInAssembly_PropertyWithKeyVaultSecret_KeyVaultValueAvailable()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
@@ -58,7 +70,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_PropertyWithExplicitNamedKeyVaultSecret_KeyVaultValueAvailable()
+        public void RegisterAllConfigurationsInAssembly_PropertyWithExplicitNamedKeyVaultSecret_KeyVaultValueAvailable()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
@@ -69,7 +81,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_ConfigWithCascadedInnerConfigsWithKeyVaultSecret_KeyVaultValuesAvailable()
+        public void RegisterAllConfigurationsInAssembly_ConfigWithCascadedInnerConfigsWithKeyVaultSecret_KeyVaultValuesAvailable()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
@@ -81,7 +93,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_NWebSecConfig_CanHandleArrayProperties()
+        public void RegisterAllConfigurationsInAssembly_NWebSecConfig_CanHandlePrimitiveArrayProperties()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(NWebSecConfig).Assembly);
 
@@ -89,6 +101,18 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             var config = container.Resolve<NWebSecConfig>();
 
             config.StrictTransportSecurityHeaderMaxAge.Should().Be(365);
+        }
+
+        [TestMethod]
+        public void RegisterAllConfigurationsInAssembly_DummyConfigWithClients_CanHandleComplexArrays()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, typeof(DummyConfig).Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<DummyConfig>();
+
+            config.Clients.Count.Should().Be(1);
+            config.Clients.First().Secret.Should().Be("secret1");
         }
 
         [TestMethod]
@@ -122,7 +146,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
         }
 
         [TestMethod]
-        public void RegisterConfigurationsWithAppConfigValues_ConfigDerivesFormBaseClass_AttributesAreAvailable()
+        public void RegisterAllConfigurationsInAssembly_ConfigDerivesFormBaseClass_AttributesAreAvailable()
         {
             _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
 
