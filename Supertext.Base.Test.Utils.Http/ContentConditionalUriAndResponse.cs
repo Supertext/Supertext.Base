@@ -48,20 +48,20 @@ namespace Supertext.Base.Test.Utils.Http
 
             if (!permittedMethods.Contains(request.Method.Method))
             {
-                throw new InvalidOperationException($"Invalid HTTP method: {request.Method.Method}. The conditional form of {typeof(ContentConditionalUriAndResponse<T>).AssemblyQualifiedName} can only be used with PATCH, POST or PUT requests.");
+                throw new InvalidOperationException($"Invalid HTTP method: {request.Method.Method}. The conditional form of {typeof(ContentConditionalUriAndResponse<TBodyContent>).AssemblyQualifiedName} can only be used with PATCH, POST or PUT requests.");
             }
 
             bool expectationMet;
 
-            if (typeof(T) == typeof(IEnumerable<byte>))
+            if (typeof(TBodyContent) == typeof(IEnumerable<byte>))
             {
                 IEnumerable<byte> byteContent = await request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
-                expectationMet = RequestChecker((T) byteContent);
+                expectationMet = RequestChecker((TBodyContent) byteContent);
             }
             else
             {
-                T content;
+                TBodyContent content;
                 try
                 {
                     var strContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -69,7 +69,7 @@ namespace Supertext.Base.Test.Utils.Http
                 }
                 catch (Exception)
                 {
-                    throw new Exception($"Unable to read HttpRequestMessage content as {typeof(T).Name}.");
+                    throw new Exception($"Unable to read HttpRequestMessage content as {typeof(TBodyContent).Name}.");
                 }
 
                 expectationMet = RequestChecker(content);
