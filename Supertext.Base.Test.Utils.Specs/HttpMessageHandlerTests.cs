@@ -1,12 +1,11 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Test.Utils.Http;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Random = Supertext.Base.Common.Random;
 
-namespace Supertext.Base.Test.Utils.Specs.Http
+namespace Supertext.Base.Test.Utils.Http.Specs
 {
     [TestClass]
     public class HttpMessageHandlerTests : UriAndResponseTestsBase

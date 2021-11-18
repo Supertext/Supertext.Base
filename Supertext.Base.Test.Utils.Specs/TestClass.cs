@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Supertext.Base.Test.Utils.Specs.Http
+namespace Supertext.Base.Test.Utils.Http.Specs
 {
     /// <summary>
     /// This is a simple class which can be used for serialising and deserialising.

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -12,13 +11,15 @@ namespace Supertext.Base.Test.Utils.Http
     /// <para>A class for handling <c>HttpClient.PostAsync</c> requests and conditionally returning a configured response based upon a conditional function.</para>
     /// <para>The type <c>T</c> should correspond to the content being sent via POST or PUT.</para>
     /// </summary>
-    public class ContentConditionalUriAndResponse<T> : UriAndResponse
+    public class ContentConditionalUriAndResponse<TBodyContent> : UriAndResponse
     {
+        private readonly Func<string, TBodyContent> _jsonDeserialiser;
+
         /// <summary>
         /// <para>The conditional function which determines whether <see cref="UriAndResponse.HttpResponse"/> should be returned.</para>
         /// <para>The input argument should correspond to the POST or PUT content.</para>
         /// </summary>
-        public Func<T, bool> RequestChecker { get; set; }
+        public Func<TBodyContent, bool> RequestChecker { get; set; }
 
         /// <summary>
         /// Creates an instance of <see cref="UriAndResponse"/> for handling <c>HttpClient</c> requests and returning a configured response based upon a conditional function.
@@ -29,9 +30,11 @@ namespace Supertext.Base.Test.Utils.Http
         /// <para>The conditional function which determines whether <see cref="UriAndResponse.HttpResponse"/> should be returned.</para>
         /// <para>The input argument should correspond to the POST or PUT content.</para>
         /// </param>
-        public ContentConditionalUriAndResponse(Uri uri, HttpResponseMessage httpResponse, Func<T, bool> requestChecker) : base(uri, httpResponse)
+        /// <param name="jsonDeserialiser">A function which deserialises the content of the request body.</param>
+        public ContentConditionalUriAndResponse(Uri uri, HttpResponseMessage httpResponse, Func<TBodyContent, bool> requestChecker, Func<string, TBodyContent> jsonDeserialiser) : base(uri, httpResponse)
         {
-            RequestChecker = requestChecker ?? throw new ArgumentNullException(nameof(requestChecker), $"If no request content checking is required then use {typeof(UriAndResponse).AssemblyQualifiedName} instead of {typeof(ContentConditionalUriAndResponse<T>).AssemblyQualifiedName}.");
+            _jsonDeserialiser = jsonDeserialiser;
+            RequestChecker = requestChecker ?? throw new ArgumentNullException(nameof(requestChecker), $"If no request content checking is required then use {typeof(UriAndResponse).AssemblyQualifiedName} instead of {typeof(ContentConditionalUriAndResponse<TBodyContent>).AssemblyQualifiedName}.");
         }
 
         internal protected override async Task<HttpResponseMessage> HandleRequest(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -62,7 +65,7 @@ namespace Supertext.Base.Test.Utils.Http
                 try
                 {
                     var strContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    content = JsonConvert.DeserializeObject<T>(strContent);
+                    content = _jsonDeserialiser(strContent);
                 }
                 catch (Exception)
                 {
