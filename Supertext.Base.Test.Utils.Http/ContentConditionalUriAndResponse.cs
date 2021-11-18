@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +13,8 @@ namespace Supertext.Base.Test.Utils.Http
     /// </summary>
     public class ContentConditionalUriAndResponse<T> : UriAndResponse
     {
+        private readonly Func<string, T> _jsonDeserialiser;
+
         /// <summary>
         /// <para>The conditional function which determines whether <see cref="UriAndResponse.HttpResponse"/> should be returned.</para>
         /// <para>The input argument should correspond to the POST or PUT content.</para>
@@ -29,8 +30,10 @@ namespace Supertext.Base.Test.Utils.Http
         /// <para>The conditional function which determines whether <see cref="UriAndResponse.HttpResponse"/> should be returned.</para>
         /// <para>The input argument should correspond to the POST or PUT content.</para>
         /// </param>
-        public ContentConditionalUriAndResponse(Uri uri, HttpResponseMessage httpResponse, Func<T, bool> requestChecker) : base(uri, httpResponse)
+        /// <param name="jsonDeserialiser">A function which deserialises the request body.</param>
+        public ContentConditionalUriAndResponse(Uri uri, HttpResponseMessage httpResponse, Func<T, bool> requestChecker, Func<string, T> jsonDeserialiser) : base(uri, httpResponse)
         {
+            _jsonDeserialiser = jsonDeserialiser;
             RequestChecker = requestChecker ?? throw new ArgumentNullException(nameof(requestChecker), $"If no request content checking is required then use {typeof(UriAndResponse).AssemblyQualifiedName} instead of {typeof(ContentConditionalUriAndResponse<T>).AssemblyQualifiedName}.");
         }
 
@@ -62,7 +65,7 @@ namespace Supertext.Base.Test.Utils.Http
                 try
                 {
                     var strContent = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    content = JsonConvert.DeserializeObject<T>(strContent);
+                    content = _jsonDeserialiser(strContent);
                 }
                 catch (Exception)
                 {

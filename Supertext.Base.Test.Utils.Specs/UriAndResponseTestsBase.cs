@@ -1,16 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Supertext.Base.Test.Utils.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using HttpMessageHandler = Supertext.Base.Test.Utils.Http.HttpMessageHandler;
 using Random = Supertext.Base.Common.Random;
 
-namespace Supertext.Base.Test.Utils.Specs.Http
+namespace Supertext.Base.Test.Utils.Http.Specs
 {
     [TestClass]
     public abstract class UriAndResponseTestsBase

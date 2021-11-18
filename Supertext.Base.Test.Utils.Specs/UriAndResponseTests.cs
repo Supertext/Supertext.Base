@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Supertext.Base.Test.Utils.Http;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Random = Supertext.Base.Common.Random;
 
-namespace Supertext.Base.Test.Utils.Specs.Http
+namespace Supertext.Base.Test.Utils.Http.Specs
 {
     [TestClass]
     public class UriAndResponseTests : UriAndResponseTestsBase

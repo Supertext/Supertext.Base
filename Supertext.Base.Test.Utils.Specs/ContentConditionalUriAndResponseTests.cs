@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Supertext.Base.Test.Utils.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Random = Supertext.Base.Common.Random;
 
-namespace Supertext.Base.Test.Utils.Specs.Http
+namespace Supertext.Base.Test.Utils.Http.Specs
 {
     [TestClass]
     public class ContentConditionalUriAndResponseTests : UriAndResponseTestsBase
@@ -27,7 +26,8 @@ namespace Supertext.Base.Test.Utils.Specs.Http
             var response = GetResponse(statusCode, testResponseObj);
             var uriAndResponse = new ContentConditionalUriAndResponse<TestClass>(testUri,
                                                                                  response,
-                                                                                 request => request.IntProp == testRequestObj.IntProp);
+                                                                                 request => request.IntProp == testRequestObj.IntProp,
+                                                                                 JsonConvert.DeserializeObject<TestClass>);
             var client = GetTestClient(uriAndResponse);
 
             // Act
@@ -40,7 +40,7 @@ namespace Supertext.Base.Test.Utils.Specs.Http
         }
 
         [TestMethod]
-        public async Task UriAndResponse_Throws_Excpn_For_All_Http_Verbs_Except_Patch_Post_And_Put()
+        public async Task UriAndResponse_Throws_Exception_For_All_Http_Verbs_Except_Patch_Post_And_Put()
         {
             // Arrange
             const HttpStatusCode statusCode = HttpStatusCode.Accepted;
@@ -50,7 +50,8 @@ namespace Supertext.Base.Test.Utils.Specs.Http
             var response = GetResponse(statusCode, testResponseObj);
             var uriAndResponse = new ContentConditionalUriAndResponse<TestClass>(testUri,
                                                                                  response,
-                                                                                 request => request.IntProp == testRequestObj.IntProp);
+                                                                                 request => request.IntProp == testRequestObj.IntProp,
+                                                                                 JsonConvert.DeserializeObject<TestClass>);
             var client = GetTestClient(uriAndResponse);
 
             var permittedMethods = new List<HttpMethod>
@@ -90,7 +91,8 @@ namespace Supertext.Base.Test.Utils.Specs.Http
             var response0 = GetResponse(statusCode0, testResponseObj0);
             var uriAndResponse0 = new ContentConditionalUriAndResponse<TestClass>(testUri,
                                                                                   response0,
-                                                                                  request => request.IntProp == testRequestObj0.IntProp);
+                                                                                  request => request.IntProp == testRequestObj0.IntProp,
+                                                                                  JsonConvert.DeserializeObject<TestClass>);
 
             const HttpStatusCode statusCode1 = HttpStatusCode.Created;
             var testRequestObj1 = GetTestObjects(1).First();
@@ -98,7 +100,8 @@ namespace Supertext.Base.Test.Utils.Specs.Http
             var response1 = GetResponse(statusCode1, testResponseObj1);
             var uriAndResponse1 = new ContentConditionalUriAndResponse<TestClass>(testUri,
                                                                                   response1,
-                                                                                  request => request.IntProp == testRequestObj1.IntProp);
+                                                                                  request => request.IntProp == testRequestObj1.IntProp,
+                                                                                  JsonConvert.DeserializeObject<TestClass>);
 
             var client = GetTestClient(uriAndResponse0, uriAndResponse1);
 
