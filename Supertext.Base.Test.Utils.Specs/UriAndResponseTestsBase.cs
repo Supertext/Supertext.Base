@@ -33,6 +33,7 @@ namespace Supertext.Base.Test.Utils.Http.Specs
 
         protected static IEnumerable<TestClass> GetTestObjects(int count)
         {
+            // ReSharper disable once IteratorNeverReturns
             IEnumerable<TestClass> ReturnFromStream()
             {
                 while (true)
