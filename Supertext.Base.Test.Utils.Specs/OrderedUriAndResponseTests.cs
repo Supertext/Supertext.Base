@@ -14,7 +14,7 @@ namespace Supertext.Base.Test.Utils.Http.Specs
     public class OrderedUriAndResponseTests : UriAndResponseTestsBase
     {
         [TestMethod]
-        public async Task UriAndResponse_WhenConfiguredResponseCountLessThanRequestCount_ReturnsNotImplemented()
+        public async Task OrderedUriAndResponse_WhenConfiguredResponseCountLessThanRequestCount_ReturnsNotImplemented()
         {
             // Arrange
             var testUri = Random.GetUri();
