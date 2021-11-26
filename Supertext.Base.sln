@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Conversion",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Tests", "Supertext.Base.Tests\Supertext.Base.Tests.csproj", "{B8AEE43A-51B7-48C2-BAE4-13F62E049FF7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Http.Specs", "Supertext.Base.Test.Utils.Specs\Supertext.Base.Test.Utils.Http.Specs.csproj", "{EDC7F73B-5CB5-4384-BE96-9D9732E031DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C972A9E1-2173-44D0-A896-4608C2EA6D64}"
 	ProjectSection(SolutionItems) = preProject
@@ -67,6 +67,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.Cryptography", "Supertext.Base.Security.Cryptography\Supertext.Base.Security.Cryptography.csproj", "{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.Cryptography.Tests", "Supertext.Base.Security.Cryptography.Specs\Supertext.Base.Security.Cryptography.Tests.csproj", "{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Http", "Supertext.Base.Test.Utils.Http\Supertext.Base.Test.Utils.Http.csproj", "{670CDC36-0DA3-4440-98A2-D152D146C32A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -186,6 +188,10 @@ Global
 		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{670CDC36-0DA3-4440-98A2-D152D146C32A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{670CDC36-0DA3-4440-98A2-D152D146C32A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{670CDC36-0DA3-4440-98A2-D152D146C32A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{670CDC36-0DA3-4440-98A2-D152D146C32A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -219,6 +225,7 @@ Global
 		{87B055FF-E3E2-4D01-A1F3-EACDC6699606} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{E4ED2604-7C72-4FF2-80FE-9F3E0CF9D201} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{D45A7B4A-62A5-4F4D-AE3C-BB326F36EA7D} = {9433911D-A932-4266-B7CE-A95A9276FF35}
+		{670CDC36-0DA3-4440-98A2-D152D146C32A} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {843F013D-AF27-4651-9FBC-620FB8340202}

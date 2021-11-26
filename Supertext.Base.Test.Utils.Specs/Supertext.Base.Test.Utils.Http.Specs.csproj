@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Supertext.Base.Test.Utils\Supertext.Base.Test.Utils.csproj" />
+    <ProjectReference Include="..\Supertext.Base.Test.Utils.Http\Supertext.Base.Test.Utils.Http.csproj" />
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
 
