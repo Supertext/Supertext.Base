@@ -59,14 +59,47 @@ namespace Supertext.Base.Factory
             throw new KeyNotFoundException($"No component registered with key '{key}'");
         }
 
+        public T CreateComponent(TKey key, params Parameter[] parameters)
+        {
+            Validate.NotNull(key, "key");
+
+            if (ExistsKeyService(key))
+            {
+                return ResolveKeyService(key, parameters);
+            }
+            if (ExistsDefaultKeyService())
+            {
+                return ResolveDefaultKeyService(parameters);
+            }
+            if (ExistsComponentAttributeService(key))
+            {
+                return ResolveComponentAttributeService(key, parameters);
+            }
+            if (ExistsDefaultComponentAttributeService())
+            {
+                return ResolveDefaultComponentAttributeService(parameters);
+            }
+            throw new KeyNotFoundException($"No component registered with key '{key}'");
+        }
+
         private T ResolveKeyService(TKey key)
         {
             return (T)_componentContext.ResolveKeyed(key, typeof(T));
         }
 
+        private T ResolveKeyService(TKey key, IEnumerable<Parameter> parameters)
+        {
+            return (T)_componentContext.ResolveKeyed(key, typeof(T), parameters);
+        }
+
         private T ResolveDefaultKeyService()
         {
             return (T)_componentContext.ResolveKeyed(DefaultKeyRegistrationType.Default, typeof(T));
+        }
+
+        private T ResolveDefaultKeyService(IEnumerable<Parameter> parameters)
+        {
+            return (T)_componentContext.ResolveKeyed(DefaultKeyRegistrationType.Default, typeof(T), parameters);
         }
 
         private T ResolveComponentAttributeService(TKey key)
@@ -80,9 +113,27 @@ namespace Supertext.Base.Factory
             throw new KeyNotFoundException($"No component registered with key '{key}'" );
         }
 
+        private T ResolveComponentAttributeService(TKey key, IEnumerable<Parameter> parameters)
+        {
+            if (_registrations.Value.ContainsKey(key))
+            {
+                var resolveRequest = new ResolveRequest(new UniqueService(), _registrations.Value[key], parameters);
+
+                return (T)_componentContext.ResolveComponent(resolveRequest);
+            }
+            throw new KeyNotFoundException($"No component registered with key '{key}'");
+        }
+
         private T ResolveDefaultComponentAttributeService()
         {
             var resolveRequest = new ResolveRequest(new UniqueService(), _defaultComponentAttributeRegistration, Enumerable.Empty<Parameter>());
+
+            return (T)_componentContext.ResolveComponent(resolveRequest);
+        }
+
+        private T ResolveDefaultComponentAttributeService(IEnumerable<Parameter> parameters)
+        {
+            var resolveRequest = new ResolveRequest(new UniqueService(), _defaultComponentAttributeRegistration, parameters);
 
             return (T)_componentContext.ResolveComponent(resolveRequest);
         }
@@ -116,7 +167,7 @@ namespace Supertext.Base.Factory
             }
 
             // If nothing can be loaded, try to resolve type and recollect again.
-            _componentContext.TryResolve(typeof(T), out var instance);
+            _componentContext.TryResolve(typeof(T), out var _);
             return GetComponentsWithComponentKeyAttribute();
         }
 
