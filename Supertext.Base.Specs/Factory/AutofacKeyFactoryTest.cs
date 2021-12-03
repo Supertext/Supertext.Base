@@ -113,6 +113,18 @@ namespace Supertext.Base.Specs.Factory
             result.Url.Should().Be("localhost");
         }
 
+        [TestMethod]
+        public void CreateComponent_WhenInstanceConstructorNeedsNoneResolvableInjectableParameters_ThenParametersArePassed()
+        {
+            var context = CreateComponentContextWithConfigRegistration();
+            var testParameter = "SomeParam";
+            var testee = context.Resolve<IKeyFactory<ComponentKeyType, ISomethingWithParameters>>();
+
+            var result = testee.CreateComponent(ComponentKeyType.One, new TypedParameter(typeof(string), testParameter));
+
+            result.Parameter.Should().Be(testParameter);
+        }
+
         private static IComponentContext CreateComponentContext()
         {
             var containerBuilder = CreateContainerBuilderWithDefaultRegistrations();
@@ -158,6 +170,7 @@ namespace Supertext.Base.Specs.Factory
             containerBuilder.RegisterType<ComponentTwoToCreate>().Keyed<IKeyComponentToCreate>(ComponentKeyType.Three);
             containerBuilder.RegisterType<DefaultComponentToCreate>().KeyedDefault(typeof(IKeyComponentToCreate));
             containerBuilder.RegisterType<ComponentDispatcher>().As<IComponentDispatcher>();
+            containerBuilder.RegisterType<SomethingWithParameters>().Keyed<ISomethingWithParameters>(ComponentKeyType.One);
         }
     }
 }
