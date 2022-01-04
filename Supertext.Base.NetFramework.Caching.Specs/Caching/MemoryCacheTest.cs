@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using FakeItEasy;
 using FluentAssertions;
@@ -188,6 +189,44 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
                                                       isCreatedByFactoryMethod = true;
                                                       return new CacheItem1();
                                                   });
+
+            //Assert
+            result.Should().NotBe(cacheItem);
+            isCreatedByFactoryMethod.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task GetOrCreateAndGetAsync_CacheItemIsAdded_CacheReturnsItem()
+        {
+            //Arrange
+            var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
+            _cacheSettings.LifeTimeInSeconds = 10;
+            var cacheItem = new CacheItem1();
+
+            //Act
+            var result = await testee.GetOrCreateAndGetAsync("key1", async key => await Task.FromResult(cacheItem));
+
+            //Assert
+            result.Should().Be(cacheItem);
+        }
+
+        [TestMethod]
+        public async Task GetOrCreateAndGetAsync_CacheItemIsExpired_CacheReturnsItem()
+        {
+            //Arrange
+            var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
+            _cacheSettings.LifeTimeInSeconds = 0;
+            var cacheItem = new CacheItem1();
+            testee.Add("key1", cacheItem);
+            var isCreatedByFactoryMethod = false;
+
+            //Act
+            var result = await testee.GetOrCreateAndGetAsync("key1",
+                                                             s =>
+                                                             {
+                                                                 isCreatedByFactoryMethod = true;
+                                                                 return Task.FromResult(new CacheItem1());
+                                                             });
 
             //Assert
             result.Should().NotBe(cacheItem);
