@@ -9,7 +9,7 @@ namespace Supertext.Base.NetFramework.Caching.Caching
 {
     internal class MemoryCache<T> : IMemoryCache<T> where T : class
     {
-        private static readonly AsyncDuplicateLock SyncLock = new AsyncDuplicateLock();
+        private readonly AsyncDuplicateLock _syncLock = new AsyncDuplicateLock();
         private readonly ICacheSettings _settings;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly MemoryCache _memoryCache;
@@ -28,7 +28,7 @@ namespace Supertext.Base.NetFramework.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(item, nameof(item));
 
-            using (SyncLock.Lock(key))
+            using (_syncLock.Lock(key))
             {
                 _memoryCache.Set(key, item, _dateTimeProvider.UtcNow.AddSeconds(_settings.LifeTimeInSeconds));
             }
@@ -38,7 +38,7 @@ namespace Supertext.Base.NetFramework.Caching.Caching
         {
             Validate.NotEmpty(key, nameof(key));
 
-            using (SyncLock.Lock(key))
+            using (_syncLock.Lock(key))
             {
                 return _memoryCache.Get(key) is T item ? Option<T>.Some(item) : Option<T>.None();
             }
@@ -49,7 +49,7 @@ namespace Supertext.Base.NetFramework.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(factoryMethod, nameof(factoryMethod));
 
-            using (SyncLock.Lock(key))
+            using (_syncLock.Lock(key))
             {
                 if (!(_memoryCache.Get(key) is T result))
                 {
@@ -66,11 +66,11 @@ namespace Supertext.Base.NetFramework.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(factoryMethod, nameof(factoryMethod));
 
-            using (await SyncLock.LockAsync(key))
+            using (await _syncLock.LockAsync(key).ConfigureAwait(false))
             {
                 if (!(_memoryCache.Get(key) is T result))
                 {
-                    result = await factoryMethod(key);
+                    result = await factoryMethod(key).ConfigureAwait(false);
                     _memoryCache.Set(key, result, _dateTimeProvider.UtcNow.AddSeconds(_settings.LifeTimeInSeconds));
                 }
 
@@ -82,7 +82,7 @@ namespace Supertext.Base.NetFramework.Caching.Caching
         {
             Validate.NotEmpty(key, nameof(key));
 
-            using (SyncLock.Lock(key))
+            using (_syncLock.Lock(key))
             {
                 _memoryCache.Remove(key);
             }
