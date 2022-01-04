@@ -75,10 +75,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caching\ContainerBuilderExtension.cs" />
-    <Compile Include="Caching\MemoryCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Caching\Supertext.Base.Caching.csproj">
+      <Project>{fd9ccc07-edaf-42a2-82a5-9d84137301e1}</Project>
+      <Name>Supertext.Base.Caching</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj">
       <Project>{F05FB7F6-67C0-4175-8295-BD3A73932F5A}</Project>
       <Name>Supertext.Base</Name>

@@ -4,11 +4,10 @@ using Autofac;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Caching;
+using Supertext.Base.Caching.Caching;
 using Supertext.Base.Common;
-using Supertext.Base.NetFramework.Caching.Caching;
 
-namespace Supertext.Base.NetFramework.Caching.Specs.Caching
+namespace Supertext.Base.Caching.Specs.Caching
 {
     [TestClass]
     public class MemoryCacheTest
@@ -166,7 +165,7 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
             var cacheItem = new CacheItem1();
 
             //Act
-            var result = testee.GetOrCreateAndGet("key1", s => cacheItem);
+            var result = testee.GetOrCreateAndGet("key1", _ => cacheItem);
 
             //Assert
             result.Should().Be(cacheItem);
@@ -184,7 +183,7 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
 
             //Act
             var result = testee.GetOrCreateAndGet("key1",
-                                                  s =>
+                                                  _ =>
                                                   {
                                                       isCreatedByFactoryMethod = true;
                                                       return new CacheItem1();
@@ -204,7 +203,7 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
             var cacheItem = new CacheItem1();
 
             //Act
-            var result = await testee.GetOrCreateAndGetAsync("key1", async key => await Task.FromResult(cacheItem));
+            var result = await testee.GetOrCreateAndGetAsync("key1", async _ => await Task.FromResult(cacheItem));
 
             //Assert
             result.Should().Be(cacheItem);
@@ -222,7 +221,7 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
 
             //Act
             var result = await testee.GetOrCreateAndGetAsync("key1",
-                                                             s =>
+                                                             _ =>
                                                              {
                                                                  isCreatedByFactoryMethod = true;
                                                                  return Task.FromResult(new CacheItem1());
@@ -242,10 +241,8 @@ namespace Supertext.Base.NetFramework.Caching.Specs.Caching
             _dateTimeProvider = A.Fake<IDateTimeProvider>();
             containerBuilder.RegisterInstance(_dateTimeProvider);
 
-#pragma warning disable CS0618
             containerBuilder.RegisterCache<CacheItem1, CacheSettings>("cacheItem1");
             containerBuilder.RegisterCache<CacheItem2, CacheSettings>("cacheItem2");
-#pragma warning restore CS0618
 
             return containerBuilder.Build();
         }

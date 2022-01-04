@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.Caching;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Supertext.Base.Caching;
 using Supertext.Base.Common;
 using Supertext.Base.Threading;
 
-namespace Supertext.Base.NetFramework.Caching.Caching
+[assembly: InternalsVisibleTo("Supertext.Base.NetFramework.Caching")]
+namespace Supertext.Base.Caching.Caching
 {
     internal class MemoryCache<T> : IMemoryCache<T> where T : class
     {
