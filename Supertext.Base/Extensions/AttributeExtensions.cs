@@ -12,6 +12,21 @@ namespace Supertext.Base.Extensions
     public static class AttributeExtensions
     {
         /// <summary>
+        /// Gets an attribute on a property.
+        /// </summary>
+        /// <typeparam name="T">The type of the attribute you want to retrieve</typeparam>
+        /// <param name="propertyInfo">An instance of <c>PropertyInfo</c>.</param>
+        /// <returns>The attribute of type <see cref="T"/> that exists on the property.</returns>
+        /// <seealso cref="GetAttributeOfType{T, TValue}"/>
+        public static T GetAttributeOfType<T>(this PropertyInfo propertyInfo) where T : Attribute
+        {
+            var attributes = propertyInfo.GetCustomAttributes(typeof(T), false);
+            return attributes.Length > 0
+                       ? (T)attributes[0]
+                       : null;
+        }
+
+        /// <summary>
         /// Gets an attribute on an enum field value
         /// </summary>
         /// <typeparam name="T">The type of the attribute you want to retrieve</typeparam>
