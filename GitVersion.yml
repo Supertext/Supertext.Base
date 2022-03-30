@@ -2,8 +2,11 @@ assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
 branches:
   develop:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
+    tracks-release-branches: true
+    is-release-branch: false
     tag: CI
+    source-branches: ['master']
   master:
     tag: ''
 ignore:
