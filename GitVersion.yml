@@ -6,6 +6,7 @@ continuous-delivery-fallback-tag: ci
 update-build-number: true
 branches:
   master:
+    regex: ^master$|^main$
     mode: ContinuousDelivery
     tag: ''
     increment: None
@@ -17,6 +18,7 @@ branches:
     is-mainline: true
     pre-release-weight: 55000    
   develop:
+    regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: CI
     increment: Minor
