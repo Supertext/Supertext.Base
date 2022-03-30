@@ -35,6 +35,7 @@ namespace Supertext.Base.Core.Configuration.Localization
             var supertextCultureName = GetSupertextCultureName(DefaultCultures.SupertextDefaultCultures, languages)
                                        ?? GetSupertextLocaleAgnosticCultureName(DefaultCultures.SupertextDefaultCultures, languages)
                                        ?? DefaultCultures.DefaultCultureInfo.Name;
+
             var supertextUICultureName = GetSupertextCultureName(DefaultCultures.SupertextDefaultUICultures, languages)
                                          ?? GetSupertextLocaleAgnosticCultureName(DefaultCultures.SupertextDefaultUICultures, languages)
                                          ?? DefaultCultures.DefaultUICultureInfo.Name;
@@ -44,18 +45,32 @@ namespace Supertext.Base.Core.Configuration.Localization
 
         private static string GetSupertextCultureName(IList<CultureInfo> supertextCultures, IEnumerable<string> browserSpecifiedLanguages)
         {
-            return (from language in browserSpecifiedLanguages
-                    select supertextCultures.SingleOrDefault(sci => String.Equals(sci.Name, language, StringComparison.InvariantCultureIgnoreCase)) into supertextCulture
-                    where supertextCulture != null
-                    select supertextCulture.Name).SingleOrDefault();
+            foreach (var browserSpecifiedLanguage in browserSpecifiedLanguages)
+            {
+                var supertextCulture = supertextCultures.SingleOrDefault(sci => String.Equals(sci.Name, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
+
+                if (supertextCulture != null)
+                {
+                    return supertextCulture.Name;
+                }
+            }
+
+            return null;
         }
 
         private static string GetSupertextLocaleAgnosticCultureName(IList<CultureInfo> supertextCultures, IEnumerable<string> browserSpecifiedLanguages)
         {
-            return (from language in browserSpecifiedLanguages
-                    select supertextCultures.SingleOrDefault(sci => String.Equals(sci.TwoLetterISOLanguageName, language, StringComparison.InvariantCultureIgnoreCase)) into supertextCulture
-                    where supertextCulture != null
-                    select supertextCulture.Name).SingleOrDefault();
+            foreach (var browserSpecifiedLanguage in browserSpecifiedLanguages)
+            {
+                var supertextCulture = supertextCultures.SingleOrDefault(sci => String.Equals(sci.TwoLetterISOLanguageName, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
+
+                if (supertextCulture != null)
+                {
+                    return supertextCulture.Name;
+                }
+            }
+
+            return null;
         }
     }
 }
