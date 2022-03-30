@@ -4,10 +4,11 @@ branches:
   develop:
     mode: ContinuousDeployment
     tracks-release-branches: true
+    source-branches: []
     is-release-branch: false
     tag: CI
-    source-branches: ['master']
   master:
     tag: ''
+    source-branches: [ 'develop' ]
 ignore:
   sha: []
