@@ -47,7 +47,7 @@ namespace Supertext.Base.Core.Configuration.Localization
             return (from language in browserSpecifiedLanguages
                     select supertextCultures.SingleOrDefault(sci => String.Equals(sci.Name, language, StringComparison.InvariantCultureIgnoreCase)) into supertextCulture
                     where supertextCulture != null
-                    select supertextCulture.Name).FirstOrDefault();
+                    select supertextCulture.Name).SingleOrDefault();
         }
 
         private static string GetSupertextLocaleAgnosticCultureName(IList<CultureInfo> supertextCultures, IEnumerable<string> browserSpecifiedLanguages)
@@ -55,7 +55,7 @@ namespace Supertext.Base.Core.Configuration.Localization
             return (from language in browserSpecifiedLanguages
                     select supertextCultures.SingleOrDefault(sci => String.Equals(sci.TwoLetterISOLanguageName, language, StringComparison.InvariantCultureIgnoreCase)) into supertextCulture
                     where supertextCulture != null
-                    select supertextCulture.Name).FirstOrDefault();
+                    select supertextCulture.Name).SingleOrDefault();
         }
     }
 }
