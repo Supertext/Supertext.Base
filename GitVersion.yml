@@ -4,6 +4,7 @@ mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-tag: ci
 update-build-number: true
+next-version 6.4.0-ci-20220303-150856
 branches:
   master:
     regex: ^master$|^main$
@@ -18,7 +19,7 @@ branches:
     is-mainline: true
     pre-release-weight: 55000    
   develop:
-    regex: ^dev(elop)?(ment)?$
+    regex: ^develop$
     mode: ContinuousDeployment
     tag: CI
     increment: Minor
