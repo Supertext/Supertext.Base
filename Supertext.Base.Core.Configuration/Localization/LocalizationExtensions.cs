@@ -16,15 +16,22 @@ namespace Supertext.Base.Core.Configuration.Localization
                 cultures.AddRange(additionalCultures);
             }
 
+            var uiCultures = new List<CultureInfo>(DefaultCultures.SupertextDefaultUICultures);
+            if (additionalCultures != null)
+            {
+                uiCultures.AddRange(additionalCultures);
+            }
+
             services.Configure<RequestLocalizationOptions>(options =>
                                                            {
                                                                options.DefaultRequestCulture = new RequestCulture(DefaultCultures.DefaultCultureInfo.Name);
                                                                options.SupportedCultures = cultures;
-                                                               options.SupportedUICultures = cultures;
+                                                               options.SupportedUICultures = uiCultures;
                                                                options.RequestCultureProviders = new List<IRequestCultureProvider>
                                                                                                  {
                                                                                                      new RouteDataLanguageProvider { RouteDataStringKey = "languageCode"},
-                                                                                                     new CookieRequestCultureProvider()
+                                                                                                     new CookieRequestCultureProvider(),
+                                                                                                     new BrowserLanguagePreferenceProvider()
                                                                                                  };
                                                            });
         }
