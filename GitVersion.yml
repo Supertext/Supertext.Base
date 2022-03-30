@@ -1,15 +1,31 @@
 assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
-next-version: 6.4.0-ci-20220303-130156
+increment: Inherit
+continuous-delivery-fallback-tag: ci
+update-build-number: true
 branches:
+  master:
+    mode: ContinuousDelivery
+    tag: ''
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches: [ 'develop' ]
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: true
+    pre-release-weight: 55000    
   develop:
     mode: ContinuousDeployment
-    tracks-release-branches: true
-    source-branches: []
-    is-release-branch: false
     tag: CI
-  master:
-    tag: ''
-    source-branches: [ 'develop' ]
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
 ignore:
   sha: []
