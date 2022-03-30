@@ -5,7 +5,7 @@ increment: Inherit
 continuous-delivery-fallback-tag: ci
 update-build-number: true
 branches:
-  master:
+  main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
     tag: ''
@@ -28,7 +28,6 @@ branches:
     tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
-    is-develop: true
     pre-release-weight: 0
 ignore:
   sha: []
