@@ -4,7 +4,6 @@ mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-tag: ci
 update-build-number: true
-next-version: 6.4.0-ci-20220303-150856
 branches:
   master:
     regex: ^master$|^main$
@@ -24,7 +23,7 @@ branches:
     tag: CI
     increment: Minor
     prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
+    track-merge-target: false
     source-branches: []
     tracks-release-branches: true
     is-release-branch: false
