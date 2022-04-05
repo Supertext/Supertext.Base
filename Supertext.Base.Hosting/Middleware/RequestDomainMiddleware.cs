@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -19,8 +20,9 @@ namespace Supertext.Base.Hosting.Middleware
 
         public async Task InvokeAsync(HttpContext context, IDomainInitializer urlResolver)
         {
-            var domain = context.Request.Host.Host;
-
+            var host = context.Request.Host.Host;
+            var domain = String.Join(".", host.Split('.').Reverse().Take(2).Reverse());
+            
             if (!String.IsNullOrWhiteSpace(domain))
             {
                 urlResolver.AddDomain(domain);
