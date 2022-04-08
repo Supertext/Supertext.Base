@@ -81,5 +81,25 @@ namespace Supertext.Base.Net.Specs.Http
 
             result.AbsoluteUri.Should().Be("https://dev.supertext.ch/api/v1/order?orderId=123123");
         }
+
+        [TestMethod]
+        public void GetHost_DomainIsGiven_Created()
+        {
+            _testee.AddDomain("www.supertext.ch");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.ch");
+        }
+
+        [TestMethod]
+        public void GetHost_SubdomainIsGiven_Created()
+        {
+            _testee.AddDomain("dev.supertext.ch");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.ch");
+        }
     }
 }

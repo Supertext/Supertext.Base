@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Supertext.Base.Http;
 
 namespace Supertext.Base.Net.Http
 {
-    internal class UriBuilder : IUriBuilder, IDomainInitializer
+    internal class UriBuilder : IUriBuilder, IDomainInitializer, IHostInitializer
     {
         private string _currentDomain;
         private const string DomainPlaceholder = "{domain}";
@@ -22,6 +23,11 @@ namespace Supertext.Base.Net.Http
         public void AddDomain(string domain)
         {
             _currentDomain = domain;
+        }
+
+        public string GetHost()
+        {
+            return String.Join(".", _currentDomain.Split('.').Reverse().Take(2).Reverse());
         }
     }
 }
