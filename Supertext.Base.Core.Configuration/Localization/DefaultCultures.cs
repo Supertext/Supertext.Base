@@ -7,7 +7,7 @@ namespace Supertext.Base.Core.Configuration.Localization
     {
         public static CultureInfo DefaultCultureInfo => CultureInfo.GetCultureInfo("de-CH");
 
-        public static CultureInfo DefaultUICultureInfo => DefaultCultureInfo;
+        public static CultureInfo DefaultUiCultureInfo => DefaultCultureInfo;
 
         public static IList<CultureInfo> SupertextDefaultCultures =>
             new List<CultureInfo>
@@ -22,7 +22,7 @@ namespace Supertext.Base.Core.Configuration.Localization
                 CultureInfo.GetCultureInfo("it-IT")
             };
 
-        public static IList<CultureInfo> SupertextDefaultUICultures =>
+        public static IList<CultureInfo> SupertextDefaultUiCultures =>
             new List<CultureInfo>
             {
                 DefaultCultureInfo,

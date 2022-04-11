@@ -16,7 +16,7 @@ namespace Supertext.Base.Core.Configuration.Localization
                 cultures.AddRange(additionalCultures);
             }
 
-            var uiCultures = new List<CultureInfo>(DefaultCultures.SupertextDefaultUICultures);
+            var uiCultures = new List<CultureInfo>(DefaultCultures.SupertextDefaultUiCultures);
             if (additionalCultures != null)
             {
                 uiCultures.AddRange(additionalCultures);

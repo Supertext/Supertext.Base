@@ -45,7 +45,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Localization
             result.Result.Cultures.Single().Value.Should().Be(DefaultCultures.DefaultCultureInfo.Name);
 
             result.Result.UICultures.Count.Should().Be(1);
-            result.Result.UICultures.Single().Value.Should().Be(DefaultCultures.DefaultUICultureInfo.Name);
+            result.Result.UICultures.Single().Value.Should().Be(DefaultCultures.DefaultUiCultureInfo.Name);
         }
 
         [TestMethod]
@@ -76,6 +76,21 @@ namespace Supertext.Base.Core.Configuration.Specs.Localization
 
             result.Result.UICultures.Count.Should().Be(1);
             result.Result.UICultures.Single().Value.Should().Be("en-US");
+        }
+
+        [TestMethod]
+        public void DetermineProviderCultureResult_WhenLocaleIsNotSpecified_ThenReturnsFirstLocaleAgnosticCulture()
+        {
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers[HeaderNames.AcceptLanguage] = "de";
+
+            var result = _testee.DetermineProviderCultureResult(httpContext);
+
+            result.Result.Cultures.Count.Should().Be(1);
+            result.Result.Cultures.Single().Value.Should().Be("de-CH");
+
+            result.Result.UICultures.Count.Should().Be(1);
+            result.Result.UICultures.Single().Value.Should().Be("de-CH");
         }
     }
 }

@@ -36,18 +36,18 @@ namespace Supertext.Base.Core.Configuration.Localization
                                        ?? GetSupertextLocaleAgnosticCultureName(DefaultCultures.SupertextDefaultCultures, languages)
                                        ?? DefaultCultures.DefaultCultureInfo.Name;
 
-            var supertextUICultureName = GetSupertextCultureName(DefaultCultures.SupertextDefaultUICultures, languages)
-                                         ?? GetSupertextLocaleAgnosticCultureName(DefaultCultures.SupertextDefaultUICultures, languages)
-                                         ?? DefaultCultures.DefaultUICultureInfo.Name;
+            var supertextUiCultureName = GetSupertextCultureName(DefaultCultures.SupertextDefaultUiCultures, languages)
+                                         ?? GetSupertextLocaleAgnosticCultureName(DefaultCultures.SupertextDefaultUiCultures, languages)
+                                         ?? DefaultCultures.DefaultUiCultureInfo.Name;
 
-            return Task.FromResult(new ProviderCultureResult(supertextCultureName, supertextUICultureName));
+            return Task.FromResult(new ProviderCultureResult(supertextCultureName, supertextUiCultureName));
         }
 
         private static string GetSupertextCultureName(IList<CultureInfo> supertextCultures, IEnumerable<string> browserSpecifiedLanguages)
         {
             foreach (var browserSpecifiedLanguage in browserSpecifiedLanguages)
             {
-                var supertextCulture = supertextCultures.SingleOrDefault(sci => String.Equals(sci.Name, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
+                var supertextCulture = supertextCultures.FirstOrDefault(sci => String.Equals(sci.Name, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
 
                 if (supertextCulture != null)
                 {
@@ -62,7 +62,7 @@ namespace Supertext.Base.Core.Configuration.Localization
         {
             foreach (var browserSpecifiedLanguage in browserSpecifiedLanguages)
             {
-                var supertextCulture = supertextCultures.SingleOrDefault(sci => String.Equals(sci.TwoLetterISOLanguageName, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
+                var supertextCulture = supertextCultures.FirstOrDefault(sci => String.Equals(sci.TwoLetterISOLanguageName, browserSpecifiedLanguage, StringComparison.InvariantCultureIgnoreCase));
 
                 if (supertextCulture != null)
                 {
