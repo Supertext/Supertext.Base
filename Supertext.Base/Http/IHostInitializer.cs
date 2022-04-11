@@ -2,6 +2,6 @@
 {
     public interface IHostInitializer
     {
-        string GetHost();
+        void AddHost(string host);
     }
 }

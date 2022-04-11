@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -18,15 +17,14 @@ namespace Supertext.Base.Hosting.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, IDomainInitializer urlResolver)
+        public async Task InvokeAsync(HttpContext context, IHostInitializer urlResolver)
         {
             var host = context.Request.Host.Host;
-            var domain = String.Join(".", host.Split('.').Reverse().Take(2).Reverse());
-            
-            if (!String.IsNullOrWhiteSpace(domain))
+           
+            if (!String.IsNullOrWhiteSpace(host))
             {
-                urlResolver.AddDomain(domain);
-                _logger.LogInformation($"{nameof(RequestDomainMiddleware)} {nameof(domain)}={domain}");
+                urlResolver.AddHost(host);
+                _logger.LogInformation($"{nameof(RequestDomainMiddleware)} {nameof(host)}={host}");
             }
 
             await _next(context).ConfigureAwait(false);
