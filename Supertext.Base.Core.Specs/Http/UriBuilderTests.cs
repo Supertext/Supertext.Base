@@ -81,5 +81,65 @@ namespace Supertext.Base.Net.Specs.Http
 
             result.AbsoluteUri.Should().Be("https://dev.supertext.ch/api/v1/order?orderId=123123");
         }
+
+        [TestMethod]
+        public void GetHost_DomainIsGiven_Created()
+        {
+            _testee.AddDomain("www.supertext.ch");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.ch");
+        }
+
+        [TestMethod]
+        public void GetHost_ComDomainIsGiven_Created()
+        {
+            _testee.AddDomain("www.supertext.com");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.com");
+        }
+
+        [TestMethod]
+        public void GetHost_DeDomainIsGiven_Created()
+        {
+            _testee.AddDomain("www.supertext.de");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.de");
+        }
+
+        [TestMethod]
+        public void GetHost_SubdomainIsGiven_Created()
+        {
+            _testee.AddDomain("dev.supertext.ch");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.ch");
+        }
+
+        [TestMethod]
+        public void GetHost_ComSubdomainIsGiven_Created()
+        {
+            _testee.AddDomain("dev.supertext.com");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.com");
+        }
+
+        [TestMethod]
+        public void GetHost_DeSubdomainIsGiven_Created()
+        {
+            _testee.AddDomain("dev.supertext.de");
+
+            var result = _testee.GetHost();
+
+            result.Should().Be("supertext.de");
+        }
     }
 }
