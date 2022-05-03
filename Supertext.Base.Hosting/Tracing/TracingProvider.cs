@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using Supertext.Base.Hosting.Middleware;
 using Supertext.Base.Tracing;
 
 namespace Supertext.Base.Hosting.Tracing;
@@ -7,6 +8,7 @@ namespace Supertext.Base.Hosting.Tracing;
 internal class TracingProvider : ITracingProvider, ITracingInitializer
 {
     private readonly ILogger<TracingProvider> _logger;
+    private const string DigitsFormat = "N";
 
     public TracingProvider(ILogger<TracingProvider> logger)
     {
@@ -14,6 +16,10 @@ internal class TracingProvider : ITracingProvider, ITracingInitializer
     }
 
     public Guid CorrelationId { get; private set; }
+
+    public string CorrelationIdDigitsFormat => CorrelationId.ToString(DigitsFormat);
+
+    public string CorrelationIdHeaderName => CorrelationIdOptions.DefaultHeader;
 
     public void SetNewCorrelationId(Guid correlationId)
     {

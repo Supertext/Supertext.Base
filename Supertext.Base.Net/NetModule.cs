@@ -13,7 +13,10 @@ namespace Supertext.Base.Net
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<MailService>().As<IMailService>();
+#pragma warning disable CS0618
             builder.RegisterType<ProtectedHttpRequestMessageFactory>().As<IProtectedHttpRequestMessageFactory>();
+#pragma warning restore CS0618
+            builder.RegisterType<HttpRequestMessageBuilder>().As<IHttpRequestMessageBuilder>();
             builder.RegisterType<TokenProvider>().As<ITokenProvider>();
             builder.RegisterType<UriBuilder>().As<IUriBuilder>().As<IDomainInitializer>().As<IHostInitializer>().InstancePerLifetimeScope();
         }
