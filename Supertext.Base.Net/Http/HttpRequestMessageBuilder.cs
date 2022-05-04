@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
+using Microsoft.Extensions.Logging;
 using Supertext.Base.Authentication;
 using Supertext.Base.Common;
 using Supertext.Base.Tracing;
@@ -13,12 +14,16 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
 {
     private readonly ITokenProvider _tokenProvider;
     private readonly ITracingProvider _tracingProvider;
+    private readonly ILogger<HttpRequestMessageBuilder> _logger;
     private readonly SortedList<int, Func<HttpRequestMessage, Task<HttpRequestMessage>>> _actions = new();
 
-    public HttpRequestMessageBuilder(ITokenProvider tokenProvider, ITracingProvider tracingProvider)
+    public HttpRequestMessageBuilder(ITokenProvider tokenProvider,
+                                     ITracingProvider tracingProvider,
+                                     ILogger<HttpRequestMessageBuilder> logger)
     {
         _tokenProvider = tokenProvider;
         _tracingProvider = tracingProvider;
+        _logger = logger;
     }
 
     public IHttpRequestMessageBuilder Create(HttpMethod method, string requestUri, HttpContent content = null)
@@ -58,6 +63,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
                      request =>
                      {
                          request.Headers.Add(_tracingProvider.CorrelationIdHeaderName, _tracingProvider.CorrelationIdDigitsFormat);
+                         _logger.LogInformation($"HttpRequestMessage created. Url={request.RequestUri?.AbsolutePath}; CorrelationId={_tracingProvider.CorrelationIdDigitsFormat}");
                          return Task.FromResult(request);
                      });
 
