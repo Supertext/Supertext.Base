@@ -45,8 +45,25 @@ namespace Supertext.Base.Net.Specs.Http
             const string clientId = "Some client";
             const string sub = "4711";
             var builder = _testee.Create(HttpMethod.Get, requestUri)
-                                 .UseBearerTokenWithDelegation(clientId, sub)
+                                 .UseBearerToken(clientId, sub)
                                  .UseCorrelationId();
+
+            var result = await builder.BuildAsync();
+
+            result.Should().NotBeNull();
+            result.Headers.GetValues(AuthorizationHeader).Single().Should().Be($"Bearer {Token}");
+            result.Headers.GetValues(CorrelationIdHeaderName).Single().Should().Be(CorrelationId);
+        }
+
+        [TestMethod]
+        public async Task BuildAsync_UseOfAllStepsAreIncludedButDifferentInvocationOrder_HttpRequestMessageIsBuiltAccordingly()
+        {
+            const string requestUri = "/api/bla";
+            const string clientId = "Some client";
+            const string sub = "4711";
+            var builder = _testee.UseBearerToken(clientId, sub)
+                                 .UseCorrelationId()
+                                 .Create(HttpMethod.Get, requestUri);
 
             var result = await builder.BuildAsync();
 
@@ -62,7 +79,7 @@ namespace Supertext.Base.Net.Specs.Http
             const string clientId = "Some client";
             const string sub = "4711";
             var builder = _testee.Create(HttpMethod.Get, requestUri)
-                                 .UseBearerTokenWithDelegation(clientId, sub);
+                                 .UseBearerToken(clientId, sub);
 
             var result = await builder.BuildAsync();
 

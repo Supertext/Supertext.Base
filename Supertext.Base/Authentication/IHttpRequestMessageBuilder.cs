@@ -7,10 +7,7 @@ public interface IHttpRequestMessageBuilder
 {
     IHttpRequestMessageBuilder Create(HttpMethod method, string requestUri, HttpContent content = null);
 
-    IHttpRequestMessageBuilder UseBearerTokenWithClientCredentials(string clientId);
-
-    IHttpRequestMessageBuilder UseBearerTokenWithDelegation(string clientId,
-                                                            string sub);
+    IHttpRequestMessageBuilder UseBearerToken(string clientId, string sub);
 
     IHttpRequestMessageBuilder UseCorrelationId();
 
