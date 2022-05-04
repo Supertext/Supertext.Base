@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Authentication;
 using Supertext.Base.Net.Http;
@@ -26,7 +27,8 @@ namespace Supertext.Base.Net.Specs.Http
         {
             _tokenProvider = A.Fake<ITokenProvider>();
             _tracingProvider = A.Fake<ITracingProvider>();
-            _testee = new HttpRequestMessageBuilder(_tokenProvider, _tracingProvider);
+            var logger = A.Fake<ILogger<HttpRequestMessageBuilder>>();
+            _testee = new HttpRequestMessageBuilder(_tokenProvider, _tracingProvider, logger);
 
             A.CallTo(() => _tokenProvider.RetrieveAccessTokenAsync(A<string>._,
                                                                    A<string>._,
