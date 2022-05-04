@@ -6,6 +6,7 @@ using Supertext.Base.Net.Http;
 using Supertext.Base.Net.Mail;
 
 [assembly:InternalsVisibleTo("Supertext.Base.Net.Specs")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Supertext.Base.Net
 {
     public class NetModule : Module

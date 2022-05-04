@@ -63,7 +63,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
                      request =>
                      {
                          request.Headers.Add(_tracingProvider.CorrelationIdHeaderName, _tracingProvider.CorrelationIdDigitsFormat);
-                         _logger.LogInformation($"HttpRequestMessage created. Url={request.RequestUri?.AbsolutePath}; CorrelationId={_tracingProvider.CorrelationIdDigitsFormat}");
+                         _logger.LogInformation($"HttpRequestMessage created. Url={request.RequestUri?.OriginalString}; CorrelationId={_tracingProvider.CorrelationIdDigitsFormat}");
                          return Task.FromResult(request);
                      });
 
