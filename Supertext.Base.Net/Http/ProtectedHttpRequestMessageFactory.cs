@@ -6,7 +6,9 @@ using Supertext.Base.Authentication;
 
 namespace Supertext.Base.Net.Http
 {
+#pragma warning disable CS0618
     internal class ProtectedHttpRequestMessageFactory : IProtectedHttpRequestMessageFactory
+#pragma warning restore CS0618
     {
         private readonly ITokenProvider _tokenProvider;
         private readonly ILogger<ProtectedHttpRequestMessageFactory> _logger;
