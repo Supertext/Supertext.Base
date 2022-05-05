@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Supertext.Base.Factory;
+using Supertext.Base.Hosting.Tracing;
 using Supertext.Base.Net.Mail;
 
 namespace Supertext.Base.Hosting.Queuing
@@ -14,6 +16,8 @@ namespace Supertext.Base.Hosting.Queuing
     /// </summary>
     public class QueuedHostedService : BackgroundService
     {
+        private const string CorrelationIdPropertyName = "CorrelationId";
+        private const string DigitsFormat = "N";
         private readonly IHostEnvironment _environment;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger _logger;
@@ -43,13 +47,19 @@ namespace Supertext.Base.Hosting.Queuing
 
                 try
                 {
-                    using (var scope = _lifetimeScope.BeginLifetimeScope())
+                    using (_logger.BeginScope(new Dictionary<string, object>{ { CorrelationIdPropertyName, workItem.CorrelationId.ToString(DigitsFormat) } }))
                     {
-                        _logger.LogInformation($"Starting with workitem. Target: {workItem.Target}, Method name: {workItem.Method.Name}");
-                        var factory = scope.Resolve<IFactory>();
-                        await workItem(factory, stoppingToken).ConfigureAwait(false);
-                        TaskQueue.WorkItemFinished();
-                        _logger.LogInformation($"Workitem finished. Target: {workItem.Target}");
+                        await using (var scope = _lifetimeScope.BeginLifetimeScope())
+                        {
+                            var tracingInitializer = scope.Resolve<ITracingInitializer>();
+                            tracingInitializer.SetNewCorrelationId(workItem.CorrelationId);
+
+                            _logger.LogInformation($"Starting with workitem. Target: {workItem.Func.Target}, Method name: {workItem.Func.Method.Name}");
+                            var factory = scope.Resolve<IFactory>();
+                            await workItem.Func(factory, stoppingToken).ConfigureAwait(false);
+                            TaskQueue.WorkItemFinished();
+                            _logger.LogInformation($"Workitem finished. Target: {workItem.Func.Target}");
+                        }
                     }
                 }
                 catch (Exception ex)

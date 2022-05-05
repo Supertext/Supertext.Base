@@ -20,6 +20,8 @@ namespace Supertext.Base.Hosting.Scheduling
     /// <typeparam name="TJobPayload">Generic type, which is representing the type of the payload, used for the scheduled job.</typeparam>
     public class SchedulerHostedService<TJobPayload> : BackgroundService
     {
+        private const string CorrelationIdPropertyName = "CorrelationId";
+        private const string DigitsFormat = "N";
         private readonly IHostEnvironment _environment;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ILogger _logger;
@@ -79,17 +81,20 @@ namespace Supertext.Base.Hosting.Scheduling
 
             try
             {
-                using (var scope = _lifetimeScope.BeginLifetimeScope())
+                using (_logger.BeginScope(new Dictionary<string, object> { { CorrelationIdPropertyName, job.CorrelationId.ToString(DigitsFormat) } }))
                 {
-                    _logger.LogInformation($"Starting with job with id: {job.Id}. Target: {job.WorkItem.Target}, Method name: {job.WorkItem.Method.Name}");
-                    var factory = scope.Resolve<IFactory>();
-                    if (jobItem.CancellationTokenSource.IsCancellationRequested)
+                    using (var scope = _lifetimeScope.BeginLifetimeScope())
                     {
-                        _logger.LogInformation($"Job has been cancelled. Id: {job.Id}");
-                        return;
+                        _logger.LogInformation($"Starting with job with id: {job.Id}. Target: {job.WorkItem.Target}, Method name: {job.WorkItem.Method.Name}");
+                        var factory = scope.Resolve<IFactory>();
+                        if (jobItem.CancellationTokenSource.IsCancellationRequested)
+                        {
+                            _logger.LogInformation($"Job has been cancelled. Id: {job.Id}");
+                            return;
+                        }
+                        job.WorkItem(factory, jobItem.Job.Payload, jobItem.CancellationTokenSource.Token).GetAwaiter().GetResult();
+                        _logger.LogInformation($"Job finished. Id: {job.Id}");
                     }
-                    job.WorkItem(factory, jobItem.Job.Payload, jobItem.CancellationTokenSource.Token).GetAwaiter().GetResult();
-                    _logger.LogInformation($"Job finished. Id: {job.Id}");
                 }
             }
             catch (Exception ex)
