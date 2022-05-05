@@ -78,6 +78,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
             request = await action.Value(request).ConfigureAwait(false);
         }
 
+        _actions.Clear();
         return request;
     }
 }
