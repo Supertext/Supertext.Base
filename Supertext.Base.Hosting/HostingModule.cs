@@ -2,7 +2,9 @@
 using Supertext.Base.BackgroundTasks;
 using Supertext.Base.Hosting.Queuing;
 using Supertext.Base.Hosting.Scheduling;
+using Supertext.Base.Hosting.Tracing;
 using Supertext.Base.Scheduling;
+using Supertext.Base.Tracing;
 
 namespace Supertext.Base.Hosting
 {
@@ -19,6 +21,8 @@ namespace Supertext.Base.Hosting
                    .As(typeof(IJobSchedulingObserver<>))
                    .As(typeof(IJobScheduler<>))
                    .SingleInstance();
+
+            builder.RegisterType<TracingProvider>().As<ITracingProvider>().As<ITracingInitializer>().InstancePerLifetimeScope();
         }
     }
 }

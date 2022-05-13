@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Supertext.Base.Authentication
@@ -13,6 +14,7 @@ namespace Supertext.Base.Authentication
     ///
     /// Also register Supertext.Base.Net.NetModule with Autofac.
     /// </remarks>
+    [Obsolete("Deprecated, use IHttpRequestMessageBuilder instead", error:false)]
     public interface IProtectedHttpRequestMessageFactory
     {
         /// <summary>

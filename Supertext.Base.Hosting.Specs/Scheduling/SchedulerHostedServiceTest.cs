@@ -2,11 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Serilog;
 using Supertext.Base.Hosting.Scheduling;
 using Supertext.Base.Modules;
 using Supertext.Base.Net;
@@ -21,13 +24,24 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
         private SchedulerHostedService<Guid> _testee;
         private IComponentContext _container;
         private static IMailService _mailService;
+        private Guid _correlationId;
 
         [TestInitialize]
         public void Init()
         {
+            Log.Logger = new LoggerConfiguration()
+                         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                         .Enrich.FromLogContext()
+                         .Enrich.WithCorrelationIdHeader()
+                         .CreateLogger();
+
             _container = CreateComponentContext();
+            var loggerFactory = _container.Resolve<ILoggerFactory>();
+            loggerFactory.AddSerilog();
             _testee = _container.Resolve<SchedulerHostedService<Guid>>();
             _testee.StartAsync(CancellationToken.None);
+
+            _correlationId = Guid.NewGuid();
         }
 
         [TestCleanup]
@@ -49,7 +63,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                     {
                                         payload = guid;
                                         await Task.CompletedTask;
-                                    });
+                                    },
+                                    _correlationId);
 
             jobScheduler.ScheduleJob(job);
 
@@ -75,7 +90,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                     {
                                         payload1 = guid;
                                         await Task.CompletedTask;
-                                    });
+                                    },
+                                    _correlationId);
             var job2 = new Job<Guid>(Guid.NewGuid(),
                                     TimeSpan.FromMilliseconds(40),
                                     Guid.NewGuid(),
@@ -83,7 +99,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                     {
                                         payload2 = guid;
                                         await Task.CompletedTask;
-                                    });
+                                    },
+                                     Guid.NewGuid());
 
             jobScheduler.ScheduleJob(job1);
             jobScheduler.ScheduleJob(job2);
@@ -110,7 +127,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                     (factory, guid, cancellationToken) =>
                                     {
                                         throw new ApplicationException("Error!!");
-                                    });
+                                    },
+                                    _correlationId);
 
             jobScheduler.ScheduleJob(job);
 
@@ -137,7 +155,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                      {
                                          payload1 = guid;
                                          await Task.CompletedTask;
-                                     });
+                                     },
+                                     _correlationId);
             var job2 = new Job<Guid>(Guid.NewGuid(),
                                      TimeSpan.FromMilliseconds(200),
                                      Guid.NewGuid(),
@@ -145,7 +164,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
                                      {
                                          payload2 = guid;
                                          await Task.CompletedTask;
-                                     });
+                                     },
+                                     Guid.NewGuid());
 
             jobScheduler.ScheduleJob(job1);
             jobScheduler.ScheduleJob(job2);
@@ -175,8 +195,9 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             containerBuilder.RegisterModule<NetModule>();
             containerBuilder.RegisterInstance(_mailService);
             containerBuilder.RegisterInstance(hostEnvironment);
-            var logger = A.Fake<ILoggerFactory>();
-            containerBuilder.RegisterInstance(logger).As<ILoggerFactory>();
+            var services = new ServiceCollection();
+            services.AddLogging();
+            containerBuilder.Populate(services);
             return containerBuilder.Build();
         }
 

@@ -8,9 +8,10 @@ namespace Supertext.Base.Scheduling
 {
     public class Job<TPayload>
     {
-        protected Job(Guid id)
+        protected Job(Guid id, Guid correlationId = default)
         {
             Id = id;
+            CorrelationId = correlationId;
         }
 
         /// <summary>
@@ -20,8 +21,10 @@ namespace Supertext.Base.Scheduling
         /// <param name="dueTime"></param>
         /// <param name="payload"></param>
         /// <param name="workItem"></param>
+        /// <param name="correlationId"></param>
         public Job(Guid id, TimeSpan dueTime, TPayload payload,
-                   Func<IFactory, TPayload, CancellationToken, Task> workItem)
+                   Func<IFactory, TPayload, CancellationToken, Task> workItem,
+                   Guid correlationId = default)
         {
             Validate.NotNull(id);
             Validate.NotNull(dueTime);
@@ -32,12 +35,15 @@ namespace Supertext.Base.Scheduling
             DueTime = dueTime;
             Payload = payload;
             WorkItem = workItem;
+            CorrelationId = correlationId;
         }
 
         /// <summary>
         /// Unique Id to schedule a job.
         /// </summary>
         public Guid Id { get; }
+
+        public Guid CorrelationId { get; }
 
         public TimeSpan DueTime { get; }
 
