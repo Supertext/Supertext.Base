@@ -3,7 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Exceptions;
 using Supertext.Base.Extensions;
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace Supertext.Base.Tests.Extensions
 {
@@ -103,6 +105,14 @@ namespace Supertext.Base.Tests.Extensions
             }
         }
 
+        private class TestPropInfoClass
+        {
+            [DisplayName("Test Display Name")]
+            public string DecoratedProperty { get; set; }
+
+            public string UndecoratedProperty { get; set; }
+        }
+
         [AttributeUsage(AttributeTargets.Field)]
         private class TestMissingEnumAttribute : Attribute
         { }
@@ -122,6 +132,33 @@ namespace Supertext.Base.Tests.Extensions
             TestValue1,
 
             TestValue2
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_On_Decorated_PropertyInfo_Returns_Expected_Value()
+        {
+            // Arrange
+            var propInfo = typeof(TestPropInfoClass).GetProperty(nameof(TestPropInfoClass.DecoratedProperty), BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public);
+            
+            // Act
+            var attr = propInfo.GetAttributeOfType<DisplayNameAttribute>();
+
+            // Assert
+            attr.Should().NotBeNull();
+            attr.DisplayName.Should().Be("Test Display Name");
+        }
+
+        [TestMethod]
+        public void GetAttributeOfType_On_Undecorated_PropertyInfo_Returns_Expected_Value()
+        {
+            // Arrange
+            var propInfo = typeof(TestPropInfoClass).GetProperty(nameof(TestPropInfoClass.UndecoratedProperty), BindingFlags.Default | BindingFlags.Instance | BindingFlags.Public);
+
+            // Act
+            var attr = propInfo.GetAttributeOfType<DisplayNameAttribute>();
+
+            // Assert
+            attr.Should().BeNull();
         }
 
         [TestMethod]

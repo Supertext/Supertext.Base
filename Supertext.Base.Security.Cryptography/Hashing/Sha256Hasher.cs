@@ -37,12 +37,13 @@ namespace Supertext.Base.Security.Cryptography.Hashing
             var encoding = new UnicodeEncoding();
             var spicedRawData = salt + rawData + pepper;
             var bytes = encoding.GetBytes(spicedRawData);
-            var sha256 = new SHA256Managed();
+
+            var sha256 = SHA256.Create();
             var hashedBytes = sha256.ComputeHash(bytes);
 
             return new HashingResult
                    {
-                       HashedValue = Convert.ToBase64String(hashedBytes), 
+                       HashedValue = Convert.ToBase64String(hashedBytes),
                        Salt = salt
                    };
         }

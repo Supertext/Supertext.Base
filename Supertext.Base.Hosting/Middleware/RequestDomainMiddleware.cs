@@ -17,14 +17,14 @@ namespace Supertext.Base.Hosting.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, IDomainInitializer urlResolver)
+        public async Task InvokeAsync(HttpContext context, IHostInitializer urlResolver)
         {
-            var domain = context.Request.Host.Host;
-
-            if (!String.IsNullOrWhiteSpace(domain))
+            var host = context.Request.Host.Host;
+           
+            if (!String.IsNullOrWhiteSpace(host))
             {
-                urlResolver.AddDomain(domain);
-                _logger.LogInformation($"{nameof(RequestDomainMiddleware)} {nameof(domain)}={domain}");
+                urlResolver.AddHost(host);
+                _logger.LogInformation($"{nameof(RequestDomainMiddleware)} {nameof(host)}={host}");
             }
 
             await _next(context).ConfigureAwait(false);

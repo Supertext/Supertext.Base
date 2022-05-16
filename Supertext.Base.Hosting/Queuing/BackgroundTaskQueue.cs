@@ -10,18 +10,18 @@ namespace Supertext.Base.Hosting.Queuing
 {
     internal class BackgroundTaskQueue : IBackgroundTaskQueueObserver, IBackgroundTaskQueue, IDisposable
     {
-        private readonly ConcurrentQueue<Func<IFactory, CancellationToken, Task>> _workItems = new ConcurrentQueue<Func<IFactory, CancellationToken, Task>>();
-        private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
+        private readonly ConcurrentQueue<WorkItem> _workItems = new();
+        private readonly SemaphoreSlim _signal = new(0);
         private volatile bool _taskPending;
 
-        public void QueueBackgroundWorkItem(Func<IFactory, CancellationToken, Task> workItem)
+        public void QueueBackgroundWorkItem(Func<IFactory, CancellationToken, Task> workItem, Guid correlationId = default)
         {
             Validate.NotNull(workItem);
-            _workItems.Enqueue(workItem);
+            _workItems.Enqueue(new WorkItem(workItem, correlationId == Guid.Empty ? Guid.NewGuid() : correlationId));
             _signal.Release();
         }
 
-        public async Task<Func<IFactory, CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken)
+        public async Task<WorkItem> DequeueAsync(CancellationToken cancellationToken)
         {
             await _signal.WaitAsync(cancellationToken).ConfigureAwait(false);
             _workItems.TryDequeue(out var workItem);

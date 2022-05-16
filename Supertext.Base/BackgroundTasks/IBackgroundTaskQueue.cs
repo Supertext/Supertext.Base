@@ -11,7 +11,7 @@ namespace Supertext.Base.BackgroundTasks
     /// </summary>
     public interface IBackgroundTaskQueue
     {
-        void QueueBackgroundWorkItem(Func<IFactory, CancellationToken, Task> workItem);
+        void QueueBackgroundWorkItem(Func<IFactory, CancellationToken, Task> workItem, Guid correlationId = default);
 
         bool IsQueueEmpty();
     }

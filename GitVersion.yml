@@ -1,10 +1,33 @@
 assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
+increment: Inherit
+continuous-delivery-fallback-tag: ci
+update-build-number: true
 branches:
-  develop:
+  main:
+    regex: ^master$|^main$
     mode: ContinuousDelivery
-    tag: CI
-  master:
     tag: ''
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches: [ 'develop' ]
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: true
+    pre-release-weight: 55000    
+  develop:
+    regex: ^develop$
+    mode: ContinuousDeployment
+    tag: CI
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
 ignore:
   sha: []
