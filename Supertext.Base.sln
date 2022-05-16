@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base", "Supertext.Base\Supertext.Base.csproj", "{F05FB7F6-67C0-4175-8295-BD3A73932F5A}"
 EndProject
@@ -70,9 +70,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Security.Cry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Test.Utils.Http", "Supertext.Base.Test.Utils.Http\Supertext.Base.Test.Utils.Http.csproj", "{670CDC36-0DA3-4440-98A2-D152D146C32A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Caching", "Supertext.Base.Caching\Supertext.Base.Caching.csproj", "{FD9CCC07-EDAF-42A2-82A5-9D84137301E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Caching", "Supertext.Base.Caching\Supertext.Base.Caching.csproj", "{FD9CCC07-EDAF-42A2-82A5-9D84137301E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Caching.Specs", "Supertext.Base.Caching.Specs\Supertext.Base.Caching.Specs.csproj", "{8DA23347-E8AF-440E-BCB2-53CF6E341A30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Caching.Specs", "Supertext.Base.Caching.Specs\Supertext.Base.Caching.Specs.csproj", "{8DA23347-E8AF-440E-BCB2-53CF6E341A30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
