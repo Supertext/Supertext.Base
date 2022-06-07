@@ -26,7 +26,7 @@ namespace Supertext.Base.Test.Mvc
         where TEntryPoint : class
     {
         private readonly string _url;
-        private readonly IList<Claim> _userClaims;
+        private readonly IDictionary<long, IList<Claim>> _userClaims;
         private readonly List<Action<ContainerBuilder>> _mockRegistrations;
         private readonly ICollection<Action<IHost>> _postBuildActions;
 
@@ -35,7 +35,7 @@ namespace Supertext.Base.Test.Mvc
         /// </summary>
         /// <param name="url"></param>
         /// <param name="userClaims">Will be used in users ClaimsPrinciple</param>
-        public IntegrationTestWebApplicationFactory(string url, IList<Claim> userClaims = null)
+        public IntegrationTestWebApplicationFactory(string url, IDictionary<long, IList<Claim>> userClaims = null)
         {
             _url = url;
             _userClaims = userClaims;
@@ -83,7 +83,11 @@ namespace Supertext.Base.Test.Mvc
         {
             var host = base.CreateHost(builder);
             var testSettings = host.Services.GetRequiredService<TestSettings>();
-            _userClaims?.ForEach(claim => testSettings.AddClaim(claim));
+            _userClaims?.ForEach(userClaims =>
+            {
+                var userId = userClaims.Key;
+                userClaims.Value.ForEach(userClaim => testSettings.AddClaim(userId, userClaim));
+            });
 
             ExecutePostCreateActions(host);
 
