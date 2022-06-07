@@ -26,7 +26,7 @@ namespace Supertext.Base.Test.Mvc
         where TEntryPoint : class
     {
         private readonly string _url;
-        private readonly IDictionary<long, IList<Claim>> _userClaims;
+        private readonly IDictionary<long, List<Claim>> _userClaims;
         private readonly List<Action<ContainerBuilder>> _mockRegistrations;
         private readonly ICollection<Action<IHost>> _postBuildActions;
 
@@ -35,7 +35,7 @@ namespace Supertext.Base.Test.Mvc
         /// </summary>
         /// <param name="url"></param>
         /// <param name="userClaims">Will be used in users ClaimsPrinciple</param>
-        public IntegrationTestWebApplicationFactory(string url, IDictionary<long, IList<Claim>> userClaims = null)
+        public IntegrationTestWebApplicationFactory(string url, IDictionary<long, List<Claim>> userClaims = null)
         {
             _url = url;
             _userClaims = userClaims;
