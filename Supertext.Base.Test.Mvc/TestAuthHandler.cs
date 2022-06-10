@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -26,14 +27,14 @@ namespace Supertext.Base.Test.Mvc
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             string authHeader = Request.Headers["Authorization"];
+            var identity = new ClaimsIdentity(new List<Claim>(), AuthenticationScheme);
 
-            if (!authHeader.StartsWith(AuthenticationScheme))
+            if (authHeader.StartsWith(AuthenticationScheme))
             {
-                Task.FromResult(AuthenticateResult.Fail("Unexpected authentication type."));
+                var userId = Convert.ToInt64(authHeader.Substring(AuthenticationScheme.Length + 1));
+                identity = new ClaimsIdentity(_testSettings.UserClaims[userId], AuthenticationScheme);
             }
 
-            var userId = Convert.ToInt64(authHeader.Substring(AuthenticationScheme.Length + 1));
-            var identity = new ClaimsIdentity(_testSettings.UserClaims[userId], AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, AuthenticationScheme);
 
