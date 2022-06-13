@@ -29,10 +29,10 @@ namespace Supertext.Base.Test.Mvc
             string authHeader = Request.Headers["Authorization"];
             var identity = new ClaimsIdentity(new List<Claim>(), AuthenticationScheme);
 
-            if (authHeader.StartsWith(AuthenticationScheme))
+            if (authHeader?.StartsWith(AuthenticationScheme) == true)
             {
                 var userId = Convert.ToInt64(authHeader.Substring(AuthenticationScheme.Length + 1));
-                identity = new ClaimsIdentity(_testSettings.UserClaims[userId], AuthenticationScheme);
+                identity = new ClaimsIdentity(_testSettings?.UserClaims[userId], AuthenticationScheme);
             }
 
             var principal = new ClaimsPrincipal(identity);
