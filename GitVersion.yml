@@ -20,7 +20,7 @@ branches:
   develop:
     regex: ^develop$
     mode: ContinuousDeployment
-    tag: CI
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
