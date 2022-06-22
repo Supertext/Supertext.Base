@@ -18,7 +18,7 @@ branches:
     pre-release-weight: 55000    
   develop:
     regex: ^develop$
-    mode: ContinuousDeployment
+    mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: false
