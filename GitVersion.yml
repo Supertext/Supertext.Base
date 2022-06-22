@@ -25,8 +25,8 @@ branches:
     track-merge-target: false
     source-branches: []
     tracks-release-branches: true
-    is-release-branch: false
-    is-mainline: false
+    is-release-branch: true
+    is-mainline: true
     pre-release-weight: 0
 ignore:
   sha: []
