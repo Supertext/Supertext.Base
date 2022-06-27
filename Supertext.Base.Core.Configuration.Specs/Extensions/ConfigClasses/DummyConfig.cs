@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Supertext.Base.Configuration;
 
-namespace Supertext.Base.Core.Configuration.Specs.Extensions
+namespace Supertext.Base.Core.Configuration.Specs.Extensions.ConfigClasses
 {
     [ConfigSection("TestConfig")]
     public class DummyConfig : IConfiguration
