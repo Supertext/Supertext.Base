@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Core.Configuration.Specs.Extensions.ConfigClasses;
+using Supertext.Base.Core.Configuration.Specs.Extensions.ConfigClasses.StartupTests;
 using Supertext.Base.Security.NWebSec;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
@@ -155,6 +156,17 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             var config = container.Resolve<InheritedConfig>();
 
             config.Url.Should().Be("localhost");
+        }
+
+        [TestMethod]
+        public void RegisterAllConfigurationsInAssembly_HierarchyWithoutConfiguredValue_CorsIsNull()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<StartupSettings>();
+
+            config.Cors.Should().BeNull();
         }
     }
 }

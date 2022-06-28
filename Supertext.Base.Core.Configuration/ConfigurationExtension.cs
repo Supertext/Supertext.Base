@@ -75,6 +75,11 @@ namespace Supertext.Base.Core.Configuration
 
         internal static void SetKeyVaultSecrets(object configInstance, PropertyInfo[] instancePropertyInfos, IConfiguration configuration)
         {
+            if (configInstance == null)
+            {
+                return;
+            }
+
             if (configInstance is IEnumerable enumerable)
             {
                 foreach (var item in enumerable)
