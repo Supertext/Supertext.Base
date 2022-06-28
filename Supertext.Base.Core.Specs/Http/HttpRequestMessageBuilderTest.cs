@@ -120,5 +120,27 @@ namespace Supertext.Base.Net.Specs.Http
             result.Headers.Contains(AuthorizationHeader).Should().BeFalse();
             result.Headers.Contains(CorrelationIdHeaderName).Should().BeFalse();
         }
+
+        [TestMethod]
+        public async Task BuildAsync_WithTwoBuildersRunningConcurrently_TwoHttpRequestMessages()
+        {
+            const string requestUri = "/api/bla";
+            const string clientId = "Some client";
+            const string sub = "4711";
+            var builder1 = _testee.UseBearerToken(clientId, sub)
+                                  .UseCorrelationId()
+                                  .Create(HttpMethod.Get, requestUri);
+            var builder2 = _testee.UseBearerToken(clientId, sub)
+                                  .UseCorrelationId()
+                                  .Create(HttpMethod.Get, requestUri);
+
+            var result1 = await builder1.BuildAsync();
+            var result2 = await builder2.BuildAsync();
+
+            result1.Should().NotBeNull();
+            result1.Should().NotBe(result2);
+            result1.Headers.GetValues(AuthorizationHeader).Single().Should().Be($"Bearer {Token}");
+            result1.Headers.GetValues(CorrelationIdHeaderName).Single().Should().Be(CorrelationId);
+        }
     }
 }
