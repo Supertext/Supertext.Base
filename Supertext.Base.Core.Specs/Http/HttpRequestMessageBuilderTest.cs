@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Authentication;
+using Supertext.Base.Factory;
 using Supertext.Base.Net.Http;
 using Supertext.Base.Tracing;
 
@@ -28,7 +29,8 @@ namespace Supertext.Base.Net.Specs.Http
             _tokenProvider = A.Fake<ITokenProvider>();
             _tracingProvider = A.Fake<ITracingProvider>();
             var logger = A.Fake<ILogger<HttpRequestMessageBuilder>>();
-            _testee = new HttpRequestMessageBuilder(_tokenProvider, _tracingProvider, logger);
+            var factory = A.Fake<IFactory>();
+            _testee = new HttpRequestMessageBuilder(factory, logger);
 
             A.CallTo(() => _tokenProvider.RetrieveAccessTokenAsync(A<string>._,
                                                                    A<string>._,
@@ -38,6 +40,8 @@ namespace Supertext.Base.Net.Specs.Http
 
             A.CallTo(() => _tracingProvider.CorrelationIdHeaderName).Returns(CorrelationIdHeaderName);
             A.CallTo(() => _tracingProvider.CorrelationIdDigitsFormat).Returns(CorrelationId);
+            A.CallTo(() => factory.Create<ITokenProvider>()).Returns(_tokenProvider);
+            A.CallTo(() => factory.Create<ITracingProvider>()).Returns(_tracingProvider);
         }
 
         [TestMethod]
