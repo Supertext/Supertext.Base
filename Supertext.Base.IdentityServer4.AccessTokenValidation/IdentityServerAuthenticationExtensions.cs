@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using System;
 using IdentityModel.AspNetCore.OAuth2Introspection;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -60,13 +59,13 @@ namespace Microsoft.AspNetCore.Builder
                 var monitor = services.GetRequiredService<IOptionsMonitor<IdentityServerAuthenticationOptions>>();
                 return new ConfigureInternalOptions(monitor.Get(authenticationScheme), authenticationScheme);
             });
-            
+
             builder.Services.AddSingleton<IConfigureOptions<OAuth2IntrospectionOptions>>(services =>
             {
                 var monitor = services.GetRequiredService<IOptionsMonitor<IdentityServerAuthenticationOptions>>();
                 return new ConfigureInternalOptions(monitor.Get(authenticationScheme), authenticationScheme);
             });
-            
+
             return builder.AddScheme<IdentityServerAuthenticationOptions, IdentityServerAuthenticationHandler>(authenticationScheme, configureOptions);
         }
 
@@ -78,7 +77,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="jwtBearerOptions">The JWT bearer options.</param>
         /// <param name="introspectionOptions">The introspection options.</param>
         /// <returns></returns>
-        public static AuthenticationBuilder AddIdentityServerAuthentication(this AuthenticationBuilder builder, string authenticationScheme, 
+        public static AuthenticationBuilder AddIdentityServerAuthentication(this AuthenticationBuilder builder, string authenticationScheme,
             Action<JwtBearerOptions> jwtBearerOptions,
             Action<OAuth2IntrospectionOptions> introspectionOptions)
         {
