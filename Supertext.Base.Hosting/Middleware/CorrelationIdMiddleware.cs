@@ -11,7 +11,8 @@ namespace Supertext.Base.Hosting.Middleware;
 public class CorrelationIdMiddleware
 {
     private const string GuidDigitsFormat = "N";
-    private readonly string _defaultCorrelationId = Guid.Empty.ToString();
+    private static readonly string DefaultCorrelationId = Guid.Empty.ToString();
+    private static readonly string DefaultCorrelationIdDigitsOnly = DefaultCorrelationId.Replace("-", "");
     private readonly RequestDelegate _next;
     private readonly ISequentialGuidFactory _guidFactory;
     private readonly CorrelationIdOptions _options;
@@ -32,7 +33,8 @@ public class CorrelationIdMiddleware
     public async Task InvokeAsync(HttpContext context, ITracingInitializer tracingInitializer)
     {
         if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId)
-            && correlationId.ToString() != _defaultCorrelationId)
+            && correlationId.ToString() != DefaultCorrelationId
+            && correlationId.ToString() != DefaultCorrelationIdDigitsOnly)
         {
             context.TraceIdentifier = correlationId.ToString();
         }
