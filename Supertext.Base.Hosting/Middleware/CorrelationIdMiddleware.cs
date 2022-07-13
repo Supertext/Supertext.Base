@@ -42,7 +42,7 @@ public class CorrelationIdMiddleware
         {
             var newCorrelationId = _guidFactory.Create().ToString(GuidDigitsFormat);
             context.TraceIdentifier = newCorrelationId;
-            context.Response.Headers.Remove(_options.Header);
+            context.Request.Headers.Remove(_options.Header);
             context.Request.Headers.Add(_options.Header, new StringValues(newCorrelationId));
         }
         tracingInitializer.SetNewCorrelationId(Guid.Parse(context.TraceIdentifier));
