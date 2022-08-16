@@ -38,7 +38,6 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
             var jwtScheme = Scheme.Name + IdentityServerAuthenticationDefaults.JwtAuthenticationScheme;
             var introspectionScheme = Scheme.Name + IdentityServerAuthenticationDefaults.IntrospectionAuthenticationScheme;
 
-            _logger.LogTrace($"Context.Request Authorization header: {Context.Request.Headers.Authorization}");
             var token = Options.TokenRetriever(Context.Request);
             bool removeToken = false;
 
