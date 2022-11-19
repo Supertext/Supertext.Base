@@ -1,9 +1,9 @@
-﻿using System;
+﻿using AsyncKeyedLock;
+using Supertext.Base.Common;
+using System;
 using System.Runtime.Caching;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Supertext.Base.Common;
-using Supertext.Base.Threading;
 
 [assembly: InternalsVisibleTo("Supertext.Base.NetFramework.Caching")]
 
@@ -11,7 +11,7 @@ namespace Supertext.Base.Caching.Caching
 {
     internal class MemoryCache<T> : IMemoryCache<T> where T : class
     {
-        private readonly AsyncDuplicateLock _syncLock = new();
+        private readonly AsyncKeyedLocker<string> _syncLock = new();
         private readonly ICacheSettings _settings;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly MemoryCache _memoryCache;
