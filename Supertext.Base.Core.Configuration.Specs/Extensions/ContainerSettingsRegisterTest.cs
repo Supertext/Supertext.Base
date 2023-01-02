@@ -166,7 +166,7 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             var container = _builder.Build();
             var config = container.Resolve<StartupSettings>();
 
-            config.Cors.Should().BeNull();
+            config.Rewrites.Should().BeNull();
         }
     }
 }
