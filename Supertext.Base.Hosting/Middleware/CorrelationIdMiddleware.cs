@@ -11,6 +11,8 @@ namespace Supertext.Base.Hosting.Middleware;
 public class CorrelationIdMiddleware
 {
     private const string GuidDigitsFormat = "N";
+    private static readonly string DefaultCorrelationId = Guid.Empty.ToString();
+    private static readonly string DefaultCorrelationIdDigitsOnly = DefaultCorrelationId.Replace("-", "");
     private readonly RequestDelegate _next;
     private readonly ISequentialGuidFactory _guidFactory;
     private readonly CorrelationIdOptions _options;
@@ -30,7 +32,9 @@ public class CorrelationIdMiddleware
 
     public async Task InvokeAsync(HttpContext context, ITracingInitializer tracingInitializer)
     {
-        if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId))
+        if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId)
+            && correlationId.ToString() != DefaultCorrelationId
+            && correlationId.ToString() != DefaultCorrelationIdDigitsOnly)
         {
             context.TraceIdentifier = correlationId.ToString();
         }
@@ -38,6 +42,7 @@ public class CorrelationIdMiddleware
         {
             var newCorrelationId = _guidFactory.Create().ToString(GuidDigitsFormat);
             context.TraceIdentifier = newCorrelationId;
+            context.Request.Headers.Remove(_options.Header);
             context.Request.Headers.Add(_options.Header, new StringValues(newCorrelationId));
         }
         tracingInitializer.SetNewCorrelationId(Guid.Parse(context.TraceIdentifier));
@@ -48,7 +53,7 @@ public class CorrelationIdMiddleware
             context.Response.OnStarting(() =>
                                         {
                                             context.Response.Headers.Remove(_options.Header);
-                                            context.Response.Headers.Add(_options.Header, new[] { context.TraceIdentifier });
+                                            context.Response.Headers.Add(_options.Header, new StringValues( context.TraceIdentifier ));
                                             return Task.CompletedTask;
                                         });
         }

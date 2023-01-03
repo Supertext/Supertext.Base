@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Supertext.Base.Factory;
+using Supertext.Base.Tracing;
 
 namespace Supertext.Base.Net.Http
 {
@@ -13,14 +15,17 @@ namespace Supertext.Base.Net.Http
     {
         private readonly Authentication.Identity _identity;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IFactory<ITracingProvider> _tracingProviderFactory;
         private readonly ILogger<TokenProvider> _logger;
 
         public TokenProvider(Authentication.Identity identity,
                              IHttpClientFactory httpClientFactory,
+                             IFactory<ITracingProvider> tracingProviderFactory,
                              ILogger<TokenProvider> logger)
         {
             _identity = identity;
             _httpClientFactory = httpClientFactory;
+            _tracingProviderFactory = tracingProviderFactory;
             _logger = logger;
         }
 
@@ -69,6 +74,7 @@ namespace Supertext.Base.Net.Http
                                       })
             {
                 AddClaimsForTokenAsParameters(tokenRequest, claimsForToken);
+                EnhanceHeaderWithCorrelationId(tokenRequest);
                 var tokenResponse = await client.RequestClientCredentialsTokenAsync(tokenRequest).ConfigureAwait(false);
 
                 if (tokenResponse.IsError)
@@ -101,7 +107,7 @@ namespace Supertext.Base.Net.Http
                                       })
             {
                 AddClaimsForTokenAsParameters(tokenRequest, claimsForToken);
-
+                EnhanceHeaderWithCorrelationId(tokenRequest);
                 var tokenResponse = await client.RequestTokenAsync(tokenRequest).ConfigureAwait(false);
 
                 if (tokenResponse.IsError)
@@ -122,6 +128,19 @@ namespace Supertext.Base.Net.Http
                 var prefixedClaimsForToken = claimsForToken.Select(item =>
                                                                        new KeyValuePair<string, string>($"ClaimForToken:{item.Key}", item.Value));
                 tokenRequest.Parameters.AddRange(prefixedClaimsForToken);
+            }
+        }
+
+        private void EnhanceHeaderWithCorrelationId(ProtocolRequest tokenRequest)
+        {
+            try
+            {
+                var tracingProvider = _tracingProviderFactory.Create();
+                tokenRequest.Headers.Add(tracingProvider.CorrelationIdHeaderName, tracingProvider.CorrelationIdDigitsFormat);
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e, "Exception occurred while trying to retrieve correlation id and adding the http header.");
             }
         }
 

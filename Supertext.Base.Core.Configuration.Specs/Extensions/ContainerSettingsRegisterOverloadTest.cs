@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Core.Configuration.Specs.Extensions.ConfigClasses;
 
 namespace Supertext.Base.Core.Configuration.Specs.Extensions
 {

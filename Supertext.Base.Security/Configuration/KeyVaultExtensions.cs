@@ -31,14 +31,12 @@ namespace Supertext.Base.Security.Configuration
         {
             return hostBuilder.ConfigureAppConfiguration((context, config) =>
                                                          {
-                                                             if (context.HostingEnvironment.IsStaging() || context.HostingEnvironment.IsProduction())
-                                                             {
-                                                                 config.ConfigureConfigWithKeyVaultSecrets();
-                                                             }
-                                                             else if (context.HostingEnvironment.IsDevelopment())
+                                                             if (context.HostingEnvironment.IsDevelopment())
                                                              {
                                                                  config.AddUserSecrets<TStartup>();
+                                                                 return;
                                                              }
+                                                             config.ConfigureConfigWithKeyVaultSecrets();
                                                          });
         }
 

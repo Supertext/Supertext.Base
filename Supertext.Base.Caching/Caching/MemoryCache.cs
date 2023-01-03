@@ -6,11 +6,12 @@ using Supertext.Base.Common;
 using Supertext.Base.Threading;
 
 [assembly: InternalsVisibleTo("Supertext.Base.NetFramework.Caching")]
+
 namespace Supertext.Base.Caching.Caching
 {
     internal class MemoryCache<T> : IMemoryCache<T> where T : class
     {
-        private readonly AsyncDuplicateLock _syncLock = new AsyncDuplicateLock();
+        private readonly AsyncDuplicateLock _syncLock = new();
         private readonly ICacheSettings _settings;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly MemoryCache _memoryCache;
@@ -41,7 +42,9 @@ namespace Supertext.Base.Caching.Caching
 
             using (_syncLock.Lock(key))
             {
-                return _memoryCache.Get(key) is T item ? Option<T>.Some(item) : Option<T>.None();
+                return _memoryCache.Get(key) is T item
+                           ? Option<T>.Some(item)
+                           : Option<T>.None();
             }
         }
 
@@ -52,7 +55,7 @@ namespace Supertext.Base.Caching.Caching
 
             using (_syncLock.Lock(key))
             {
-                if (!(_memoryCache.Get(key) is T result))
+                if (_memoryCache.Get(key) is not T result)
                 {
                     result = factoryMethod(key);
                     _memoryCache.Set(key, result, _dateTimeProvider.UtcNow.AddSeconds(_settings.LifeTimeInSeconds));
@@ -69,7 +72,7 @@ namespace Supertext.Base.Caching.Caching
 
             using (await _syncLock.LockAsync(key).ConfigureAwait(false))
             {
-                if (!(_memoryCache.Get(key) is T result))
+                if (_memoryCache.Get(key) is not T result)
                 {
                     result = await factoryMethod(key).ConfigureAwait(false);
                     _memoryCache.Set(key, result, _dateTimeProvider.UtcNow.AddSeconds(_settings.LifeTimeInSeconds));

@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -9,6 +11,7 @@ namespace Supertext.Base.Test.Mvc
 {
     internal class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private const string AuthenticationScheme = "Test";
         private readonly TestSettings _testSettings;
 
         public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -23,9 +26,17 @@ namespace Supertext.Base.Test.Mvc
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var identity = new ClaimsIdentity(_testSettings.UserClaims, "Test");
+            string authHeader = Request.Headers["Authorization"];
+            var identity = new ClaimsIdentity(new List<Claim>(), AuthenticationScheme);
+
+            if (authHeader?.StartsWith(AuthenticationScheme) == true)
+            {
+                var userId = Convert.ToInt64(authHeader.Substring(AuthenticationScheme.Length + 1));
+                identity = new ClaimsIdentity(_testSettings?.UserClaims[userId], AuthenticationScheme);
+            }
+
             var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, "Test");
+            var ticket = new AuthenticationTicket(principal, AuthenticationScheme);
 
             var result = AuthenticateResult.Success(ticket);
 

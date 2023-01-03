@@ -5,18 +5,23 @@ namespace Supertext.Base.Test.Mvc
 {
     internal class TestSettings
     {
-        private readonly List<Claim> _userClaims;
+        private readonly Dictionary<long, List<Claim>> _userClaims;
 
         public TestSettings()
         {
-            _userClaims = new List<Claim>();
+            _userClaims = new Dictionary<long, List<Claim>>();
         }
 
-        public IEnumerable<Claim> UserClaims => _userClaims;
+        public IReadOnlyDictionary<long, List<Claim>> UserClaims => _userClaims;
 
-        public void AddClaim(Claim claim)
+        public void AddClaim(long userId, Claim claim)
         {
-            _userClaims.Add(claim);
+            if (!_userClaims.ContainsKey(userId))
+            {
+                _userClaims.Add(userId, new List<Claim>());
+            }
+
+            _userClaims[userId].Add(claim);
         }
     }
 }

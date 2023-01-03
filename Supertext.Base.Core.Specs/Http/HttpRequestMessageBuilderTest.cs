@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Authentication;
+using Supertext.Base.Factory;
 using Supertext.Base.Net.Http;
 using Supertext.Base.Tracing;
 
@@ -28,7 +29,8 @@ namespace Supertext.Base.Net.Specs.Http
             _tokenProvider = A.Fake<ITokenProvider>();
             _tracingProvider = A.Fake<ITracingProvider>();
             var logger = A.Fake<ILogger<HttpRequestMessageBuilder>>();
-            _testee = new HttpRequestMessageBuilder(_tokenProvider, _tracingProvider, logger);
+            var factory = A.Fake<IFactory>();
+            _testee = new HttpRequestMessageBuilder(factory, logger);
 
             A.CallTo(() => _tokenProvider.RetrieveAccessTokenAsync(A<string>._,
                                                                    A<string>._,
@@ -38,6 +40,8 @@ namespace Supertext.Base.Net.Specs.Http
 
             A.CallTo(() => _tracingProvider.CorrelationIdHeaderName).Returns(CorrelationIdHeaderName);
             A.CallTo(() => _tracingProvider.CorrelationIdDigitsFormat).Returns(CorrelationId);
+            A.CallTo(() => factory.Create<ITokenProvider>()).Returns(_tokenProvider);
+            A.CallTo(() => factory.Create<ITracingProvider>()).Returns(_tracingProvider);
         }
 
         [TestMethod]
@@ -115,6 +119,28 @@ namespace Supertext.Base.Net.Specs.Http
             result.Should().NotBeNull();
             result.Headers.Contains(AuthorizationHeader).Should().BeFalse();
             result.Headers.Contains(CorrelationIdHeaderName).Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task BuildAsync_WithTwoBuildersRunningConcurrently_TwoHttpRequestMessages()
+        {
+            const string requestUri = "/api/bla";
+            const string clientId = "Some client";
+            const string sub = "4711";
+            var builder1 = _testee.UseBearerToken(clientId, sub)
+                                  .UseCorrelationId()
+                                  .Create(HttpMethod.Get, requestUri);
+            var builder2 = _testee.UseBearerToken(clientId, sub)
+                                  .UseCorrelationId()
+                                  .Create(HttpMethod.Get, requestUri);
+
+            var result1 = await builder1.BuildAsync();
+            var result2 = await builder2.BuildAsync();
+
+            result1.Should().NotBeNull();
+            result1.Should().NotBe(result2);
+            result1.Headers.GetValues(AuthorizationHeader).Single().Should().Be($"Bearer {Token}");
+            result1.Headers.GetValues(CorrelationIdHeaderName).Single().Should().Be(CorrelationId);
         }
     }
 }

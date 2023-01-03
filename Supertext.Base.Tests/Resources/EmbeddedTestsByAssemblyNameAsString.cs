@@ -48,7 +48,14 @@ namespace Supertext.Base.Tests.Resources
         {
             if (_diTestDir.Exists)
             {
-                _diTestDir.Delete(true);
+                try
+                {
+                    _diTestDir.Delete(true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
 
