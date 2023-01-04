@@ -41,7 +41,7 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
             var introspectionScheme = Scheme.Name + IdentityServerAuthenticationDefaults.IntrospectionAuthenticationScheme;
 
             var token = Options.TokenRetriever(Context.Request);
-            bool removeToken = false;
+            var removeToken = false;
 
             try
             {
@@ -51,10 +51,9 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
                 Context.Items.Add(IdentityServerAuthenticationDefaults.TokenItemsKey, token);
 
                 // seems to be a JWT
-                if (token.Contains('.') && Options.SupportsJwt)
+                if (token?.Contains('.') == true && Options.SupportsJwt)
                 {
                     _logger.LogTrace("Token is a JWT and is supported.");
-
 
                     Context.Items.Add(IdentityServerAuthenticationDefaults.EffectiveSchemeKey + Scheme.Name,
                                       jwtScheme);
