@@ -43,6 +43,11 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
             var token = Options.TokenRetriever(Context.Request);
             var removeToken = false;
 
+            if (token == null)
+            {
+                return AuthenticateResult.NoResult();
+            }
+
             try
             {
                 _logger.LogTrace("Token found: {token}", token);
@@ -51,7 +56,7 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
                 Context.Items.Add(IdentityServerAuthenticationDefaults.TokenItemsKey, token);
 
                 // seems to be a JWT
-                if (token?.Contains('.') == true && Options.SupportsJwt)
+                if (token.Contains('.') && Options.SupportsJwt)
                 {
                     _logger.LogTrace("Token is a JWT and is supported.");
 
