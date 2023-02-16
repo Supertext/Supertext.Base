@@ -74,7 +74,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Caching", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Caching.Specs", "Supertext.Base.Caching.Specs\Supertext.Base.Caching.Specs.csproj", "{8DA23347-E8AF-440E-BCB2-53CF6E341A30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.IdentityServer4.AccessTokenValidation", "Supertext.Base.IdentityServer4.AccessTokenValidation\Supertext.Base.IdentityServer4.AccessTokenValidation.csproj", "{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.IdentityServer4.AccessTokenValidation", "Supertext.Base.IdentityServer4.AccessTokenValidation\Supertext.Base.IdentityServer4.AccessTokenValidation.csproj", "{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Dal.SqlServer.Tests", "Supertext.Base.Dal.SqlServer.Tests\Supertext.Base.Dal.SqlServer.Tests.csproj", "{DECE2493-43F7-4D58-A6F2-5B9D9324587A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +212,10 @@ Global
 		{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DECE2493-43F7-4D58-A6F2-5B9D9324587A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DECE2493-43F7-4D58-A6F2-5B9D9324587A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DECE2493-43F7-4D58-A6F2-5B9D9324587A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DECE2493-43F7-4D58-A6F2-5B9D9324587A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,6 +253,7 @@ Global
 		{FD9CCC07-EDAF-42A2-82A5-9D84137301E1} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
 		{8DA23347-E8AF-440E-BCB2-53CF6E341A30} = {9433911D-A932-4266-B7CE-A95A9276FF35}
 		{3157CCA4-D40C-4FA4-99FE-A1593BC38DD8} = {AF4F0148-A879-4092-834A-0750B1CB1E86}
+		{DECE2493-43F7-4D58-A6F2-5B9D9324587A} = {9433911D-A932-4266-B7CE-A95A9276FF35}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {843F013D-AF27-4651-9FBC-620FB8340202}
