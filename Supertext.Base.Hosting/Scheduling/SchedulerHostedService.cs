@@ -56,6 +56,11 @@ namespace Supertext.Base.Hosting.Scheduling
                     continue;
                 }
 
+                if (_scheduledJobs.ContainsKey(job.Id))
+                {
+                    _logger.LogWarning($"Job with ID {job.Id}, correlation ID {job.CorrelationId} for of target {job.WorkItem.Target} already exists in currently scheduled jobs.");
+                    continue;
+                }
                 var scheduledJob = new Timer(ExecuteJob, job.Id, job.DueTime, new TimeSpan(-1));
                 _scheduledJobs.Add(job.Id, new JobItem(job, scheduledJob, new CancellationTokenSource()));
             }
