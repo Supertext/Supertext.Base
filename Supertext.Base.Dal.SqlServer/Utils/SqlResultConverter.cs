@@ -7,7 +7,7 @@ namespace Supertext.Base.Dal.SqlServer.Utils
 {
     public class SqlResultConverter : ISqlResultConverter
     {
-        public void InterpretUtcDates(IEnumerable<dynamic> results)
+        public void InterpretUtcDates(IEnumerable<IDictionary<string, object>> results)
         {
             foreach (IDictionary<string, object> result in results)
             {
@@ -22,7 +22,7 @@ namespace Supertext.Base.Dal.SqlServer.Utils
             }
         }
 
-        public void DecodeStructure(IEnumerable<dynamic> results)
+        public void DecodeStructure(IEnumerable<IDictionary<string, object>> results)
         {
             foreach (IDictionary<string, object> result in results)
             {

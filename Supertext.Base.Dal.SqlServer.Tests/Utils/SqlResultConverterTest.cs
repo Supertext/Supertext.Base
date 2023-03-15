@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Dal.SqlServer.Utils;
+using FluentAssertions;
 
 namespace Supertext.Base.Dal.SqlServer.Tests.Utils;
 
@@ -10,7 +11,7 @@ namespace Supertext.Base.Dal.SqlServer.Tests.Utils;
 public class SqlResultConverterTest
 {
     [TestMethod]
-    public void Level1DateToUtc()
+    public void InterpretUtcDates_DatesInUtcFormatOnLevel1_ConvertedInUtc()
     {
         var testData = new List<Dictionary<string, object>>() {
                 new () {
@@ -22,12 +23,12 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.InterpretUtcDates(testData);
 
-        Assert.AreEqual(DateTimeKind.Utc, ((DateTime)testData[0]["a"]).Kind);
-        Assert.AreEqual(DateTimeKind.Utc, ((DateTime)testData[0]["b"]).Kind);
+        (((DateTime)testData[0]["a"]).Kind).Should().Be(DateTimeKind.Utc);
+        (((DateTime)testData[0]["b"]).Kind).Should().Be(DateTimeKind.Utc);
     }
 
     [TestMethod]
-    public void Level2Keys()
+    public void DecodeStructure_LevelEncodedFieldNames_Level2Keys()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -38,16 +39,16 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.DecodeStructure(testData);
 
-        Assert.IsTrue(testData[0]["a"] is Dictionary<string, object>);
-        Assert.AreEqual(1, testData[0].Keys.Count);
+        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (testData[0].Keys.Count).Should().Be(1);
         var a = (Dictionary<string, object>)testData[0]["a"];
-        Assert.AreEqual(2, a.Keys.Count);
-        Assert.AreEqual(1, a["b1"]);
-        Assert.AreEqual(2, a["b2"]);
+        (a.Keys.Count).Should().Be(2);
+        (a["b1"]).Should().Be(1);
+        (a["b2"]).Should().Be(2);
     }
 
     [TestMethod]
-    public void Level3Keys()
+    public void DecodeStructure_LevelEncodedFieldNames_Level3Keys()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -58,18 +59,18 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.DecodeStructure(testData);
 
-        Assert.IsTrue(testData[0]["a"] is Dictionary<string, object>);
-        Assert.AreEqual(1, testData[0].Keys.Count);
+        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (testData[0].Keys.Count).Should().Be(1);
         var a = (Dictionary<string, object>)testData[0]["a"];
-        Assert.AreEqual(1, a.Keys.Count);
+        (a.Keys.Count).Should().Be(1);
         var b = (Dictionary<string, object>)a["b"];
-        Assert.AreEqual(2, b.Keys.Count);
-        Assert.AreEqual(1, b["c1"]);
-        Assert.AreEqual(2, b["c2"]);
+        (b.Keys.Count).Should().Be(2);
+        (b["c1"]).Should().Be(1);
+        (b["c2"]).Should().Be(2);
     }
 
     [TestMethod]
-    public void Level2DateToUtc()
+    public void InterpretUtcDates_DatesInUtcFormatOnLevel2_ConvertedInUtc()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -82,11 +83,11 @@ public class SqlResultConverterTest
         converter.DecodeStructure(testData);
 
         var a = (Dictionary<string, object>)testData[0]["a"];
-        Assert.AreEqual(DateTimeKind.Utc, ((DateTime)a["b"]).Kind);
+        (((DateTime)a["b"]).Kind).Should().Be(DateTimeKind.Utc);
     }
 
     [TestMethod]
-    public void Level3DateToUtc()
+    public void InterpretUtcDates_DatesInUtcFormatOnLevel3_ConvertedInUtc()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -100,11 +101,11 @@ public class SqlResultConverterTest
 
         var a = (Dictionary<string, object>)testData[0]["a"];
         var b = (Dictionary<string, object>)a["b"];
-        Assert.AreEqual(DateTimeKind.Utc, ((DateTime)b["c"]).Kind);
+        (((DateTime)b["c"]).Kind).Should().Be(DateTimeKind.Utc);
     }
 
     [TestMethod]
-    public void Level1Json()
+    public void DecodeStructure_JsonEncodedFieldNames_Level1Json()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -115,16 +116,16 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.DecodeStructure(testData);
 
-        Assert.IsTrue(testData[0]["a"] is JsonElement);
-        Assert.AreEqual(1, testData[0].Keys.Count);
+        (testData[0]["a"] is JsonElement).Should().BeTrue();
+        (testData[0].Keys.Count).Should().Be(1);
         var a = (JsonElement)testData[0]["a"];
-        Assert.AreEqual(JsonValueKind.Object, a.ValueKind);
-        Assert.AreEqual(1, a.GetProperty("b1").GetInt32());
-        Assert.AreEqual(2, a.GetProperty("b2").GetInt32());
+        (a.ValueKind).Should().Be(JsonValueKind.Object);
+        (a.GetProperty("b1").GetInt32()).Should().Be(1);
+        (a.GetProperty("b2").GetInt32()).Should().Be(2);
     }
 
     [TestMethod]
-    public void Level1JsonNull()
+    public void DecodeStructure_JsonEncodedFieldNamesNull_FieldsRemoved()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -136,11 +137,11 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.DecodeStructure(testData);
 
-        Assert.AreEqual(0, testData[0].Keys.Count);
+        (testData[0].Keys.Count).Should().Be(0);
     }
 
     [TestMethod]
-    public void Level2Json()
+    public void DecodeStructure_JsonEncodedFieldNames_Level2Json()
     {
         var testData = new List<Dictionary<string, object>>() {
             new () {
@@ -151,13 +152,12 @@ public class SqlResultConverterTest
         var converter = new SqlResultConverter();
         converter.DecodeStructure(testData);
 
-        Assert.IsTrue(testData[0]["a"] is Dictionary<string, object>);
-        Assert.AreEqual(1, testData[0].Keys.Count);
+        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (testData[0].Keys.Count).Should().Be(1);
         var a = (Dictionary<string, object>)testData[0]["a"];
         var b = (JsonElement)a["b"];
-        Assert.AreEqual(JsonValueKind.Object, b.ValueKind);
-        Assert.AreEqual(1, b.GetProperty("c1").GetInt32());
-        Assert.AreEqual(2, b.GetProperty("c2").GetInt32());
+        (b.ValueKind).Should().Be(JsonValueKind.Object);
+        (b.GetProperty("c1").GetInt32()).Should().Be(1);
+        (b.GetProperty("c2").GetInt32()).Should().Be(2);
     }
-
 }
