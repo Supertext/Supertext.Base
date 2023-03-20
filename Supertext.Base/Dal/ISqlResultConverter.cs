@@ -4,7 +4,7 @@ namespace Supertext.Base.Dal
 {
     public interface ISqlResultConverter
     {
-        void InterpretUtcDates(IEnumerable<IDictionary<string, object>> results);
-        void DecodeStructure(IEnumerable<IDictionary<string, object>> results);
+        IDictionary<string, object> InterpretUtcDates(IDictionary<string, object> row);
+        IDictionary<string, object> DecodeStructure(IDictionary<string, object> row);
     }
 }

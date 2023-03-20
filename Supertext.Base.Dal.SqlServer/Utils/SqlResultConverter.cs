@@ -7,64 +7,54 @@ namespace Supertext.Base.Dal.SqlServer.Utils
 {
     public class SqlResultConverter : ISqlResultConverter
     {
-        public void InterpretUtcDates(IEnumerable<IDictionary<string, object>> results)
+        public IDictionary<string, object> InterpretUtcDates(IDictionary<string, object> row)
         {
-            foreach (IDictionary<string, object> result in results)
-            {
-                foreach (var key in result.Keys)
-                {
-                    var value = result[key];
-                    if (value is DateTime date)
-                    {
-                        result[key] = DateTime.SpecifyKind(date, DateTimeKind.Utc);
-                    }
-                }
-            }
+            return row.ToDictionary(
+                field => field.Key,
+                field => field.Value is DateTime date ? DateTime.SpecifyKind(date, DateTimeKind.Utc) : field.Value);
         }
 
-        public void DecodeStructure(IEnumerable<IDictionary<string, object>> results)
+        public IDictionary<string, object> DecodeStructure(IDictionary<string, object> row)
         {
-            foreach (IDictionary<string, object> result in results)
+            var result = new Dictionary<string, object>(row);
+            foreach (var key in row.Keys)
             {
-                foreach (var key in result.Keys.ToList())
+                var plainKey = key;
+                var value = result[key];
+                if (value == null)
                 {
-                    var plainKey = key;
-                    var value = result[key];
-                    if (value == null)
+                    result.Remove(key);
+                    continue;
+                }
+                if (key.EndsWith("_json_"))
+                {
+                    plainKey = key.Substring(0, key.Length - 6);
+                    value = JsonSerializer.Deserialize<dynamic>((string)value)
+                            ?? new object[] { };
+                    result.Remove(key);
+                }
+                if (plainKey.Contains('.'))
+                {
+                    var parent = result;
+                    var subKeys = plainKey.Split('.');
+                    foreach (var subKey in subKeys.Take(subKeys.Length - 1))
                     {
-                        result.Remove(key);
-                        continue;
-                    }
-                    if (key.EndsWith("_json_"))
-                    {
-                        plainKey = key.Substring(0, key.Length - 6);
-                        value = JsonSerializer.Deserialize<dynamic>((string)value)
-                                ?? new object[] { };
-                        result.Remove(key);
-                    }
-                    if (plainKey.Contains('.'))
-                    {
-                        var parent = result;
-                        var subKeys = plainKey.Split('.');
-                        foreach (var subKey in subKeys.Take(subKeys.Length - 1))
+                        if (!parent.ContainsKey(subKey))
                         {
-                            if (!parent.ContainsKey(subKey))
-                            {
-                                parent.Add(subKey, new Dictionary<string, object>());
-                            }
-
-                            parent = (IDictionary<string, object>)parent[subKey];
+                            parent.Add(subKey, new Dictionary<string, object>());
                         }
 
-                        parent.Add(subKeys[subKeys.Length - 1], value);
-                        result.Remove(key);
+                        parent = (Dictionary<string, object>)parent[subKey];
                     }
-                    else
-                    {
-                        result[plainKey] = value;
-                    }
+                    parent.Add(subKeys[subKeys.Length - 1], value);
+                    result.Remove(key);
+                }
+                else
+                {
+                    result[plainKey] = value;
                 }
             }
+            return result;
         }
 
     }

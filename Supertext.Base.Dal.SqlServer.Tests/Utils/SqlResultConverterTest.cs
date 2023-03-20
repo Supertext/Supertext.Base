@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Dal.SqlServer.Utils;
 using FluentAssertions;
+using System.Linq;
 
 namespace Supertext.Base.Dal.SqlServer.Tests.Utils;
 
@@ -21,10 +22,10 @@ public class SqlResultConverterTest
             };
 
         var converter = new SqlResultConverter();
-        converter.InterpretUtcDates(testData);
+        var results = testData.Select(converter.InterpretUtcDates).ToList();
 
-        (((DateTime)testData[0]["a"]).Kind).Should().Be(DateTimeKind.Utc);
-        (((DateTime)testData[0]["b"]).Kind).Should().Be(DateTimeKind.Utc);
+        (((DateTime)results[0]["a"]).Kind).Should().Be(DateTimeKind.Utc);
+        (((DateTime)results[0]["b"]).Kind).Should().Be(DateTimeKind.Utc);
     }
 
     [TestMethod]
@@ -37,11 +38,11 @@ public class SqlResultConverterTest
             }
         };
         var converter = new SqlResultConverter();
-        converter.DecodeStructure(testData);
+        var results = testData.Select(converter.DecodeStructure).ToList();
 
-        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
-        (testData[0].Keys.Count).Should().Be(1);
-        var a = (Dictionary<string, object>)testData[0]["a"];
+        (results[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (results[0].Keys.Count).Should().Be(1);
+        var a = (Dictionary<string, object>)results[0]["a"];
         (a.Keys.Count).Should().Be(2);
         (a["b1"]).Should().Be(1);
         (a["b2"]).Should().Be(2);
@@ -57,11 +58,11 @@ public class SqlResultConverterTest
             }
         };
         var converter = new SqlResultConverter();
-        converter.DecodeStructure(testData);
+        var results = testData.Select(converter.DecodeStructure).ToList();
 
-        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
-        (testData[0].Keys.Count).Should().Be(1);
-        var a = (Dictionary<string, object>)testData[0]["a"];
+        (results[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (results[0].Keys.Count).Should().Be(1);
+        var a = (Dictionary<string, object>)results[0]["a"];
         (a.Keys.Count).Should().Be(1);
         var b = (Dictionary<string, object>)a["b"];
         (b.Keys.Count).Should().Be(2);
@@ -79,10 +80,12 @@ public class SqlResultConverterTest
         };
 
         var converter = new SqlResultConverter();
-        converter.InterpretUtcDates(testData);
-        converter.DecodeStructure(testData);
+        var results = testData
+            .Select(converter.InterpretUtcDates)
+            .Select(converter.DecodeStructure)
+            .ToList();
 
-        var a = (Dictionary<string, object>)testData[0]["a"];
+        var a = (Dictionary<string, object>)results[0]["a"];
         (((DateTime)a["b"]).Kind).Should().Be(DateTimeKind.Utc);
     }
 
@@ -96,10 +99,12 @@ public class SqlResultConverterTest
         };
 
         var converter = new SqlResultConverter();
-        converter.InterpretUtcDates(testData);
-        converter.DecodeStructure(testData);
+        var results = testData
+            .Select(converter.InterpretUtcDates)
+            .Select(converter.DecodeStructure)
+            .ToList();
 
-        var a = (Dictionary<string, object>)testData[0]["a"];
+        var a = (Dictionary<string, object>)results[0]["a"];
         var b = (Dictionary<string, object>)a["b"];
         (((DateTime)b["c"]).Kind).Should().Be(DateTimeKind.Utc);
     }
@@ -114,11 +119,11 @@ public class SqlResultConverterTest
         };
 
         var converter = new SqlResultConverter();
-        converter.DecodeStructure(testData);
+        var results = testData.Select(converter.DecodeStructure).ToList();
 
-        (testData[0]["a"] is JsonElement).Should().BeTrue();
-        (testData[0].Keys.Count).Should().Be(1);
-        var a = (JsonElement)testData[0]["a"];
+        (results[0]["a"] is JsonElement).Should().BeTrue();
+        (results[0].Keys.Count).Should().Be(1);
+        var a = (JsonElement)results[0]["a"];
         (a.ValueKind).Should().Be(JsonValueKind.Object);
         (a.GetProperty("b1").GetInt32()).Should().Be(1);
         (a.GetProperty("b2").GetInt32()).Should().Be(2);
@@ -135,9 +140,9 @@ public class SqlResultConverterTest
         };
 
         var converter = new SqlResultConverter();
-        converter.DecodeStructure(testData);
+        var results = testData.Select(converter.DecodeStructure).ToList();
 
-        (testData[0].Keys.Count).Should().Be(0);
+        (results[0].Keys.Count).Should().Be(0);
     }
 
     [TestMethod]
@@ -150,11 +155,11 @@ public class SqlResultConverterTest
         };
 
         var converter = new SqlResultConverter();
-        converter.DecodeStructure(testData);
+        var results = testData.Select(converter.DecodeStructure).ToList();
 
-        (testData[0]["a"] is Dictionary<string, object>).Should().BeTrue();
-        (testData[0].Keys.Count).Should().Be(1);
-        var a = (Dictionary<string, object>)testData[0]["a"];
+        (results[0]["a"] is Dictionary<string, object>).Should().BeTrue();
+        (results[0].Keys.Count).Should().Be(1);
+        var a = (Dictionary<string, object>)results[0]["a"];
         var b = (JsonElement)a["b"];
         (b.ValueKind).Should().Be(JsonValueKind.Object);
         (b.GetProperty("c1").GetInt32()).Should().Be(1);
