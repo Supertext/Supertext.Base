@@ -6,7 +6,9 @@ namespace Supertext.Base.NetFramework.Configuration
 {
     public class SupertextConfigurationSectionHandler : SectionHandler<SupertextConfigurationSection>
     {
+#pragma warning disable CS0672
         public override IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+#pragma warning restore CS0672
         {
             return ConfigSection.AppSettings.OfType<Setting>()
                                 .Select(setting => new KeyValuePair<string, object>(setting.Key, setting.Value))
