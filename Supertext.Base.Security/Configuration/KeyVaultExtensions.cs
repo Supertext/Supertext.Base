@@ -57,12 +57,13 @@ namespace Supertext.Base.Security.Configuration
             var vaultConfigSection = builtConfig.GetSection("KeyVault");
             var vaultUrl = $"https://{vaultConfigSection["KeyVaultName"]}.vault.azure.net/";
             var isUsingManagedIdentity = builtConfig.GetValue<bool>("IsUsingManagedIdentity");
-
+            Console.WriteLine($"vaultUrl: {vaultUrl}");
             if (isUsingManagedIdentity)
             {
                 var secretClient = new SecretClient(new Uri(vaultUrl),
-                                                new DefaultAzureCredential());
+                                                    new DefaultAzureCredential());
                 config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+                Console.WriteLine("Key vault secrets added to configuration builder.");
             }
             else
             {
