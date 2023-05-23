@@ -57,7 +57,6 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
         protected override IHostBuilder CreateHostBuilder()
         {
-
             var builder = base.CreateHostBuilder()
                               ?.UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents))
                               .ConfigureWebHostDefaults(host =>
@@ -68,7 +67,7 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
                                                                 .ConfigureTestServices(services =>
                                                                                        {
                                                                                            services.AddAuthentication("Test")
-                                                                                                   .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+                                                                                                   .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                                                                                        })
                                                                 .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
                                                         })
