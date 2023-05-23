@@ -65,12 +65,12 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
                                               services.AddAuthentication("Test")
                                                       .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                                           })
-                   .ConfigureTestContainer<ContainerBuilder>(RegisterMockedComponents)
                    .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
+            builder.UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents));
             var host = base.CreateHost(builder);
             var testSettings = host.Services.GetRequiredService<TestSettings>();
             _userClaims?.ForEach(userClaims =>
@@ -86,6 +86,7 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
         private void RegisterMockedComponents(ContainerBuilder containerBuilder)
         {
+            Console.WriteLine("Registering mocks...");
             foreach (var mockRegistration in _mockRegistrations)
             {
                 mockRegistration(containerBuilder);
