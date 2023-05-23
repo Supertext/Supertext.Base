@@ -55,26 +55,18 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
             _mockRegistrations.Add(containerBuilderDelegate);
         }
 
-        protected override IHostBuilder CreateHostBuilder()
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            var builder = base.CreateHostBuilder()
-                              ?.UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents))
-                              .ConfigureWebHostDefaults(host =>
-                                                        {
-                                                            host.UseUrls(_url)
-                                                                .UseEnvironment("Development")
-                                                                .UseContentRoot(AppContext.BaseDirectory)
-                                                                .ConfigureTestServices(services =>
-                                                                                       {
-                                                                                           services.AddAuthentication("Test")
-                                                                                                   .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                                                                                       })
-                                                                .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
-                                                        })
-                              .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
-
-            Console.WriteLine($"HostBuilder created for url {_url}: {builder != null}");
-            return builder;
+            builder.UseUrls(_url)
+                   .UseEnvironment("Development")
+                   .UseContentRoot(AppContext.BaseDirectory)
+                   .ConfigureTestServices(services =>
+                                          {
+                                              services.AddAuthentication("Test")
+                                                      .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+                                          })
+                   .ConfigureTestContainer<ContainerBuilder>(RegisterMockedComponents)
+                   .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
