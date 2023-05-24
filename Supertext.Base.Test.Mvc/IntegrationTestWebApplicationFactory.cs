@@ -70,7 +70,7 @@ namespace Supertext.Base.Test.Mvc
                                                                 .ConfigureTestServices(services =>
                                                                                        {
                                                                                            services.AddAuthentication("Test")
-                                                                                                   .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+                                                                                                   .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                                                                                        })
                                                                 .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
                                                         })
