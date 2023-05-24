@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Autofac;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -61,7 +62,8 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
                                               services.AddAuthentication("Test")
                                                       .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                                           })
-                   .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
+                   .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)))
+                   .Configure(app => { app.UseDeveloperExceptionPage(); });
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
