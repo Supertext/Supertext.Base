@@ -23,7 +23,6 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
     public class IntegrationTestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
         where TEntryPoint : class
     {
-        private readonly string _url;
         private readonly IDictionary<long, List<Claim>> _userClaims;
         private readonly List<Action<ContainerBuilder>> _mockRegistrations;
         private readonly ICollection<Action<IHost>> _postBuildActions;
@@ -31,11 +30,9 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
         /// <summary>
         ///
         /// </summary>
-        /// <param name="url"></param>
         /// <param name="userClaims">Will be used in users ClaimsPrinciple</param>
-        public IntegrationTestWebApplicationFactory(string url, IDictionary<long, List<Claim>> userClaims = null)
+        public IntegrationTestWebApplicationFactory(IDictionary<long, List<Claim>> userClaims = null)
         {
-            _url = url;
             _userClaims = userClaims;
             _mockRegistrations = new List<Action<ContainerBuilder>>();
             _postBuildActions = new List<Action<IHost>>();
@@ -57,8 +54,7 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseUrls(_url)
-                   .UseEnvironment("Development")
+            builder.UseEnvironment("Development")
                    .UseContentRoot(AppContext.BaseDirectory)
                    .ConfigureTestServices(services =>
                                           {
@@ -70,7 +66,8 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents));
+            builder.UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents))
+                   .ConfigureLogging(loggingBuilder => loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger)));
             var host = base.CreateHost(builder);
             var testSettings = host.Services.GetRequiredService<TestSettings>();
             _userClaims?.ForEach(userClaims =>
