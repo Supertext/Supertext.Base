@@ -35,6 +35,7 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
         {
             _userClaims = userClaims ?? new Dictionary<long, List<Claim>>();
             _postBuildActions = new List<Action<IHost>>();
+            InMemoryLogger = new InMemoryLogger();
         }
 
         public InMemoryLogger InMemoryLogger { get; }
@@ -51,9 +52,8 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration((hostContext, configApp) =>
+            builder.ConfigureAppConfiguration((_, configApp) =>
                                               {
-                                                  var env = hostContext.HostingEnvironment;
                                                   configApp.AddJsonFile("appsettings.json", optional: true);
                                                   configApp.AddEnvironmentVariables();
                                               })
@@ -85,15 +85,6 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
 
             ExecutePostCreateActions(host);
             return host;
-        }
-
-        private void RegisterMockedComponents(ContainerBuilder containerBuilder)
-        {
-            Console.WriteLine("Registering mocks...");
-            foreach (var mockRegistration in _mockRegistrations)
-            {
-                mockRegistration(containerBuilder);
-            }
         }
 
         private void ExecutePostCreateActions(IHost host)
