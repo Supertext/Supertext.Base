@@ -65,7 +65,6 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
                    .ConfigureTestContainer<ContainerBuilder>(RegisterMocks)
                    .ConfigureLogging(loggingBuilder =>
                                      {
-                                         loggingBuilder.ClearProviders();
                                          loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger));
                                      });
         }
@@ -73,7 +72,10 @@ namespace Supertext.Base.Test.Mvc.MinimalApi
         protected override IHost CreateHost(IHostBuilder builder)
         {
             builder.ConfigureContainer<ContainerBuilder>(RegisterMocks);
-
+            builder.ConfigureLogging(loggingBuilder =>
+                                     {
+                                         loggingBuilder.AddProvider(new TestLoggerProvider(InMemoryLogger));
+                                     });
             var host = base.CreateHost(builder);
 
             var testSettings = host.Services.GetRequiredService<TestSettings>();
