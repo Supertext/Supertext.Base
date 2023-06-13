@@ -146,9 +146,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.targets'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.1.1.1\build\Microsoft.Build.Tasks.Git.targets')" />
-  <Import Project="..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.3.0.2\build\net462\MSTest.TestAdapter.targets')" />
 </Project>
