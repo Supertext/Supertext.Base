@@ -10,5 +10,7 @@ namespace Supertext.Base.Identity.UserInfo
         Option<string> GetFirstName(ClaimsPrincipal claimsPrincipal);
 
         Option<string> GetLastName(ClaimsPrincipal claimsPrincipal);
+
+        Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName);
     }
 }
