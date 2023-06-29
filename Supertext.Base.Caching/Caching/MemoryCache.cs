@@ -11,6 +11,7 @@ namespace Supertext.Base.Caching.Caching
 {
     internal class MemoryCache<T> : IMemoryCache<T> where T : class
     {
+        private readonly object _clearingLock;
         private readonly AsyncDuplicateLock _syncLock = new();
         private readonly ICacheSettings _settings;
         private readonly IDateTimeProvider _dateTimeProvider;
@@ -18,6 +19,7 @@ namespace Supertext.Base.Caching.Caching
 
         public MemoryCache(string cacheName, ICacheSettings settings, IDateTimeProvider dateTimeProvider)
         {
+            _clearingLock = new object();
             _settings = settings;
             _dateTimeProvider = dateTimeProvider;
             Validate.NotEmpty(cacheName, nameof(cacheName));
@@ -30,9 +32,21 @@ namespace Supertext.Base.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(item, nameof(item));
 
+            using (_syncLock.Lock(_clearingLock))
             using (_syncLock.Lock(key))
             {
                 _memoryCache.Set(key, item, _dateTimeProvider.UtcNow.AddSeconds(_settings.LifeTimeInSeconds));
+            }
+        }
+
+        public void Clear()
+        {
+            using (_syncLock.Lock(_clearingLock))
+            {
+                foreach (var element in _memoryCache)
+                {
+                    _memoryCache.Remove(element.Key);
+                }
             }
         }
 
@@ -40,6 +54,7 @@ namespace Supertext.Base.Caching.Caching
         {
             Validate.NotEmpty(key, nameof(key));
 
+            using (_syncLock.Lock(_clearingLock))
             using (_syncLock.Lock(key))
             {
                 return _memoryCache.Get(key) is T item
@@ -53,6 +68,7 @@ namespace Supertext.Base.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(factoryMethod, nameof(factoryMethod));
 
+            using (_syncLock.Lock(_clearingLock))
             using (_syncLock.Lock(key))
             {
                 if (_memoryCache.Get(key) is not T result)
@@ -70,6 +86,7 @@ namespace Supertext.Base.Caching.Caching
             Validate.NotEmpty(key, nameof(key));
             Validate.NotNull(factoryMethod, nameof(factoryMethod));
 
+            using (await _syncLock.LockAsync(_clearingLock).ConfigureAwait(false))
             using (await _syncLock.LockAsync(key).ConfigureAwait(false))
             {
                 if (_memoryCache.Get(key) is not T result)
@@ -86,6 +103,7 @@ namespace Supertext.Base.Caching.Caching
         {
             Validate.NotEmpty(key, nameof(key));
 
+            using (_syncLock.Lock(_clearingLock))
             using (_syncLock.Lock(key))
             {
                 _memoryCache.Remove(key);

@@ -12,6 +12,9 @@ namespace Supertext.Base.Caching.Specs.Caching
     [TestClass]
     public class MemoryCacheTest
     {
+        private const int CacheLifetime0 = 0;
+        private const int CacheLifetime10 = 10;
+
         private IContainer _container;
         private IDateTimeProvider _dateTimeProvider;
         private CacheSettings _cacheSettings;
@@ -35,6 +38,31 @@ namespace Supertext.Base.Caching.Specs.Caching
         }
 
         [TestMethod]
+        public void Clear_RemovesAllEntries()
+        {
+            const string key1 = nameof(key1);
+            const string key2 = nameof(key2);
+            const string value1 = nameof(value1);
+            const string value2 = nameof(value2);
+
+            var testee = _container.Resolve<IMemoryCache<string>>();
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
+
+            testee.Add(key1, value1);
+            testee.Add(key2, value2);
+
+            testee.Get(key1).IsSome.Should().BeTrue();
+            testee.Get(key1).Value.Should().Be(value1);
+            testee.Get(key2).IsSome.Should().BeTrue();
+            testee.Get(key2).Value.Should().Be(value2);
+
+            testee.Clear();
+
+            testee.Get(key1).IsSome.Should().BeFalse();
+            testee.Get(key2).IsSome.Should().BeFalse();
+        }
+
+        [TestMethod]
         public void Get_CacheItemNotExist_CacheReturnsNone()
         {
             //Arrange
@@ -52,7 +80,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var cacheItem = new CacheItem1();
             testee.Add("key1", cacheItem);
 
@@ -69,7 +97,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 0;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime0;
             testee.Add("key1", new CacheItem1());
 
             //Act
@@ -84,7 +112,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var cacheItem = new CacheItem1();
             testee.Add("key1", cacheItem);
             testee.Add("key1", cacheItem);
@@ -102,7 +130,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var cacheItem = new CacheItem1();
             testee.Add("key1", cacheItem);
             testee.Add("key2", cacheItem);
@@ -123,7 +151,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         public void Get_CacheItemIsAddedInDifferentInstancesForTheSameKey_CacheReturnsLatestAddedItem()
         {
             //Arrange
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var testee1 = _container.Resolve<IMemoryCache<CacheItem1>>();
             var cacheItem1 = new CacheItem1();
             testee1.Add("key1", cacheItem1);
@@ -161,7 +189,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var cacheItem = new CacheItem1();
 
             //Act
@@ -176,7 +204,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 0;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime0;
             var cacheItem = new CacheItem1();
             testee.Add("key1", cacheItem);
             var isCreatedByFactoryMethod = false;
@@ -199,7 +227,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 10;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime10;
             var cacheItem = new CacheItem1();
 
             //Act
@@ -214,7 +242,7 @@ namespace Supertext.Base.Caching.Specs.Caching
         {
             //Arrange
             var testee = _container.Resolve<IMemoryCache<CacheItem1>>();
-            _cacheSettings.LifeTimeInSeconds = 0;
+            _cacheSettings.LifeTimeInSeconds = CacheLifetime0;
             var cacheItem = new CacheItem1();
             testee.Add("key1", cacheItem);
             var isCreatedByFactoryMethod = false;
@@ -243,6 +271,7 @@ namespace Supertext.Base.Caching.Specs.Caching
 
             containerBuilder.RegisterCache<CacheItem1, CacheSettings>("cacheItem1");
             containerBuilder.RegisterCache<CacheItem2, CacheSettings>("cacheItem2");
+            containerBuilder.RegisterCache<string, CacheSettings>("cache3");
 
             return containerBuilder.Build();
         }

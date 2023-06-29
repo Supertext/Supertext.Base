@@ -7,10 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="7.0.1" />
-    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling.Data.NetCore" Version="6.0.1312" />
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="7.4.0" />
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
@@ -22,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Core.Configuration\Supertext.Base.Core.Configuration.csproj" />
     <ProjectReference Include="..\Supertext.Base.Dal.SqlServer\Supertext.Base.Dal.SqlServer.csproj" />
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
