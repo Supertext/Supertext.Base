@@ -30,6 +30,28 @@ namespace Supertext.Base.Identity.UserInfo
             return GetStringValue(claimsPrincipal, "family_name");
         }
 
+        public Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName)
+        {
+            var nameClaim = claimsPrincipal?.Claims?.SingleOrDefault(claim => claim.Type == claimName);
+
+            if (nameClaim != null)
+            {
+                object convertedValue;
+                try
+                {
+                    convertedValue = Convert.ChangeType(nameClaim.Value, typeof(T));
+                }
+                catch (Exception)
+                {
+                    return Option<T>.None();
+                }
+
+                return Option<T>.Some((T)convertedValue);
+            }
+
+            return Option<T>.None();
+        }
+
         private static Option<string> GetStringValue(ClaimsPrincipal claimsPrincipal, string claimName)
         {
             var nameClaim = claimsPrincipal?.Claims?.SingleOrDefault(claim => claim.Type == claimName);
