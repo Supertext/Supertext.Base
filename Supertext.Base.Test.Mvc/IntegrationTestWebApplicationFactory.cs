@@ -60,6 +60,7 @@ namespace Supertext.Base.Test.Mvc
         protected override IHostBuilder CreateHostBuilder()
         {
             var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
+                              .UseSerilog()
                               .UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents))
                               .ConfigureWebHostDefaults(host =>
                                                         {
