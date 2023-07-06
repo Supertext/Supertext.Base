@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Supertext.Base.Extensions;
 using Supertext.Base.Test.Utils.Logging;
 
@@ -61,7 +60,6 @@ namespace Supertext.Base.Test.Mvc
         protected override IHostBuilder CreateHostBuilder()
         {
             var builder = Host.CreateDefaultBuilder(Array.Empty<string>())
-                              .UseSerilog()
                               .UseServiceProviderFactory(new IntegrationTestAutofacServiceProviderFactory(RegisterMockedComponents))
                               .ConfigureWebHostDefaults(host =>
                                                         {
