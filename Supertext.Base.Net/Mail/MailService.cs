@@ -47,6 +47,19 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
+                var license = new License();
+
+                var licenseInfo = _configuration.GetSection("Aspose-EmailLicense").Value;
+                if (String.IsNullOrWhiteSpace(licenseInfo))
+                {
+                    _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is empty");
+                }
+                var info = Encoding.UTF8.GetBytes(licenseInfo);
+                using (var stream = new MemoryStream(info))
+                {
+                    license.SetLicense(stream);
+                    _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is added");
+                }
 
                 await SendInternal(mail,
                                    (message) =>
@@ -64,22 +77,6 @@ namespace Supertext.Base.Net.Mail
 
         private async Task SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
         {
-            var license = new License();
-
-            var licenseInfo = _configuration.GetSection("Aspose-EmailLicense").Value;
-            if (String.IsNullOrWhiteSpace(licenseInfo))
-            {
-                _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is empty");
-                return;
-            }
-            var info = Encoding.UTF8.GetBytes(licenseInfo);
-            using (var stream = new MemoryStream(info))
-            {
-                license.SetLicense(stream);
-                _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is added");
-            }
-
-
             using (var msg = new MailMessage())
             {
                 CreateEmail(mail, msg, handleHtml);
