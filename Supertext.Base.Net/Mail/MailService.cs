@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Supertext.Base.Exceptions;
 
@@ -13,11 +15,13 @@ namespace Supertext.Base.Net.Mail
     internal class MailService : IMailService
     {
         private static ILogger<IMailService> _logger;
-        private readonly MailServiceConfig _configuration;
+        private readonly MailServiceConfig _mailServiceConfig;
+        private readonly IConfiguration _configuration;
 
-        public MailService(ILogger<IMailService> logger, MailServiceConfig configuration)
+        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig, IConfiguration configuration)
         {
             _logger = logger;
+            _mailServiceConfig = mailServiceConfig;
             _configuration = configuration;
         }
 
@@ -43,12 +47,13 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
+
                 await SendInternal(mail,
-                             (message) =>
-                             {
-                                 message.IsBodyHtml = true;
-                                 message.HtmlBody = mail.Message;
-                             }).ConfigureAwait(false);
+                                   (message) =>
+                                   {
+                                       message.IsBodyHtml = true;
+                                       message.HtmlBody = mail.Message;
+                                   }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -59,20 +64,36 @@ namespace Supertext.Base.Net.Mail
 
         private async Task SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
         {
+            var license = new License();
+
+            var licenseInfo = _configuration.GetSection("Aspose-EmailLicense").Value;
+            if (String.IsNullOrWhiteSpace(licenseInfo))
+            {
+                _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is empty");
+                return;
+            }
+            var info = Encoding.UTF8.GetBytes(licenseInfo);
+            using (var stream = new MemoryStream(info))
+            {
+                license.SetLicense(stream);
+                _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is added");
+            }
+
+
             using (var msg = new MailMessage())
             {
                 CreateEmail(mail, msg, handleHtml);
 
                 using (var client = new SmtpClient())
                 {
-                    if (_configuration.SendGridEnabled)
+                    if (_mailServiceConfig.SendGridEnabled)
                     {
                         SetSendGridClient(client);
                     }
                     else
                     {
                         client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                        client.PickupDirectoryLocation = _configuration.LocalEmailDirectory;
+                        client.PickupDirectoryLocation = _mailServiceConfig.LocalEmailDirectory;
                     }
 
                     var attachmentStreams = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name)).ToList();
@@ -111,10 +132,10 @@ namespace Supertext.Base.Net.Mail
         private static void CreateEmail(EmailInfo mail, MailMessage msg, Action<MailMessage> handleHtml)
         {
             handleHtml(msg);
-            msg.BodyEncoding = System.Text.Encoding.UTF8;
+            msg.BodyEncoding = Encoding.UTF8;
             msg.From = new MailAddress(mail.From.Email, mail.From.Name);
             msg.Subject = mail.Subject;
-            msg.SubjectEncoding = System.Text.Encoding.UTF8;
+            msg.SubjectEncoding = Encoding.UTF8;
 
 
             msg.To.Add(new MailAddress(mail.To.Email, mail.To.Name));
@@ -132,32 +153,32 @@ namespace Supertext.Base.Net.Mail
 
         private void SetSendGridClient(SmtpClient client)
         {
-            var port = _configuration.SendGridPort;
+            var port = _mailServiceConfig.SendGridPort;
 
             client.SecurityOptions = SecurityOptions.SSLExplicit;
             client.UseAuthentication = true;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.Host = _configuration.SendGridHost;
-            client.Password = _configuration.SendGridPassword;
+            client.Host = _mailServiceConfig.SendGridHost;
+            client.Password = _mailServiceConfig.SendGridPassword;
             client.Port = port;
-            client.Username = _configuration.SendGridUsername;
+            client.Username = _mailServiceConfig.SendGridUsername;
 
             if (String.IsNullOrWhiteSpace(client.Host))
             {
-                Console.WriteLine("The SendGrid 'host' property was not set in the configuration's AppSettings.");
-                throw new ConfigurationException("The SendGrid 'host' property was not set in the configuration's AppSettings.");
+                Console.WriteLine("The SendGrid 'host' property was not set in the mailServiceConfig's AppSettings.");
+                throw new ConfigurationException("The SendGrid 'host' property was not set in the mailServiceConfig's AppSettings.");
             }
 
             if (String.IsNullOrWhiteSpace(client.Password))
             {
-                Console.WriteLine("The SendGrid 'password' property was not set in the configuration's AppSettings.");
-                throw new ConfigurationException("The SendGrid 'password' property was not set in the configuration's AppSettings.");
+                Console.WriteLine("The SendGrid 'password' property was not set in the mailServiceConfig's AppSettings.");
+                throw new ConfigurationException("The SendGrid 'password' property was not set in the mailServiceConfig's AppSettings.");
             }
 
             if (String.IsNullOrWhiteSpace(client.Username))
             {
-                Console.WriteLine("The SendGrid 'username' property was not set in the configuration's AppSettings.");
-                throw new ConfigurationException("The SendGrid 'username' property was not set in the configuration's AppSettings.");
+                Console.WriteLine("The SendGrid 'username' property was not set in the mailServiceConfig's AppSettings.");
+                throw new ConfigurationException("The SendGrid 'username' property was not set in the mailServiceConfig's AppSettings.");
             }
         }
 
