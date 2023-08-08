@@ -18,7 +18,6 @@ namespace Supertext.Base.Net.Specs.Mail
         private MailService _testee;
         private ILogger<IMailService> _logger;
         private MailServiceConfig _config;
-        private IConfiguration _configuration;
         private EmailInfo _mail;
         private string _dir;
         private DirectoryInfo _testDir;
@@ -35,8 +34,6 @@ namespace Supertext.Base.Net.Specs.Mail
             {
                 _logger.LogError("Path for temporary local email storage is not correct.");
             }
-
-            _configuration = A.Fake<IConfiguration>();
 
             _config = new MailServiceConfig {LocalEmailDirectory = _dir};
             _testee = new MailService(_logger, _config);
