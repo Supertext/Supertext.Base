@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Aspose.Email;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Net.Mail;
