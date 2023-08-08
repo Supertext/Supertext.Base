@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Supertext.Base.Exceptions;
 
@@ -16,13 +15,11 @@ namespace Supertext.Base.Net.Mail
     {
         private static ILogger<IMailService> _logger;
         private readonly MailServiceConfig _mailServiceConfig;
-        private readonly IConfiguration _configuration;
 
-        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig, IConfiguration configuration)
+        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig)
         {
             _logger = logger;
             _mailServiceConfig = mailServiceConfig;
-            _configuration = configuration;
         }
 
         public async Task SendAsync(EmailInfo mail)
@@ -47,20 +44,6 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
-                var license = new License();
-
-                var licenseInfo = _configuration.GetSection("Aspose-EmailLicense").Value;
-                if (String.IsNullOrWhiteSpace(licenseInfo))
-                {
-                    _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is empty");
-                }
-                var info = Encoding.UTF8.GetBytes(licenseInfo);
-                using (var stream = new MemoryStream(info))
-                {
-                    license.SetLicense(stream);
-                    _logger.LogInformation($"{nameof(SendInternal)}: Aspose-EmailLicense value is added");
-                }
-
                 await SendInternal(mail,
                                    (message) =>
                                    {
