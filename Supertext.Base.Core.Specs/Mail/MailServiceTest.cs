@@ -39,7 +39,7 @@ namespace Supertext.Base.Net.Specs.Mail
             _configuration = A.Fake<IConfiguration>();
 
             _config = new MailServiceConfig {LocalEmailDirectory = _dir};
-            _testee = new MailService(_logger, _config, _configuration);
+            _testee = new MailService(_logger, _config);
 
             var to = new PersonInfo("Verifier", "verifier@mail.com");
 
