@@ -12,9 +12,8 @@ namespace Supertext.Base.Net.Mail
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        [Obsolete("Deprecated. Rather use Supertext.Base.Hosting.Extensions.AsposeActivationExtension.AddAsposeEmailLicense(IHost). "
-                  + "Use it in ")]
-        public static void AddAsposeMailLicense(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration) {
+        public static void AddAsposeMailLicense(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
