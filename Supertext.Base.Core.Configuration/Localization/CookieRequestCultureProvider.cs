@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -81,3 +82,4 @@ namespace Supertext.Base.Core.Configuration.Localization
         }
     }
 }
+#endif
