@@ -46,7 +46,7 @@ public class AutofacConsumerRegistrationTest
         var publisher = host.Services.GetService<IMessagePublisher>();
 
         var message = new TestMessage1 { Id = 4711 };
-        await publisher!.SendAsync(message, CancellationToken.None);
+        await publisher!.PublishAsync(message, CancellationToken.None);
 
         await harness.Consumed.Any<TestMessage1>();
 
@@ -88,7 +88,7 @@ public class AutofacConsumerRegistrationTest
 
         var correlationId = Guid.NewGuid();
         var message = new TestMessage2 { Id = 4711 };
-        await publisher!.SendAsync(message, correlationId, CancellationToken.None);
+        await publisher!.PublishAsync(message, correlationId, CancellationToken.None);
 
         await harness.Consumed.Any<TestMessage2>();
 
