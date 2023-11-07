@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Threading;
+using Supertext.Base.Common;
 
 namespace Supertext.Base.Caching;
 
@@ -90,4 +91,8 @@ public interface IDecentralizedCache
     Task SetStringAsync(string key, string value, CancellationToken token = default);
 
     Task SetStringAsync(string key, string value, TimeSpan timeToLive, CancellationToken token = default);
+
+    Option<string> GetString(string key, CancellationToken token = default);
+
+    Task<Option<string>> GetStringAsync(string key, CancellationToken token = default);
 }

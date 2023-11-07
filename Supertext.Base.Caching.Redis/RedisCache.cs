@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using Supertext.Base.Common;
 
 namespace Supertext.Base.Caching.Redis;
 
@@ -19,6 +20,18 @@ internal class RedisCache : IDecentralizedCache
     public async Task<byte[]> GetAsync(string key, CancellationToken token = default)
     {
         return await _distributedCache.GetAsync(key, token);
+    }
+
+    public Option<string> GetString(string key, CancellationToken token = default)
+    {
+        var value = _distributedCache.GetString(key);
+        return String.IsNullOrWhiteSpace(value) ? Option<string>.None() : Option<string>.Some(value);
+    }
+
+    public async Task<Option<string>> GetStringAsync(string key, CancellationToken token = default)
+    {
+        var value = await _distributedCache.GetStringAsync(key, token);
+        return String.IsNullOrWhiteSpace(value) ? Option<string>.None() : Option<string>.Some(value);
     }
 
     public void Set(string key, byte[] value)
