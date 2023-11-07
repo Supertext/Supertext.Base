@@ -3,7 +3,7 @@
 namespace Supertext.Base.Caching.Redis;
 
 [ConfigSection("Redis")]
-internal class RedisConfig : IConfiguration
+public class RedisConfig : IConfiguration
 {
     [KeyVaultSecret("redisConnection")]
     public string ConnectionString { get; set; }
