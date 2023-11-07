@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Threading;
 
 namespace Supertext.Base.Caching;
@@ -28,6 +29,14 @@ public interface IDecentralizedCache
     void Set(string key, byte[] value);
 
     /// <summary>
+    /// Sets a value with the given key.
+    /// </summary>
+    /// <param name="key">A string identifying the requested value.</param>
+    /// <param name="value">The value to set in the cache.</param>
+    /// <param name="timeToLive">Expiration of the value</param>
+    void Set(string key, byte[] value, TimeSpan timeToLive);
+
+    /// <summary>
     /// Sets the value with the given key.
     /// </summary>
     /// <param name="key">A string identifying the requested value.</param>
@@ -35,6 +44,16 @@ public interface IDecentralizedCache
     /// <param name="token">Optional. The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
     Task SetAsync(string key, byte[] value, CancellationToken token = default);
+
+    /// <summary>
+    /// Sets the value with the given key.
+    /// </summary>
+    /// <param name="key">A string identifying the requested value.</param>
+    /// <param name="value">The value to set in the cache.</param>
+    /// <param name="token">Optional. The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+    /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
+    /// <param name="timeToLive">Expiration of the value</param>
+    Task SetAsync(string key, byte[] value, TimeSpan timeToLive, CancellationToken token = default);
 
     /// <summary>
     /// Refreshes a value in the cache based on its key, resetting its sliding expiration timeout (if any).
@@ -66,5 +85,9 @@ public interface IDecentralizedCache
 
     void SetString(string key, string value);
 
+    void SetString(string key, string value, TimeSpan timeToLive);
+
     Task SetStringAsync(string key, string value, CancellationToken token = default);
+
+    Task SetStringAsync(string key, string value, TimeSpan timeToLive, CancellationToken token = default);
 }
