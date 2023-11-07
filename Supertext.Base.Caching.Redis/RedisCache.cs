@@ -26,9 +26,9 @@ internal class RedisCache : IDecentralizedCache
         _distributedCache.Set(key, value);
     }
 
-    public void Set(string key, byte[] value, TimeSpan absoluteExpirationRelativeToNow)
+    public void Set(string key, byte[] value, TimeSpan timeToLive)
     {
-        var options = CreateDistributedCacheEntryOptions(absoluteExpirationRelativeToNow);
+        var options = CreateDistributedCacheEntryOptions(timeToLive);
         _distributedCache.Set(key, value, options);
     }
 
@@ -37,9 +37,9 @@ internal class RedisCache : IDecentralizedCache
         await _distributedCache.SetAsync(key, value, token);
     }
 
-    public async Task SetAsync(string key, byte[] value, TimeSpan absoluteExpirationRelativeToNow, CancellationToken token = default)
+    public async Task SetAsync(string key, byte[] value, TimeSpan timeToLive, CancellationToken token = default)
     {
-        var options = CreateDistributedCacheEntryOptions(absoluteExpirationRelativeToNow);
+        var options = CreateDistributedCacheEntryOptions(timeToLive);
         await _distributedCache.SetAsync(key, value, options, token);
     }
 
@@ -48,9 +48,9 @@ internal class RedisCache : IDecentralizedCache
         _distributedCache.SetString(key, value);
     }
 
-    public void SetString(string key, string value, TimeSpan absoluteExpirationRelativeToNow)
+    public void SetString(string key, string value, TimeSpan timeToLive)
     {
-        var options = CreateDistributedCacheEntryOptions(absoluteExpirationRelativeToNow);
+        var options = CreateDistributedCacheEntryOptions(timeToLive);
         _distributedCache.SetString(key, value, options);
     }
 
@@ -59,9 +59,9 @@ internal class RedisCache : IDecentralizedCache
         await _distributedCache.SetStringAsync(key, value, token);
     }
 
-    public async Task SetStringAsync(string key, string value, TimeSpan absoluteExpirationRelativeToNow, CancellationToken token = default)
+    public async Task SetStringAsync(string key, string value, TimeSpan timeToLive, CancellationToken token = default)
     {
-        var options = CreateDistributedCacheEntryOptions(absoluteExpirationRelativeToNow);
+        var options = CreateDistributedCacheEntryOptions(timeToLive);
         await _distributedCache.SetStringAsync(key, value, options, token);
     }
 
@@ -85,8 +85,8 @@ internal class RedisCache : IDecentralizedCache
         await _distributedCache.RemoveAsync(key, token);
     }
 
-    private static DistributedCacheEntryOptions CreateDistributedCacheEntryOptions(TimeSpan absoluteExpirationRelativeToNow)
+    private static DistributedCacheEntryOptions CreateDistributedCacheEntryOptions(TimeSpan timeToLive)
     {
-        return new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = absoluteExpirationRelativeToNow };
+        return new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = timeToLive };
     }
 }
