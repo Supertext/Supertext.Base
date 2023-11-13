@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FakeItEasy;
 using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;
@@ -14,6 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Supertext.Base.Hosting.MassTransit;
 using Supertext.Base.Hosting.Specs.MassTransit.Consumers;
 using Supertext.Base.Hosting.Specs.MassTransit.Messages;
+using Supertext.Base.Hosting.Tracing;
 using Supertext.Base.Messaging;
 
 namespace Supertext.Base.Hosting.Specs.MassTransit;
@@ -27,7 +29,6 @@ public class AutofacConsumerRegistrationTest
         var consumerHelper = new ConsumerHelper();
         // Map the default name
         EndpointConvention.Map<TestMessage1>(new Uri("queue:TestMessage1"));
-
         var host = Host.CreateDefaultBuilder()
                              .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                              .ConfigureServices(services =>
@@ -40,8 +41,11 @@ public class AutofacConsumerRegistrationTest
                                                                .UseTestServer()
                                                                .UseStartup<Startup>())
                              .ConfigureContainer<ContainerBuilder>(containerBuilder =>
+                                                                   {
                                                                        containerBuilder.RegisterMessageConsumers(GetType().Assembly)
-                                                                                       .RegisterInstance(consumerHelper))
+                                                                                       .RegisterInstance(consumerHelper);
+                                                                       containerBuilder.RegisterInstance(A.Fake<ITracingInitializer>());
+                                                                   })
                              .Build();
 
         await host.StartAsync();
@@ -81,8 +85,11 @@ public class AutofacConsumerRegistrationTest
                                                                .UseTestServer()
                                                                .UseStartup<Startup>())
                              .ConfigureContainer<ContainerBuilder>(containerBuilder =>
+                                                                   {
                                                                        containerBuilder.RegisterMessageConsumers(GetType().Assembly)
-                                                                                       .RegisterInstance(consumerHelper))
+                                                                                       .RegisterInstance(consumerHelper);
+                                                                       containerBuilder.RegisterInstance(A.Fake<ITracingInitializer>());
+                                                                   })
                              .Build();
 
         await host.StartAsync();
