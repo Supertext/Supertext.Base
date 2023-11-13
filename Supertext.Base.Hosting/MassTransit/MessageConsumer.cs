@@ -4,17 +4,23 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Supertext.Base.Common;
+using Supertext.Base.Hosting.Tracing;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit
+namespace Supertext.Base.Hosting.MassTransit
 {
     internal class MessageConsumer<TMessage> : IConsumer<TMessage> where TMessage : class
     {
         private readonly ICollection<IMessageConsumer<TMessage>> _consumers;
+        private readonly ITracingInitializer _tracingInitializer;
         private readonly ILogger<MessageConsumer<TMessage>> _logger;
 
-        public MessageConsumer(ICollection<IMessageConsumer<TMessage>> consumers, ILogger<MessageConsumer<TMessage>> logger)
+        public MessageConsumer(ICollection<IMessageConsumer<TMessage>> consumers,
+                               ITracingInitializer tracingInitializer,
+                               ILogger<MessageConsumer<TMessage>> logger)
         {
             _consumers = consumers;
+            _tracingInitializer = tracingInitializer;
             _logger = logger;
         }
 
@@ -27,6 +33,10 @@ namespace Supertext.Base.Messaging.MassTransit
                 var correlationId = context.CorrelationId.HasValue
                                                ? Option<Guid>.Some(context.CorrelationId.Value)
                                                : Option<Guid>.None();
+                if (correlationId.IsSome)
+                {
+                    _tracingInitializer.SetNewCorrelationId(correlationId.Value);
+                }
                 var consumerTask = consumer.HandleAsync(context.Message,
                                                         correlationId,
                                                         context.CancellationToken);

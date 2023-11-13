@@ -1,8 +1,9 @@
 ﻿using Autofac;
 using MassTransit;
 using MassTransit.Transactions;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit
+namespace Supertext.Base.Hosting.MassTransit
 {
     public class MessagingMassTransitModule : Module
     {

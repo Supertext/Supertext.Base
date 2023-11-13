@@ -1,4 +1,6 @@
-﻿namespace Supertext.Base.Messaging.MassTransit.Specs.Messages;
+﻿using System;
+
+namespace Supertext.Base.Hosting.Specs.MassTransit.Messages;
 
 public class TestMessage2
 {

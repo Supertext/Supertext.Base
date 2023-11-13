@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentAssertions;
@@ -7,10 +10,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Supertext.Base.Messaging.MassTransit.Specs.Consumers;
-using Supertext.Base.Messaging.MassTransit.Specs.Messages;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Supertext.Base.Hosting.MassTransit;
+using Supertext.Base.Hosting.Specs.MassTransit.Consumers;
+using Supertext.Base.Hosting.Specs.MassTransit.Messages;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit.Specs;
+namespace Supertext.Base.Hosting.Specs.MassTransit;
 
 [TestClass]
 public class AutofacConsumerRegistrationTest

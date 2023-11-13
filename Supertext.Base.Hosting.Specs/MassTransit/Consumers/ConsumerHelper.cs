@@ -1,7 +1,8 @@
-﻿using Supertext.Base.Common;
-using Supertext.Base.Messaging.MassTransit.Specs.Messages;
+﻿using System;
+using Supertext.Base.Common;
+using Supertext.Base.Hosting.Specs.MassTransit.Messages;
 
-namespace Supertext.Base.Messaging.MassTransit.Specs.Consumers;
+namespace Supertext.Base.Hosting.Specs.MassTransit.Consumers;
 
 public class ConsumerHelper
 {

@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using Autofac;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit
+namespace Supertext.Base.Hosting.MassTransit
 {
     public static class AutofacBuilderExtension
     {

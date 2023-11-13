@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Supertext.Base.Messaging.MassTransit.Specs;
+namespace Supertext.Base.Hosting.Specs.MassTransit;
 
 internal class Startup
 {

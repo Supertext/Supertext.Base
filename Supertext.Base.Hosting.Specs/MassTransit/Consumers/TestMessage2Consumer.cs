@@ -1,7 +1,11 @@
-﻿using Supertext.Base.Common;
-using Supertext.Base.Messaging.MassTransit.Specs.Messages;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Supertext.Base.Common;
+using Supertext.Base.Hosting.Specs.MassTransit.Messages;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit.Specs.Consumers;
+namespace Supertext.Base.Hosting.Specs.MassTransit.Consumers;
 
 public class TestMessage2Consumer : IMessageConsumer<TestMessage2>
 {

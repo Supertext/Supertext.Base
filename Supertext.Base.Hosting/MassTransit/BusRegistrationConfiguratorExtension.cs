@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace Supertext.Base.Messaging.MassTransit
+namespace Supertext.Base.Hosting.MassTransit
 {
     public static class BusRegistrationConfiguratorExtension
     {

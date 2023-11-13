@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using MassTransit;
 using MassTransit.Transactions;
 using Microsoft.Extensions.Logging;
+using Supertext.Base.Messaging;
 
-namespace Supertext.Base.Messaging.MassTransit
+namespace Supertext.Base.Hosting.MassTransit
 {
     internal class PublishEndpoint : IMessagePublisher
     {
