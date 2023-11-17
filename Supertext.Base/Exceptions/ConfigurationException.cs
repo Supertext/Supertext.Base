@@ -1,7 +1,5 @@
 ﻿using System;
-#if !NET8_0_OR_GREATER
 using System.Runtime.Serialization;
-#endif
 
 namespace Supertext.Base.Exceptions
 {
@@ -15,10 +13,8 @@ namespace Supertext.Base.Exceptions
         {
         }
 
-#if !NET8_0_OR_GREATER
         protected ConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
-#endif
     }
 }
