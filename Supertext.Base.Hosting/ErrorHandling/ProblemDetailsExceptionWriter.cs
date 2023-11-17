@@ -10,7 +10,7 @@ using Supertext.Base.Exceptions;
 
 namespace Supertext.Base.Hosting.ErrorHandling
 {
-    public class ProblemDetailsExceptionWriter : IProblemDetailsWriter
+    internal class ProblemDetailsExceptionWriter : IProblemDetailsWriter
     {
         private const string UnknownErrorOccurred = "Unknown error occurred";
         private const string GeneralErrorKey = "general";
@@ -24,8 +24,6 @@ namespace Supertext.Base.Hosting.ErrorHandling
         private readonly OutputFormatterSelector _formatterSelector;
         private readonly IHttpResponseStreamWriterFactory _writerFactory;
         private readonly ProblemDetailsFactory _problemDetailsFactory;
-
-
 
         public ProblemDetailsExceptionWriter(OutputFormatterSelector formatterSelector,
                                              IHttpResponseStreamWriterFactory writerFactory,
