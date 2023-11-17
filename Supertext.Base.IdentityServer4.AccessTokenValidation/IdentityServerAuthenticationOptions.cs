@@ -212,9 +212,15 @@ namespace IdentityServer4.AccessTokenValidation
                 MapInboundClaims = false
             };
 
+#if !NET8_0_OR_GREATER
             jwtOptions.SecurityTokenValidators.Clear();
             jwtOptions.SecurityTokenValidators.Add(handler);
+#endif
 
+#if NET8_0_OR_GREATER
+            jwtOptions.TokenHandlers.Clear();
+            jwtOptions.TokenHandlers.Add(handler);
+#endif
         }
 
         internal void ConfigureIntrospection(OAuth2IntrospectionOptions introspectionOptions)
