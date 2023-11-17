@@ -43,7 +43,7 @@ public class CorrelationIdMiddleware
             var newCorrelationId = _guidFactory.Create().ToString(GuidDigitsFormat);
             context.TraceIdentifier = newCorrelationId;
             context.Request.Headers.Remove(_options.Header);
-            context.Request.Headers.Add(_options.Header, new StringValues(newCorrelationId));
+            context.Request.Headers.Append(_options.Header, new StringValues(newCorrelationId));
         }
         tracingInitializer.SetNewCorrelationId(Guid.Parse(context.TraceIdentifier));
 
@@ -53,7 +53,7 @@ public class CorrelationIdMiddleware
             context.Response.OnStarting(() =>
                                         {
                                             context.Response.Headers.Remove(_options.Header);
-                                            context.Response.Headers.Add(_options.Header, new StringValues( context.TraceIdentifier ));
+                                            context.Response.Headers.Append(_options.Header, new StringValues( context.TraceIdentifier ));
                                             return Task.CompletedTask;
                                         });
         }
