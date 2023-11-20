@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if NET6_0_OR_GREATER
+using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
@@ -37,3 +38,4 @@ namespace Supertext.Base.Core.Configuration.Localization
         }
     }
 }
+#endif

@@ -21,9 +21,9 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
     [TestClass]
     public class SchedulerHostedServiceTest
     {
-        private SchedulerHostedService<Guid> _testee;
-        private IComponentContext _container;
-        private static IMailService _mailService;
+        private SchedulerHostedService<Guid> _testee = null!;
+        private IComponentContext _container = null!;
+        private static IMailService _mailService = null!;
         private Guid _correlationId;
 
         [TestInitialize]
@@ -59,7 +59,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             var job = new Job<Guid>(Guid.NewGuid(),
                                     TimeSpan.FromMilliseconds(50),
                                     Guid.NewGuid(),
-                                    async (factory, guid, cancellationToken) =>
+                                    async (_, guid, _) =>
                                     {
                                         payload = guid;
                                         await Task.CompletedTask;
@@ -86,7 +86,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             var job1 = new Job<Guid>(Guid.NewGuid(),
                                     TimeSpan.FromMilliseconds(50),
                                     Guid.NewGuid(),
-                                    async (factory, guid, cancellationToken) =>
+                                    async (_, guid, _) =>
                                     {
                                         payload1 = guid;
                                         await Task.CompletedTask;
@@ -95,7 +95,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
             var job2 = new Job<Guid>(Guid.NewGuid(),
                                     TimeSpan.FromMilliseconds(40),
                                     Guid.NewGuid(),
-                                    async (factory, guid, cancellationToken) =>
+                                    async (_, guid, _) =>
                                     {
                                         payload2 = guid;
                                         await Task.CompletedTask;
@@ -117,8 +117,8 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
         [TestMethod]
         public async Task ScheduleJob_WorkitemThrowsException_EmailIsSent()
         {
-            EmailInfo sentEmailInfo = null;
-            A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0));
+            EmailInfo sentEmailInfo = null!;
+            A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
             var jobScheduler = _container.Resolve<IJobScheduler<Guid>>();
 
             var job = new Job<Guid>(Guid.NewGuid(),

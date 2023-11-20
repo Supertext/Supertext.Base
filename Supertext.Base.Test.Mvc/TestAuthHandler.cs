@@ -18,8 +18,10 @@ namespace Supertext.Base.Test.Mvc
                                ILoggerFactory logger,
                                UrlEncoder encoder,
                                TestSettings testSettings,
+#pragma warning disable CS0618 // Type or member is obsolete
                                ISystemClock clock)
             : base(options, logger, encoder, clock)
+#pragma warning restore CS0618 // Type or member is obsolete
         {
             _testSettings = testSettings;
         }

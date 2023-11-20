@@ -22,9 +22,9 @@ namespace Supertext.Base.Hosting.Specs.Queuing
     [TestClass]
     public class QueuedHostedServiceTest
     {
-        private QueuedHostedService _testee;
-        private IComponentContext _container;
-        private static IMailService _mailService;
+        private QueuedHostedService? _testee;
+        private IComponentContext? _container;
+        private static IMailService? _mailService;
         private Guid _correlationId;
 
         [TestInitialize]
@@ -46,16 +46,16 @@ namespace Supertext.Base.Hosting.Specs.Queuing
         [TestCleanup]
         public void CleanUp()
         {
-            _testee.StopAsync(CancellationToken.None);
+            _testee!.StopAsync(CancellationToken.None);
         }
 
         [TestMethod]
         public async Task QueueBackgroundWorkItem_BackgroundTaskIsDequeued_BackgroundWorkCanExecute()
         {
             var correlationId = Guid.NewGuid();
-            var backgroundTaskQueue = _container.Resolve<IBackgroundTaskQueue>();
-            IAnyComponent component = null;
-            backgroundTaskQueue.QueueBackgroundWorkItem(async (factory, token) =>
+            var backgroundTaskQueue = _container!.Resolve<IBackgroundTaskQueue>();
+            IAnyComponent component = null!;
+            backgroundTaskQueue.QueueBackgroundWorkItem(async (factory, _) =>
                                                         {
                                                             component = factory.Create<IAnyComponent>();
                                                             var tracingProvider = factory.Create<ITracingProvider>();
@@ -76,10 +76,10 @@ namespace Supertext.Base.Hosting.Specs.Queuing
         [TestMethod]
         public async Task QueueBackgroundWorkItem_WorkitemThrowsException_EmailIsSent()
         {
-            EmailInfo sentEmailInfo = null;
-            A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0));
-            var backgroundTaskQueue = _container.Resolve<IBackgroundTaskQueue>();
-            backgroundTaskQueue.QueueBackgroundWorkItem((factory, token) => throw new ApplicationException("Error!!"));
+            EmailInfo sentEmailInfo = null!;
+            A.CallTo(() => _mailService!.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
+            var backgroundTaskQueue = _container!.Resolve<IBackgroundTaskQueue>();
+            backgroundTaskQueue.QueueBackgroundWorkItem((_, _) => throw new ApplicationException("Error!!"));
 
             while (!backgroundTaskQueue.IsQueueEmpty())
             {

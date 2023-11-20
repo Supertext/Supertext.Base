@@ -12,7 +12,8 @@ namespace Supertext.Base.Net.Mail
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static void AddAsposeMailLicense(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration) {
+        public static void AddAsposeMailLicense(this IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
@@ -29,11 +30,9 @@ namespace Supertext.Base.Net.Mail
                     return;
                 }
                 var info = Encoding.UTF8.GetBytes(licenseInfo);
-                using (var stream = new MemoryStream(info))
-                {
-                    license.SetLicense(stream);
-                    Console.WriteLine("Aspose Email License set successfully.");
-                }
+                using var stream = new MemoryStream(info);
+                license.SetLicense(stream);
+                Console.WriteLine("Aspose Email License set successfully.");
             }
             catch (Exception e)
             {

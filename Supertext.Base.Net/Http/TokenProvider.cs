@@ -61,7 +61,7 @@ namespace Supertext.Base.Net.Http
                                                                              AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                              IDictionary<string, string> claimsForToken = null)
         {
-            var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
+            var client = _httpClientFactory.CreateClient(nameof(ITokenProvider));
             var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
@@ -93,7 +93,7 @@ namespace Supertext.Base.Net.Http
                                                                       AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                       IDictionary<string, string> claimsForToken = null)
         {
-            var client = _httpClientFactory.CreateClient(nameof(TokenProvider));
+            var client = _httpClientFactory.CreateClient(nameof(ITokenProvider));
             var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
