@@ -168,5 +168,16 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
 
             config.Rewrites.Should().BeNull();
         }
+
+        [TestMethod]
+        public void RegisterAllConfigurationsInAssembly_ConfigWithDateTimeProperty_CorrectlyBound()
+        {
+            _builder.RegisterAllConfigurationsInAssembly(_configuration, GetType().Assembly);
+
+            var container = _builder.Build();
+            var config = container.Resolve<ConfigWithDateTime>();
+
+            config.Date.Should().Be(new DateTime(2023, 11, 01, 00, 01, 00));
+        }
     }
 }

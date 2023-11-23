@@ -31,37 +31,58 @@ namespace Supertext.Base.Net.Http
 
         public async Task<string> RetrieveAccessTokenAsync(string clientId,
                                                            string delegationSub = "",
+                                                           string httpClientName = nameof(ITokenProvider),
                                                            AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                            IDictionary<string, string> claimsForToken = null)
         {
             if (String.IsNullOrWhiteSpace(delegationSub))
             {
-                return (await RequestClientCredentialsTokenAsync(clientId, alternativeAuthorityDetails, claimsForToken).ConfigureAwait(false)).AccessToken;
+                return (await RequestClientCredentialsTokenAsync(clientId,
+                                                                 httpClientName,
+                                                                 alternativeAuthorityDetails,
+                                                                 claimsForToken)
+                            .ConfigureAwait(false)).AccessToken;
             }
 
-            return (await RequestDelegationTokenAsync(clientId, delegationSub, alternativeAuthorityDetails, claimsForToken).ConfigureAwait(false)).AccessToken;
+            return (await RequestDelegationTokenAsync(clientId,
+                                                      delegationSub,
+                                                      httpClientName,
+                                                      alternativeAuthorityDetails,
+                                                      claimsForToken)
+                        .ConfigureAwait(false)).AccessToken;
         }
 
         public async Task<TokenResponseDto> RetrieveTokensAsync(string clientId,
                                                                 string delegationSub = "",
+                                                                string httpClientName = nameof(ITokenProvider),
                                                                 AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                 IDictionary<string, string> claimsForToken = null)
         {
             if (String.IsNullOrWhiteSpace(delegationSub))
             {
-                var credentialsResponse = await RequestClientCredentialsTokenAsync(clientId, alternativeAuthorityDetails, claimsForToken).ConfigureAwait(false);
+                var credentialsResponse = await RequestClientCredentialsTokenAsync(clientId,
+                                                                                   httpClientName,
+                                                                                   alternativeAuthorityDetails,
+                                                                                   claimsForToken)
+                                              .ConfigureAwait(false);
                 return MapTokenResponse(credentialsResponse);
             }
 
-            var response = await RequestDelegationTokenAsync(clientId, delegationSub, alternativeAuthorityDetails, claimsForToken).ConfigureAwait(false);
+            var response = await RequestDelegationTokenAsync(clientId,
+                                                             delegationSub,
+                                                             httpClientName,
+                                                             alternativeAuthorityDetails,
+                                                             claimsForToken)
+                               .ConfigureAwait(false);
             return MapTokenResponse(response);
         }
 
         private async Task<TokenResponse> RequestClientCredentialsTokenAsync(string clientId,
+                                                                             string httpClientName = nameof(ITokenProvider),
                                                                              AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                              IDictionary<string, string> claimsForToken = null)
         {
-            var client = _httpClientFactory.CreateClient(nameof(ITokenProvider));
+            var client = _httpClientFactory.CreateClient(httpClientName);
             var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
@@ -90,10 +111,11 @@ namespace Supertext.Base.Net.Http
 
         private async Task<TokenResponse> RequestDelegationTokenAsync(string clientId,
                                                                       string sub,
+                                                                      string httpClientName = nameof(ITokenProvider),
                                                                       AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                       IDictionary<string, string> claimsForToken = null)
         {
-            var client = _httpClientFactory.CreateClient(nameof(ITokenProvider));
+            var client = _httpClientFactory.CreateClient(httpClientName);
             var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 

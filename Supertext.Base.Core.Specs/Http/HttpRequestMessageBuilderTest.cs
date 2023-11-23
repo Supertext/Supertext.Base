@@ -34,6 +34,7 @@ namespace Supertext.Base.Net.Specs.Http
 
             A.CallTo(() => _tokenProvider.RetrieveAccessTokenAsync(A<string>._,
                                                                    A<string>._,
+                                                                   A<string>._,
                                                                    A<AlternativeAuthorityDetails>._,
                                                                    null))
              .Returns(Token);

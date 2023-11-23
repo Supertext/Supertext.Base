@@ -114,8 +114,13 @@ namespace Supertext.Base.Core.Configuration
         private static bool IsPrimitiveType(PropertyInfo propertyInfo)
         {
             var type = propertyInfo.PropertyType;
-            return type.IsPrimitive || type == typeof(string) ||
-                   (type.IsArray && (type.GetElementType()?.IsPrimitive == true || type.GetElementType() == typeof(string)));
+            return type.IsPrimitive
+                   || type == typeof(string)
+                   || type == typeof(DateTime)
+                   || (type.IsArray
+                       && (type.GetElementType()?.IsPrimitive == true
+                           || type.GetElementType() == typeof(string)
+                           || type.GetElementType() == typeof(DateTime)));
         }
 
         private static void SetKeyVaultSecret(object configInstance, IConfiguration configuration, PropertyInfo propertyInfo)

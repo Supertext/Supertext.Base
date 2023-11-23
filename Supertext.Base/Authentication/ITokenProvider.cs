@@ -11,6 +11,7 @@ namespace Supertext.Base.Authentication
         /// </summary>
         /// <param name="clientId"></param>
         /// <param name="delegationSub"></param>
+        /// <param name="httpClientName">Name for getting an instance of the HttpClient (can be used with Polly (resilience) configs).</param>
         /// <param name="alternativeAuthorityDetails"></param>
         /// <param name="claimsForToken">Key value pairs of claim type and value, which should be added to the token.</param>
         /// <returns></returns>
@@ -22,11 +23,13 @@ namespace Supertext.Base.Authentication
         /// </remarks>
         Task<string> RetrieveAccessTokenAsync(string clientId,
                                               string delegationSub = "",
+                                              string httpClientName = nameof(ITokenProvider),
                                               AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                               IDictionary<string, string> claimsForToken = null);
 
         Task<TokenResponseDto> RetrieveTokensAsync(string clientId,
                                                    string delegationSub = "",
+                                                   string httpClientName = nameof(ITokenProvider),
                                                    AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                    IDictionary<string, string> claimsForToken = null);
     }

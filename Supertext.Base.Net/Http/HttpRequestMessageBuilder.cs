@@ -51,7 +51,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
         return builder;
     }
 
-    public IHttpRequestMessageBuilder UseBearerToken(string clientId, string sub = "")
+    public IHttpRequestMessageBuilder UseBearerToken(string clientId, string httpClientName = "", string sub = "")
     {
         Validate.NotNull(clientId, nameof(clientId));
         const int executionOrder = 2;
