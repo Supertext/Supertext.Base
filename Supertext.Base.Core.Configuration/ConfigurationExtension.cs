@@ -114,7 +114,7 @@ namespace Supertext.Base.Core.Configuration
         private static bool IsPrimitiveType(PropertyInfo propertyInfo)
         {
             var type = propertyInfo.PropertyType;
-            return type.IsPrimitive || type == typeof(string) ||
+            return type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) ||
                    (type.IsArray && (type.GetElementType()?.IsPrimitive == true || type.GetElementType() == typeof(string)));
         }
 
