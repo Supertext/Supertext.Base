@@ -283,7 +283,7 @@ namespace Supertext.Base.Extensions
                            ? String.Empty
                            : String.Join(separator, source.Select(s => $"\"{s}\""));
         }
-        
+
         /// <summary>
         /// Split the elements of a sequence into chunks of size at most <paramref name="size"/>.
         /// </summary>
@@ -309,6 +309,7 @@ namespace Supertext.Base.Extensions
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="size"/> is below 1.
         /// </exception>
+        /// <remarks>Copied from .NET source code at https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/Chunk.cs</remarks>
         public static IEnumerable<TSource[]> Chunk<TSource>(this IEnumerable<TSource> source, int size)
         {
             if (source == null)
