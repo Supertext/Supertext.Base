@@ -94,6 +94,37 @@ namespace Supertext.Base.Tests.Extensions
         }
 
         [TestMethod]
+        public void ForEach_WhenIndexingIsUsed_IndexIsCorrect()
+        {
+            const int item0 = 0;
+            const int item1 = 1;
+
+            new Collection<int>
+            {
+                item0,
+                item1
+            }.ForEach((index, item) => index.Should().Be(item));
+        }
+
+        [TestMethod]
+        public void ForEach_WhenIndexingIsUsed_EachItemIsTouched()
+        {
+            const int item0 = 0;
+            const int item1 = 1;
+            var items = new Collection<int>
+                        {
+                            item0,
+                            item1
+                        };
+
+            var results = new Collection<int>();
+
+            items.ForEach((_, item) => results.Add(item));
+
+            results.Should().BeEquivalentTo(items);
+        }
+
+        [TestMethod]
         public void IsNullOrEmpty_Returns_False_For_NonNull_Source()
         {
             // Arrange

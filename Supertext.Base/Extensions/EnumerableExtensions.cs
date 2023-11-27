@@ -32,7 +32,7 @@ namespace Supertext.Base.Extensions
         }
 
         /// <summary>
-        /// performs the action on every item T
+        /// performs the action on every item <c>T</c>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="enumerable">can be null</param>
@@ -49,6 +49,29 @@ namespace Supertext.Base.Extensions
             foreach (var value in enumerable)
             {
                 action(value);
+            }
+        }
+
+        /// <summary>
+        /// performs the action on every item <c>T</c>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumerable">can be null</param>
+        /// <param name="action">must not be null</param>
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<int, T> action)
+        {
+            Validate.NotNull(action, nameof(action));
+
+            if (enumerable == null)
+            {
+                return;
+            }
+
+            var index = -1;
+            foreach (var value in enumerable)
+            {
+                checked { ++index; }
+                action(index, value);
             }
         }
 
