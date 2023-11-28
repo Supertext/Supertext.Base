@@ -15,9 +15,13 @@ public class CorrelationIdMiddleware
     private static readonly string DefaultCorrelationIdDigitsOnly = DefaultCorrelationId.Replace("-", "");
     private readonly RequestDelegate _next;
     private readonly ISequentialGuidFactory _guidFactory;
+    private readonly ICorrelationIdExtractor _correlationIdExtractor;
     private readonly CorrelationIdOptions _options;
 
-    public CorrelationIdMiddleware(RequestDelegate next, IOptions<CorrelationIdOptions> options, ISequentialGuidFactory guidFactory)
+    public CorrelationIdMiddleware(RequestDelegate next,
+                                   IOptions<CorrelationIdOptions> options,
+                                   ISequentialGuidFactory guidFactory,
+                                   ICorrelationIdExtractor correlationIdExtractor = null)
     {
         if (options == null)
         {
@@ -26,13 +30,21 @@ public class CorrelationIdMiddleware
 
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _guidFactory = guidFactory;
+        _correlationIdExtractor = correlationIdExtractor;
 
         _options = options.Value;
     }
 
     public async Task InvokeAsync(HttpContext context, ITracingInitializer tracingInitializer)
     {
-        if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId)
+        if (context.Items.TryGetValue("Serilog_CorrelationId", out var logEventProperty)
+            && logEventProperty != null
+            && _correlationIdExtractor != null)
+        {
+            var correlationId = _correlationIdExtractor.Extract(logEventProperty);
+            context.TraceIdentifier = correlationId ?? context.TraceIdentifier;
+        }
+        else if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId)
             && correlationId.ToString() != DefaultCorrelationId
             && correlationId.ToString() != DefaultCorrelationIdDigitsOnly)
         {
