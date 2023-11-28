@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Autofac;
 using Supertext.Base.Messaging;
 
@@ -12,14 +11,9 @@ public static class AutofacBuilderExtension
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="assembly"></param>
-    /// <param name="messageCorrelationIdProvider">Provides the correlation of the arrived message.</param>
     /// <returns></returns>
-    public static ContainerBuilder RegisterMessageConsumers(this ContainerBuilder builder,
-                                                            Assembly assembly,
-                                                            Action<string> messageCorrelationIdProvider = null)
+    public static ContainerBuilder RegisterMessageConsumers(this ContainerBuilder builder, Assembly assembly)
     {
-        var enricher = new MessageConsumerEnricher(messageCorrelationIdProvider);
-        builder.RegisterInstance(enricher).AsSelf().SingleInstance();
         builder.RegisterModule<MessagingMassTransitModule>();
         builder.RegisterAssemblyTypes(assembly)
                .AsClosedTypesOf(typeof(IMessageConsumer<>))

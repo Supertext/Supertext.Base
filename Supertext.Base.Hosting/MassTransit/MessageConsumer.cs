@@ -14,17 +14,14 @@ namespace Supertext.Base.Hosting.MassTransit
         private readonly ICollection<IMessageConsumer<TMessage>> _consumers;
         private readonly ITracingInitializer _tracingInitializer;
         private readonly ILogger<MessageConsumer<TMessage>> _logger;
-        private readonly MessageConsumerEnricher _messageConsumerEnricher;
 
         public MessageConsumer(ICollection<IMessageConsumer<TMessage>> consumers,
                                ITracingInitializer tracingInitializer,
-                               ILogger<MessageConsumer<TMessage>> logger,
-                               MessageConsumerEnricher messageConsumerEnricher)
+                               ILogger<MessageConsumer<TMessage>> logger)
         {
             _consumers = consumers;
             _tracingInitializer = tracingInitializer;
             _logger = logger;
-            _messageConsumerEnricher = messageConsumerEnricher;
         }
 
         public async Task Consume(ConsumeContext<TMessage> context)
@@ -33,10 +30,7 @@ namespace Supertext.Base.Hosting.MassTransit
             var correlationId = context.CorrelationId.HasValue
                                     ? Option<Guid>.Some(context.CorrelationId.Value)
                                     : Option<Guid>.None();
-            if (correlationId.IsSome)
-            {
-                _messageConsumerEnricher.UseCorrelationId(correlationId.Value);
-            }
+
             var consumerTasks = new List<Task>();
             foreach (var consumer in _consumers)
             {
