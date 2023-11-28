@@ -5,9 +5,20 @@ namespace Supertext.Base.Hosting.Serilog;
 
 internal class CorrelationIdExtractor : ICorrelationIdExtractor
 {
-    public string? Extract(object logEventProperty)
+    public string? Extract(IDictionary<object, object?> contextItems)
     {
-        var prop = logEventProperty as LogEventProperty;
-        return prop?.Value.ToString().Replace("\"", String.Empty);
+        if (contextItems.TryGetValue("Serilog_CorrelationId", out var logEventProperty)
+            && logEventProperty != null)
+        {
+            var prop = logEventProperty as LogEventProperty;
+            return prop?.Value.ToString().Replace("\"", String.Empty);
+        }
+
+        return null;
+    }
+
+    public bool IsHandlingItem(IDictionary<object, object> contextItems)
+    {
+        return contextItems.ContainsKey("Serilog_CorrelationId");
     }
 }

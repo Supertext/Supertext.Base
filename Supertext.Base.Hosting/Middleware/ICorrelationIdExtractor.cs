@@ -1,7 +1,11 @@
-﻿namespace Supertext.Base.Hosting.Middleware
+﻿using System.Collections.Generic;
+
+namespace Supertext.Base.Hosting.Middleware
 {
     public interface ICorrelationIdExtractor
     {
-        string Extract(object logEventProperty);
+        string Extract(IDictionary<object, object> contextItems);
+
+        bool IsHandlingItem(IDictionary<object, object> contextItems);
     }
 }

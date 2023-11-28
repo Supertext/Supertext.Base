@@ -37,11 +37,9 @@ public class CorrelationIdMiddleware
 
     public async Task InvokeAsync(HttpContext context, ITracingInitializer tracingInitializer)
     {
-        if (context.Items.TryGetValue("Serilog_CorrelationId", out var logEventProperty)
-            && logEventProperty != null
-            && _correlationIdExtractor != null)
+        if (_correlationIdExtractor != null && _correlationIdExtractor.IsHandlingItem(context.Items))
         {
-            var correlationId = _correlationIdExtractor.Extract(logEventProperty);
+            var correlationId = _correlationIdExtractor.Extract(context.Items);
             context.TraceIdentifier = correlationId ?? context.TraceIdentifier;
         }
         else if (context.Request.Headers.TryGetValue(_options.Header, out var correlationId)
