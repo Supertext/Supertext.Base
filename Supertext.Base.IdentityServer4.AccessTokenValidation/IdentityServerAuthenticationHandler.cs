@@ -52,8 +52,6 @@ namespace Supertext.Base.IdentityServer4.AccessTokenValidation
 
             try
             {
-                _logger.LogTrace("Token found: {token}", token);
-
                 removeToken = true;
                 Context.Items.Add(IdentityServerAuthenticationDefaults.TokenItemsKey, token);
 
