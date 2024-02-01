@@ -48,7 +48,7 @@
       <HintPath>..\packages\Castle.Core.5.1.1\lib\net462\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="FakeItEasy, Version=8.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c">
-      <HintPath>..\packages\FakeItEasy.8.0.1\lib\net462\FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\FakeItEasy.8.1.0\lib\net462\FakeItEasy.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FluentAssertions, Version=6.12.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
