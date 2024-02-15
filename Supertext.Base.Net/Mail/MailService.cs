@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Email;
 using Aspose.Email.Clients;
@@ -22,16 +23,18 @@ namespace Supertext.Base.Net.Mail
             _mailServiceConfig = mailServiceConfig;
         }
 
-        public async Task SendAsync(EmailInfo mail)
+        public async Task SendAsync(EmailInfo mail, CancellationToken ct = default)
         {
             try
             {
-                await SendInternal(mail,
-                             message =>
-                             {
-                                 message.IsBodyHtml = false;
-                                 message.Body = mail.Message;
-                             }).ConfigureAwait(false);
+                await SendInternalAsync(mail,
+                                        message =>
+                                        {
+                                            message.IsBodyHtml = false;
+                                            message.Body = mail.Message;
+                                        },
+                                        ct)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -41,16 +44,18 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        public async Task SendAsHtmlAsync(EmailInfo mail)
+        public async Task SendAsHtmlAsync(EmailInfo mail, CancellationToken ct = default)
         {
             try
             {
-                await SendInternal(mail,
-                                   (message) =>
-                                   {
-                                       message.IsBodyHtml = true;
-                                       message.HtmlBody = mail.Message;
-                                   }).ConfigureAwait(false);
+                await SendInternalAsync(mail,
+                                        (message) =>
+                                        {
+                                            message.IsBodyHtml = true;
+                                            message.HtmlBody = mail.Message;
+                                        },
+                                        ct)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -60,7 +65,7 @@ namespace Supertext.Base.Net.Mail
             }
         }
 
-        private async Task SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
+        private async Task SendInternalAsync(EmailInfo mail, Action<MailMessage> handleHtml, CancellationToken ct = default)
         {
             using (var msg = new MailMessage())
             {
