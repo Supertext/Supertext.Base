@@ -83,14 +83,16 @@ namespace Supertext.Base.Net.Mail
                         client.PickupDirectoryLocation = _mailServiceConfig.LocalEmailDirectory;
                     }
 
-                    var attachmentStreams = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name)).ToList();
+                    var attachmentStreams = mail.Attachments
+                                                .Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name))
+                                                .ToList();
                     try
                     {
                         foreach (var namedStream in attachmentStreams)
                         {
                             msg.AddAttachment(new Attachment(namedStream.Item1, namedStream.Item2));
                         }
-                        await client.SendAsync(msg).ConfigureAwait(false);
+                        await client.SendAsync(msg, ct).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
