@@ -77,7 +77,7 @@ namespace Supertext.Base.Hosting.Specs.Queuing
         public async Task QueueBackgroundWorkItem_WorkitemThrowsException_EmailIsSent()
         {
             EmailInfo sentEmailInfo = null!;
-            A.CallTo(() => _mailService!.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
+            A.CallTo(() => _mailService!.SendAsync(A<EmailInfo>._, CancellationToken.None)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
             var backgroundTaskQueue = _container!.Resolve<IBackgroundTaskQueue>();
             backgroundTaskQueue.QueueBackgroundWorkItem((_, _) => throw new ApplicationException("Error!!"));
 
