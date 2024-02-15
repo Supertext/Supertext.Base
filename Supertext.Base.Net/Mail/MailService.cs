@@ -35,7 +35,8 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
                 throw;
             }
         }
@@ -53,7 +54,8 @@ namespace Supertext.Base.Net.Mail
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
                 throw;
             }
         }
@@ -87,7 +89,8 @@ namespace Supertext.Base.Net.Mail
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Sending an email to {mail.To.Email} with subject '{mail.Subject}' failed");
+                        var to = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                        _logger.LogError(ex, $"Sending an email to {to} with subject '{mail.Subject}' failed");
                     }
                     finally
                     {
@@ -105,7 +108,8 @@ namespace Supertext.Base.Net.Mail
                     }
                 }
 
-                _logger.LogInformation($"Email sent. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogInformation($"Email sent. To={recipients}; Subject={mail.Subject}");
             }
         }
 
@@ -117,8 +121,10 @@ namespace Supertext.Base.Net.Mail
             msg.Subject = mail.Subject;
             msg.SubjectEncoding = Encoding.UTF8;
 
-
-            msg.To.Add(new MailAddress(mail.To.Email, mail.To.Name));
+            foreach (var recipient in mail.Recipients)
+            {
+                msg.To.Add(new MailAddress(recipient.Email, recipient.Name));
+            }
 
             if (!String.IsNullOrEmpty(mail.BccEmail))
             {

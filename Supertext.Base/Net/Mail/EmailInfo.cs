@@ -10,6 +10,15 @@ namespace Supertext.Base.Net.Mail
             Message = message;
             From = from;
             To = to;
+            Recipients = new List<PersonInfo> { to };
+        }
+
+        public EmailInfo(string subject, string message, PersonInfo from, ICollection<PersonInfo> to)
+        {
+            Subject = subject;
+            Message = message;
+            From = from;
+            Recipients = to;
         }
 
         public string Subject { get; }
@@ -19,6 +28,8 @@ namespace Supertext.Base.Net.Mail
         public PersonInfo From { get; }
 
         public PersonInfo To { get; }
+
+        public ICollection<PersonInfo> Recipients { get; }
 
         public string BccEmail { get; set; }
 
