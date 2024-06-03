@@ -80,7 +80,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Dal.SqlServe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Caching.Redis", "Supertext.Base.Caching.Redis\Supertext.Base.Caching.Redis.csproj", "{694B66A9-7AF0-4A1C-B15C-107659FB2E09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supertext.Base.Hosting.Serilog", "Supertext.Base.Hosting.Serilog\Supertext.Base.Hosting.Serilog.csproj", "{ED086067-A0C5-49AC-9838-24A3781985AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supertext.Base.Hosting.Serilog", "Supertext.Base.Hosting.Serilog\Supertext.Base.Hosting.Serilog.csproj", "{ED086067-A0C5-49AC-9838-24A3781985AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
