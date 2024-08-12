@@ -4,7 +4,6 @@
   <Import Project="../packages/Microsoft.Testing.Extensions.Telemetry.1.3.2/build/netstandard2.0/Microsoft.Testing.Extensions.Telemetry.props" Condition="Exists('../packages/Microsoft.Testing.Extensions.Telemetry.1.3.2/build/netstandard2.0/Microsoft.Testing.Extensions.Telemetry.props')" />
   <Import Project="../packages/Microsoft.Testing.Platform.MSBuild.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.MSBuild.props" Condition="Exists('../packages/Microsoft.Testing.Platform.MSBuild.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.MSBuild.props')" />
   <Import Project="../packages/Microsoft.Testing.Platform.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.props" Condition="Exists('../packages/Microsoft.Testing.Platform.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.props')" />
-  <Import Project="../packages/MSTest.TestAdapter.3.4.3/build/net462/MSTest.TestAdapter.props" Condition="Exists('../packages/MSTest.TestAdapter.3.4.3/build/net462/MSTest.TestAdapter.props')" />
   <Import Project="..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -194,7 +193,6 @@
     <Error Condition="!Exists('../packages/MSTest.TestAdapter.3.5.1/build/net462/MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '../packages/MSTest.TestAdapter.3.5.1/build/net462/MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets')" />
-  <Import Project="../packages/MSTest.TestAdapter.3.4.3/build/net462/MSTest.TestAdapter.targets" Condition="Exists('../packages/MSTest.TestAdapter.3.4.3/build/net462/MSTest.TestAdapter.targets')" />
   <Import Project="../packages/Microsoft.Testing.Platform.MSBuild.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.MSBuild.targets" Condition="Exists('../packages/Microsoft.Testing.Platform.MSBuild.1.3.2/build/netstandard2.0/Microsoft.Testing.Platform.MSBuild.targets')" />
   <Import Project="../packages/MSTest.TestAdapter.3.5.1/build/net462/MSTest.TestAdapter.targets" Condition="Exists('../packages/MSTest.TestAdapter.3.5.1/build/net462/MSTest.TestAdapter.targets')" />
 </Project>
