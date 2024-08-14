@@ -33,12 +33,12 @@ namespace Supertext.Base.Identity.UserInfo
 
         public Option<IReadOnlyCollection<string>> GetRoles(ClaimsPrincipal claimsPrincipal)
         {
-            const string roleClaim = "role";
+            const string roleClaimName = "role";
 
-            var roles = claimsPrincipal?.Claims?.Where(claim => claim.Type == roleClaim)?.ToList();
-            return roles == null
+            var roleClaims = claimsPrincipal?.Claims?.Where(claim => claim.Type == roleClaimName)?.ToList();
+            return roleClaims == null
                 ? Option<IReadOnlyCollection<string>>.None()
-                : Option<IReadOnlyCollection<string>>.Some(roles.Select(r => r.Value).ToList());
+                : Option<IReadOnlyCollection<string>>.Some(roleClaims.Select(roleClaim => roleClaim.Value).ToList());
         }
 
         public Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName)
