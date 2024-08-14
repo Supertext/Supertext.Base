@@ -1,5 +1,6 @@
-﻿using System.Security.Claims;
-using Supertext.Base.Common;
+﻿using Supertext.Base.Common;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Supertext.Base.Identity.UserInfo
 {
@@ -10,6 +11,8 @@ namespace Supertext.Base.Identity.UserInfo
         Option<string> GetFirstName(ClaimsPrincipal claimsPrincipal);
 
         Option<string> GetLastName(ClaimsPrincipal claimsPrincipal);
+
+        Option<IReadOnlyCollection<string>> GetRoles(ClaimsPrincipal claimsPrincipal);
 
         Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName);
     }
