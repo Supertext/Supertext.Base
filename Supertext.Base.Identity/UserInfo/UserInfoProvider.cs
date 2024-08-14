@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Supertext.Base.Common;
@@ -28,6 +29,16 @@ namespace Supertext.Base.Identity.UserInfo
         public Option<string> GetLastName(ClaimsPrincipal claimsPrincipal)
         {
             return GetStringValue(claimsPrincipal, "family_name");
+        }
+
+        public IReadOnlyCollection<string> GetRoles(ClaimsPrincipal claimsPrincipal)
+        {
+            const string roleClaimName = "role";
+
+            var roleClaims = claimsPrincipal?.Claims?.Where(claim => claim.Type == roleClaimName)?.ToList();
+            return roleClaims == null
+                ? []
+                : roleClaims.Select(roleClaim => roleClaim.Value).ToList();
         }
 
         public Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName)
