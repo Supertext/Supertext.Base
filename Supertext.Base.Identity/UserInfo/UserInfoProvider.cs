@@ -31,14 +31,14 @@ namespace Supertext.Base.Identity.UserInfo
             return GetStringValue(claimsPrincipal, "family_name");
         }
 
-        public Option<IReadOnlyCollection<string>> GetRoles(ClaimsPrincipal claimsPrincipal)
+        public IReadOnlyCollection<string> GetRoles(ClaimsPrincipal claimsPrincipal)
         {
             const string roleClaimName = "role";
 
             var roleClaims = claimsPrincipal?.Claims?.Where(claim => claim.Type == roleClaimName)?.ToList();
             return roleClaims == null
-                ? Option<IReadOnlyCollection<string>>.None()
-                : Option<IReadOnlyCollection<string>>.Some(roleClaims.Select(roleClaim => roleClaim.Value).ToList());
+                ? []
+                : roleClaims.Select(roleClaim => roleClaim.Value).ToList();
         }
 
         public Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName)

@@ -12,7 +12,7 @@ namespace Supertext.Base.Identity.UserInfo
 
         Option<string> GetLastName(ClaimsPrincipal claimsPrincipal);
 
-        Option<IReadOnlyCollection<string>> GetRoles(ClaimsPrincipal claimsPrincipal);
+        IReadOnlyCollection<string> GetRoles(ClaimsPrincipal claimsPrincipal);
 
         Option<T> GetValue<T>(ClaimsPrincipal claimsPrincipal, string claimName);
     }
