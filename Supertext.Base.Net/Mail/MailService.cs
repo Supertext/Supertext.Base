@@ -64,6 +64,7 @@ namespace Supertext.Base.Net.Mail
         {
             try
             {
+                _logger.LogDebug($"{nameof(SendUsingTemplateAsync)} - TemplateData: {templateData}");
                 var options = new SendGridClientOptions
                               {
                                   ApiKey = _mailServiceConfig.SendGridPassword
@@ -82,7 +83,7 @@ namespace Supertext.Base.Net.Mail
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Couldn't send email via SendGrid API. Status code: {response.StatusCode}");
+                    throw new Exception($"Couldn't send email via SendGrid API. Status code: {response.StatusCode}, error: {await response.Body.ReadAsStringAsync()}");
                 }
             }
             catch (Exception ex)
