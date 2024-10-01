@@ -8,7 +8,10 @@ using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
 using Microsoft.Extensions.Logging;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using Supertext.Base.Exceptions;
+using Attachment = Aspose.Email.Attachment;
 
 namespace Supertext.Base.Net.Mail
 {
@@ -40,6 +43,38 @@ namespace Supertext.Base.Net.Mail
             {
                 var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
                 _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
+                throw;
+            }
+        }
+
+        public async Task SendUsingTemplateAsync(EmailInfoTemplates mailInfo, CancellationToken ct = default)
+        {
+            try
+            {
+                var options = new SendGridClientOptions
+                {
+                    ApiKey = _mailServiceConfig.SendGridPassword
+                };
+                var client = new SendGridClient(options);
+                var message = new SendGridMessage
+                              {
+                                  TemplateId = mailInfo.TemplateId,
+                                  From = new EmailAddress(mailInfo.From.Email, mailInfo.From.Name)
+                              };
+                message.SetTemplateData(mailInfo.DynamicTemplateDataAsJson);
+                message.AddTos(mailInfo.Recipients.Select(r => new EmailAddress(r.Email, r.Name)).ToList());
+
+                var response = await client.SendEmailAsync(message, ct).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Couldn't send email via SendGrid API. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                var recipients = String.Join("; ", mailInfo.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}");
                 throw;
             }
         }
