@@ -4,7 +4,10 @@ namespace Supertext.Base.Net.Mail
 {
     public class EmailInfoTemplates
     {
-        public EmailInfoTemplates(string templateId, string dynamicTemplateDataAsJson, PersonInfo from, PersonInfo to,
+        public EmailInfoTemplates(string templateId,
+                                  string dynamicTemplateDataAsJson,
+                                  PersonInfo from,
+                                  PersonInfo to,
                                   string subject)
         {
             TemplateId = templateId;
@@ -15,7 +18,10 @@ namespace Supertext.Base.Net.Mail
             Recipients = new List<PersonInfo> { to };
         }
 
-        public EmailInfoTemplates(string templateId, string dynamicTemplateDataAsJson, PersonInfo from, ICollection<PersonInfo> to,
+        public EmailInfoTemplates(string templateId,
+                                  string dynamicTemplateDataAsJson,
+                                  PersonInfo from,
+                                  ICollection<PersonInfo> to,
                                   string subject)
         {
             TemplateId = templateId;
