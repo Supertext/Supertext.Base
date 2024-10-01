@@ -59,7 +59,8 @@ namespace Supertext.Base.Net.Mail
                 var message = new SendGridMessage
                               {
                                   TemplateId = mailInfo.TemplateId,
-                                  From = new EmailAddress(mailInfo.From.Email, mailInfo.From.Name)
+                                  From = new EmailAddress(mailInfo.From.Email, mailInfo.From.Name),
+                                  Subject = mailInfo.Subject
                               };
                 message.SetTemplateData(mailInfo.DynamicTemplateDataAsJson);
                 message.AddTos(mailInfo.Recipients.Select(r => new EmailAddress(r.Email, r.Name)).ToList());
