@@ -10,6 +10,7 @@ using Aspose.Email.Clients.Smtp;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Supertext.Base.Conversion.Json;
 using Supertext.Base.Exceptions;
 using Attachment = Aspose.Email.Attachment;
 
@@ -19,11 +20,13 @@ namespace Supertext.Base.Net.Mail
     {
         private static ILogger<IMailService> _logger;
         private readonly MailServiceConfig _mailServiceConfig;
+        private readonly IJsonConverter _jsonConverter;
 
-        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig)
+        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig, IJsonConverter jsonConverter)
         {
             _logger = logger;
             _mailServiceConfig = mailServiceConfig;
+            _jsonConverter = jsonConverter;
         }
 
         public async Task SendAsync(EmailInfo mail, CancellationToken ct = default)
@@ -49,12 +52,22 @@ namespace Supertext.Base.Net.Mail
 
         public async Task SendUsingTemplateAsync(EmailInfoTemplates mailInfo, CancellationToken ct = default)
         {
+            await SendWithTemplateAsync(mailInfo, mailInfo.DynamicTemplateDataAsJson, ct);
+        }
+
+        public async Task SendUsingTemplateAsync<TDynamicTemplateData>(EmailInfoTemplates<TDynamicTemplateData> mailInfo, CancellationToken ct = default)
+        {
+            await SendUsingTemplateAsync(mailInfo.Convert(_jsonConverter), ct);
+        }
+
+        private async Task SendWithTemplateAsync(EmailInfoTemplates mailInfo, string templateData, CancellationToken ct)
+        {
             try
             {
                 var options = new SendGridClientOptions
-                {
-                    ApiKey = _mailServiceConfig.SendGridPassword
-                };
+                              {
+                                  ApiKey = _mailServiceConfig.SendGridPassword
+                              };
                 var client = new SendGridClient(options);
                 var message = new SendGridMessage
                               {
@@ -62,7 +75,7 @@ namespace Supertext.Base.Net.Mail
                                   From = ConvertToSendGridEmailAddress(mailInfo.From),
                                   Subject = mailInfo.Subject
                               };
-                message.SetTemplateData(mailInfo.DynamicTemplateDataAsJson);
+                message.SetTemplateData(templateData);
                 message.AddTos(mailInfo.Recipients.Select(ConvertToSendGridEmailAddress).ToList());
 
                 var response = await client.SendEmailAsync(message, ct).ConfigureAwait(false);

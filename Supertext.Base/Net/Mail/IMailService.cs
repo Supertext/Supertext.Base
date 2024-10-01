@@ -10,5 +10,7 @@ namespace Supertext.Base.Net.Mail
         Task SendAsHtmlAsync(EmailInfo mail, CancellationToken ct = default);
 
         Task SendUsingTemplateAsync(EmailInfoTemplates mailInfo, CancellationToken ct = default);
+
+        Task SendUsingTemplateAsync<TDynamicTemplateData>(EmailInfoTemplates<TDynamicTemplateData> mailInfo, CancellationToken ct = default);
     }
 }
