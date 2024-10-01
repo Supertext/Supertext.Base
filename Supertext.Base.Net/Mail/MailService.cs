@@ -59,11 +59,11 @@ namespace Supertext.Base.Net.Mail
                 var message = new SendGridMessage
                               {
                                   TemplateId = mailInfo.TemplateId,
-                                  From = new EmailAddress(mailInfo.From.Email, mailInfo.From.Name),
+                                  From = ConvertToSendGridEmailAddress(mailInfo.From),
                                   Subject = mailInfo.Subject
                               };
                 message.SetTemplateData(mailInfo.DynamicTemplateDataAsJson);
-                message.AddTos(mailInfo.Recipients.Select(r => new EmailAddress(r.Email, r.Name)).ToList());
+                message.AddTos(mailInfo.Recipients.Select(ConvertToSendGridEmailAddress).ToList());
 
                 var response = await client.SendEmailAsync(message, ct).ConfigureAwait(false);
 
@@ -77,6 +77,11 @@ namespace Supertext.Base.Net.Mail
                 var recipients = String.Join("; ", mailInfo.Recipients.Select(r => r.Email));
                 _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}");
                 throw;
+            }
+
+            EmailAddress ConvertToSendGridEmailAddress(PersonInfo personInfo)
+            {
+                return new EmailAddress(personInfo.Email, personInfo.Name);
             }
         }
 
