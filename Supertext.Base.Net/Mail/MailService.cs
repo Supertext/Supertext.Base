@@ -8,7 +8,11 @@ using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
 using Microsoft.Extensions.Logging;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using Supertext.Base.Conversion.Json;
 using Supertext.Base.Exceptions;
+using Attachment = Aspose.Email.Attachment;
 
 namespace Supertext.Base.Net.Mail
 {
@@ -16,11 +20,13 @@ namespace Supertext.Base.Net.Mail
     {
         private static ILogger<IMailService> _logger;
         private readonly MailServiceConfig _mailServiceConfig;
+        private readonly IJsonConverter _jsonConverter;
 
-        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig)
+        public MailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig, IJsonConverter jsonConverter)
         {
             _logger = logger;
             _mailServiceConfig = mailServiceConfig;
+            _jsonConverter = jsonConverter;
         }
 
         public async Task SendAsync(EmailInfo mail, CancellationToken ct = default)
@@ -41,6 +47,54 @@ namespace Supertext.Base.Net.Mail
                 var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
                 _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
                 throw;
+            }
+        }
+
+        public async Task SendUsingTemplateAsync(EmailInfoTemplates mailInfo, CancellationToken ct = default)
+        {
+            await SendWithTemplateAsync(mailInfo, mailInfo.DynamicTemplateDataAsJson, ct);
+        }
+
+        public async Task SendUsingTemplateAsync<TDynamicTemplateData>(EmailInfoTemplates<TDynamicTemplateData> mailInfo, CancellationToken ct = default)
+        {
+            await SendUsingTemplateAsync(mailInfo.Convert(_jsonConverter), ct);
+        }
+
+        private async Task SendWithTemplateAsync(EmailInfoTemplates mailInfo, string templateData, CancellationToken ct)
+        {
+            try
+            {
+                var options = new SendGridClientOptions
+                              {
+                                  ApiKey = _mailServiceConfig.SendGridPassword
+                              };
+                var client = new SendGridClient(options);
+                var message = new SendGridMessage
+                              {
+                                  TemplateId = mailInfo.TemplateId,
+                                  From = ConvertToSendGridEmailAddress(mailInfo.From),
+                                  Subject = mailInfo.Subject
+                              };
+                message.SetTemplateData(templateData);
+                message.AddTos(mailInfo.Recipients.Select(ConvertToSendGridEmailAddress).ToList());
+
+                var response = await client.SendEmailAsync(message, ct).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Couldn't send email via SendGrid API. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                var recipients = String.Join("; ", mailInfo.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}");
+                throw;
+            }
+
+            EmailAddress ConvertToSendGridEmailAddress(PersonInfo personInfo)
+            {
+                return new EmailAddress(personInfo.Email, personInfo.Name);
             }
         }
 
