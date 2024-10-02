@@ -4,10 +4,7 @@ namespace Supertext.Base.Net.Mail
 {
     /// <summary>
     /// Represents an email template with dynamic data and recipient information.
-    /// </summary>
-    /// <typeparam name="TDynamicData">The type of the dynamic data which will be serialised into JSON. </typeparam>
-    /// <example>
-    /// Sample of TDynamicData:
+    /// <para>Sample of TDynamicData</para>
     /// <code>
     /// public class ConfirmEmailData
     /// {
@@ -35,7 +32,8 @@ namespace Supertext.Base.Net.Mail
     ///     public string Message1 { get; set; }
     /// }
     /// </code>
-    /// </example>
+    /// </summary>
+    /// <typeparam name="TDynamicData">The type of the dynamic data which will be serialised into JSON. </typeparam>
     public class EmailInfoTemplates<TDynamicData>
     {
         public EmailInfoTemplates(string templateId,
