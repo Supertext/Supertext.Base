@@ -61,7 +61,6 @@ namespace Supertext.Base.Net.Mail
                               {
                                   TemplateId = mailInfo.TemplateId,
                                   From = ConvertToSendGridEmailAddress(mailInfo.From),
-                                  Subject = mailInfo.Subject
                               };
                 message.SetTemplateData(mailInfo.DynamicTemplateData);
                 message.AddTos(mailInfo.Recipients.Select(ConvertToSendGridEmailAddress).ToList());
