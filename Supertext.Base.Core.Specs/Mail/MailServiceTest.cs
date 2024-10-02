@@ -8,7 +8,6 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Supertext.Base.Conversion.Json;
 using Supertext.Base.Net.Mail;
 
 namespace Supertext.Base.Net.Specs.Mail
@@ -37,7 +36,7 @@ namespace Supertext.Base.Net.Specs.Mail
             }
 
             _config = new MailServiceConfig {LocalEmailDirectory = _dir};
-            _testee = new MailService(_logger, _config, A.Fake<IJsonConverter>());
+            _testee = new MailService(_logger, _config);
 
             var to = new PersonInfo("Verifier", "verifier@mail.com");
 
