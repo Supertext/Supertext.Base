@@ -10,24 +10,10 @@
     <ProjectReference Include="..\Supertext.Base\Supertext.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="8.1.1" />
-    <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="FakeItEasy" Version="8.3.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
-    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="8.0.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
-    <PackageReference Include="Microsoft.Testing.Extensions.Telemetry" Version="1.4.0" />
-    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" Version="1.4.0" />
-    <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" Version="1.4.0" />
-    <PackageReference Include="Microsoft.Testing.Platform" Version="1.4.0" />
-    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="1.4.0" />
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.11.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.0" />
-    <PackageReference Include="NuGet.Frameworks" Version="6.11.1" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
   </ItemGroup>
 </Project>
