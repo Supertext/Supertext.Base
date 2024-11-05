@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <AssemblyTitle>Supertext.Base.NetFramework.Caching.Specs</AssemblyTitle>
     <Product>Supertext.Base.NetFramework.Caching.Specs</Product>
-    <Copyright>Copyright ©  2024</Copyright>
+    <Copyright>Copyright © 2024</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Supertext.Base.NetFramework.Caching\Supertext.Base.NetFramework.Caching.csproj" />
