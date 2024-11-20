@@ -18,6 +18,7 @@ namespace Supertext.Base.Core.Configuration
                 configuration.GetSection(section.SectionName).Bind(settings);
             }
 
+            ConfigurationExtension.SetDictionaryValues(settings, settings.GetType().GetProperties(), configuration, section?.SectionName);
             ConfigurationExtension.SetKeyVaultSecrets(settings, settings.GetType().GetProperties(), configuration);
 
             return settings;
