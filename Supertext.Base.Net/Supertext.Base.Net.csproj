@@ -16,7 +16,8 @@
 	<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" Condition="'$(TargetFramework)' == 'net6.0'" />
 	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
-	<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" Condition="'$(TargetFramework)' == 'net6.0'" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
@@ -24,7 +25,10 @@
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="SendGrid" Version="9.29.3" />
-	<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.0" />
+	<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" Condition="'$(TargetFramework)' == 'net6.0'" />
+	<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
+	<PackageReference Include="System.Text.Json" Version="8.0.5" Condition="'$(TargetFramework)' == 'net6.0'" />
+	<PackageReference Include="System.Text.Json" Version="9.0.0" Condition="'$(TargetFramework)' != 'net6.0'" />
   </ItemGroup>
 
   <ItemGroup>

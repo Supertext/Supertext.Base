@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.Data.SqlClient;
 using Supertext.Base.Configuration;
 
 namespace Supertext.Base.Dal.SqlServer.Utils;
