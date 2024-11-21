@@ -9,7 +9,7 @@ namespace Supertext.Base.Test.Utils.Api
         {
             Server = new TestServer(new WebHostBuilder().UseTestStartup<TestStartup, TStartup>());
         }
-        
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public TestServer Server { get; }
     }
