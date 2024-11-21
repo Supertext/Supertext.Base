@@ -88,7 +88,7 @@ namespace Supertext.Base.Resources
                 if (stream != null)
                 {
                     var bytes = new byte[stream.Length];
-                    stream.Read(bytes,
+                    _ = stream.Read(bytes,
                                 0,
                                 bytes.Length);
 
@@ -120,9 +120,10 @@ namespace Supertext.Base.Resources
                 if (stream != null)
                 {
                     var bytes = new byte[stream.Length];
-                    await stream.ReadAsync(bytes,
-                                           0,
-                                           bytes.Length);
+                    _ = await stream.ReadAsync(bytes,
+                                               0,
+                                               bytes.Length)
+                                    .ConfigureAwait(false);
 
                     return bytes;
                 }
