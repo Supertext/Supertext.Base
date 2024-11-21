@@ -27,5 +27,16 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions.ConfigClasses
         public string AnotherString { get; set; }
 
         public ICollection<Client> Clients { get; set; }
+
+        [DictionaryPrefix("storageConn")]
+        public IDictionary<string, string> ConnStrings { get; set; } = new Dictionary<string, string>();
+
+        public StorageStrings StorageStrings { get; set; }
+    }
+
+    public class StorageStrings
+    {
+        [DictionaryPrefix("storageConn")]
+        public IDictionary<string, string> ConnStrings { get; set; } = new Dictionary<string, string>();
     }
 }

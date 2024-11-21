@@ -1,6 +1,7 @@
 ﻿using Supertext.Base.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 
@@ -19,7 +20,6 @@ namespace Supertext.Base.Extensions
             return enumerable == null || !enumerable.Any();
         }
 
-
         /// <summary>
         /// reverse method of IsEmpty
         /// </summary>
@@ -31,9 +31,8 @@ namespace Supertext.Base.Extensions
             return !IsEmpty(collection);
         }
 
-
         /// <summary>
-        /// performs the action on every item T
+        /// performs the action on every item <c>T</c>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="enumerable">can be null</param>
@@ -53,6 +52,28 @@ namespace Supertext.Base.Extensions
             }
         }
 
+        /// <summary>
+        /// performs the action on every item <c>T</c>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumerable">can be null</param>
+        /// <param name="action">must not be null</param>
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<int, T> action)
+        {
+            Validate.NotNull(action, nameof(action));
+
+            if (enumerable == null)
+            {
+                return;
+            }
+
+            var index = -1;
+            foreach (var value in enumerable)
+            {
+                checked { ++index; }
+                action(index, value);
+            }
+        }
 
         /// <summary>Searches for the specified object and returns the zero-based index of the first occurrence within the entire <see cref="T:System.Collections.Generic.List`1" />.</summary>
         /// <param name="item">The object to locate in the <see cref="source" />. The value can be <see langword="null" /> for reference types.</param>
@@ -76,7 +97,6 @@ namespace Supertext.Base.Extensions
             return -1;
         }
 
-
         /// <summary>
         /// Determines whether the collection is null or contains no elements.
         /// </summary>
@@ -94,7 +114,7 @@ namespace Supertext.Base.Extensions
 
                 /* If this is a list, use the Count property for efficiency.
                  * The Count property is O(1) while IEnumerable.Count() is O(N).
-                */
+                 */
                 case ICollection<T> collection:
                     return collection.Count < 1;
 
@@ -102,7 +122,6 @@ namespace Supertext.Base.Extensions
                     return !enumerable.Any();
             }
         }
-
 
         /// <summary>
         /// Returns the item in the sequence with the greatest of the specified property.
@@ -148,7 +167,6 @@ namespace Supertext.Base.Extensions
 
             return maxObj;
         }
-
 
         /// <summary>
         /// Moves items matching the predicate function to the start of the collection.
@@ -204,7 +222,6 @@ namespace Supertext.Base.Extensions
             return array.ToList();
         }
 
-
         /// <summary>
         /// Better readable version of Enumerable.Any() = false
         /// </summary>
@@ -220,7 +237,6 @@ namespace Supertext.Base.Extensions
 
             return !enumerable.Any();
         }
-
 
         /// <summary>
         /// Better readable version of Enumerable.Any() = false
@@ -241,7 +257,6 @@ namespace Supertext.Base.Extensions
             return !enumerable.Any(predicate);
         }
 
-
         /// <summary>
         /// Distinct by specific property
         /// </summary>
@@ -253,7 +268,6 @@ namespace Supertext.Base.Extensions
             var seenKeys = new HashSet<TKey>();
             return source.Where(element => seenKeys.Add(keySelector(element)));
         }
-
 
         /// <summary>
         /// Says if at least one item in collection2 exists in
@@ -278,7 +292,6 @@ namespace Supertext.Base.Extensions
             return collection1.Any(collection2.Contains);
         }
 
-
         /// <summary>
         /// Returns the collection of strings as comma-separated strings, where each element in the <see cref="source"/> is surrounded by quotes.
         /// </summary>
@@ -292,6 +305,104 @@ namespace Supertext.Base.Extensions
                        : source.None()
                            ? String.Empty
                            : String.Join(separator, source.Select(s => $"\"{s}\""));
+        }
+
+        /// <summary>
+        /// Split the elements of a sequence into chunks of size at most <paramref name="size"/>.
+        /// </summary>
+        /// <remarks>
+        /// Every chunk except the last will be of size <paramref name="size"/>.
+        /// The last chunk will contain the remaining elements and may be of a smaller size.
+        /// </remarks>
+        /// <param name="source">
+        /// An <see cref="IEnumerable{T}"/> whose elements to chunk.
+        /// </param>
+        /// <param name="size">
+        /// Maximum size of each chunk.
+        /// </param>
+        /// <typeparam name="TSource">
+        /// The type of the elements of source.
+        /// </typeparam>
+        /// <returns>
+        /// An <see cref="IEnumerable{T}"/> that contains the elements of the input sequence split into chunks of size <paramref name="size"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="size"/> is below 1.
+        /// </exception>
+        /// <remarks>Copied from .NET source code at https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/Chunk.cs</remarks>
+        public static IEnumerable<TSource[]> Chunk<TSource>(this IEnumerable<TSource> source, int size)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (size < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size));
+            }
+
+            return ChunkIterator(source, size);
+        }
+
+        private static IEnumerable<TSource[]> ChunkIterator<TSource>(IEnumerable<TSource> source, int size)
+        {
+            using (var e = source.GetEnumerator())
+            {
+                // Before allocating anything, make sure there's at least one element.
+                if (e.MoveNext())
+                {
+                    // Now that we know we have at least one item, allocate an initial storage array. This is not
+                    // the array we'll yield.  It starts out small in order to avoid significantly overallocating
+                    // when the source has many fewer elements than the chunk size.
+                    var arraySize = Math.Min(size, 4);
+                    int i;
+                    do
+                    {
+                        var array = new TSource[arraySize];
+
+                        // Store the first item.
+                        array[0] = e.Current;
+                        i = 1;
+
+                        if (size != array.Length)
+                        {
+                            // This is the first chunk. As we fill the array, grow it as needed.
+                            for (; i < size && e.MoveNext(); i++)
+                            {
+                                if (i >= array.Length)
+                                {
+                                    arraySize = (int)Math.Min((uint)size, 2 * (uint)array.Length);
+                                    Array.Resize(ref array, arraySize);
+                                }
+
+                                array[i] = e.Current;
+                            }
+                        }
+                        else
+                        {
+                            // For all but the first chunk, the array will already be correctly sized.
+                            // We can just store into it until either it's full or MoveNext returns false.
+                            var local = array; // avoid bounds checks by using cached local (`array` is lifted to iterator object as a field)
+                            Debug.Assert(local.Length == size);
+                            for (; (uint)i < (uint)local.Length && e.MoveNext(); i++)
+                            {
+                                local[i] = e.Current;
+                            }
+                        }
+
+                        if (i != array.Length)
+                        {
+                            Array.Resize(ref array, i);
+                        }
+
+                        yield return array;
+                    } while (i >= size && e.MoveNext());
+                }
+            }
         }
     }
 }

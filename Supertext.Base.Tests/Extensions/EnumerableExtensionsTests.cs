@@ -4,24 +4,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-
 namespace Supertext.Base.Tests.Extensions
 {
     using FluentAssertions;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
     [TestClass]
     public class EnumerableExtensionsTests
     {
         private ICollection<string> _testee;
 
-
         private struct TestPerson
         {
             public string Name { get; set; }
-
 
             public TestPerson(string name)
             {
@@ -29,13 +25,41 @@ namespace Supertext.Base.Tests.Extensions
             }
         }
 
-
         [TestInitialize]
         public void TestInitialize()
         {
             _testee = new Collection<string>();
         }
 
+        [TestMethod]
+        public void Chunk_WhenCollectionIsNotEmpty_ReturnsExpectedChunks()
+        {
+            const int chunkSize = 4;
+            const int expectedNumberOfChunks = 3;
+            var itemsToChunk = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+            // Have to fully qualify this (instead of consuming as an extension method) because the method already exists in .NET 6 and newer.
+            var results = EnumerableExtensions.Chunk(itemsToChunk, chunkSize)?.ToList();
+
+            results.Should()
+                   .NotBeNull()
+                   .And.HaveCount(expectedNumberOfChunks);
+
+            results?.ElementAt(0)
+                    .Should()
+                    .HaveCount(chunkSize)
+                    .And.ContainInOrder("0", "1", "2", "3");
+
+            results?.ElementAt(1)
+                    .Should()
+                    .HaveCount(chunkSize)
+                    .And.ContainInOrder("4", "5", "6", "7");
+
+            results?.ElementAt(2)
+                    .Should()
+                    .HaveCount(itemsToChunk.Count - 2 * chunkSize)
+                    .And.ContainInOrder("8", "9");
+        }
 
         [TestMethod]
         public void IsEmpty_CollectionIsEmpty_IsEmpty()
@@ -44,7 +68,6 @@ namespace Supertext.Base.Tests.Extensions
 
             result.Should().BeTrue();
         }
-
 
         [TestMethod]
         public void IsEmpty_CollectionIsFilled_IsNotEmpty()
@@ -55,7 +78,6 @@ namespace Supertext.Base.Tests.Extensions
 
             result.Should().BeFalse();
         }
-
 
         [TestMethod]
         public void ForEach_CollectionIsFilled_EachItemIsTouched()
@@ -71,6 +93,36 @@ namespace Supertext.Base.Tests.Extensions
             items.Should().Contain(new List<string> {item1, item2});
         }
 
+        [TestMethod]
+        public void ForEach_WhenIndexingIsUsed_IndexIsCorrect()
+        {
+            const int item0 = 0;
+            const int item1 = 1;
+
+            new Collection<int>
+            {
+                item0,
+                item1
+            }.ForEach((index, item) => index.Should().Be(item));
+        }
+
+        [TestMethod]
+        public void ForEach_WhenIndexingIsUsed_EachItemIsTouched()
+        {
+            const int item0 = 0;
+            const int item1 = 1;
+            var items = new Collection<int>
+                        {
+                            item0,
+                            item1
+                        };
+
+            var results = new Collection<int>();
+
+            items.ForEach((_, item) => results.Add(item));
+
+            results.Should().BeEquivalentTo(items);
+        }
 
         [TestMethod]
         public void IsNullOrEmpty_Returns_False_For_NonNull_Source()
@@ -88,7 +140,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.IsFalse(result);
         }
 
-
         [TestMethod]
         public void IsNullOrEmpty_Returns_True_For_Empty_Source()
         {
@@ -101,7 +152,6 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.IsTrue(result);
         }
-
 
         [TestMethod]
         public void IsNullOrEmpty_Returns_True_For_Null_Source()
@@ -116,7 +166,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.IsTrue(result);
         }
 
-
         [TestMethod]
         public void None_CollectionIsEmpty_IsNone()
         {
@@ -124,7 +173,6 @@ namespace Supertext.Base.Tests.Extensions
 
             result.Should().BeTrue();
         }
-
 
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Expected_String_With_Default_Separator()
@@ -147,7 +195,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.AreEqual(expectedResult, result);
         }
 
-
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Expected_String_With_Specified_Separator()
         {
@@ -169,7 +216,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.AreEqual(expectedResult, result);
         }
 
-
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Null_For_Null_Source()
         {
@@ -183,7 +229,6 @@ namespace Supertext.Base.Tests.Extensions
             Assert.IsNull(result);
         }
 
-
         [TestMethod]
         public void ToCommaSeparatedStringWithQuotes_Returns_Empty_String_For_Empty_Source()
         {
@@ -196,7 +241,6 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.AreEqual(String.Empty, result);
         }
-
 
         [TestMethod]
         public void IndexOf_Returns_Expected_Result()
@@ -218,8 +262,7 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             result.Should().Be(source.Count() - 1);
         }
-
-
+        
         [TestMethod]
         public void IndexOf_Returns_NotFound_For_Empty_Source()
         {
@@ -233,8 +276,7 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             result.Should().Be(-1);
         }
-
-
+        
         [TestMethod]
         public void IndexOf_Throws_Exception_For_Null_Source()
         {
@@ -255,8 +297,7 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.Fail("The expected exception was not thrown.");
         }
-
-
+        
         [TestMethod]
         public void ItemWithMax_Returns_Expected_Item()
         {
@@ -277,8 +318,7 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.AreEqual(tpMarge, result);
         }
-
-
+        
         [TestMethod]
         public void ItemWithMax_Throws_Exception_For_Null_Source()
         {
@@ -298,8 +338,7 @@ namespace Supertext.Base.Tests.Extensions
 
             Assert.Fail("The expected exception was not thrown.");
         }
-
-
+        
         [TestMethod]
         public void ItemWithMax_Throws_Exception_For_Empty_Source()
         {
@@ -319,8 +358,7 @@ namespace Supertext.Base.Tests.Extensions
 
             Assert.Fail("The expected exception was not thrown.");
         }
-
-
+        
         [TestMethod]
         public void MoveToFirst_Moves_Expected_Single_Item()
         {
@@ -341,7 +379,6 @@ namespace Supertext.Base.Tests.Extensions
             // Assert
             Assert.AreEqual(tpMarge, result.First());
         }
-
 
         [TestMethod]
         public void MoveToFirst_Moves_Expected_Items()
@@ -365,8 +402,7 @@ namespace Supertext.Base.Tests.Extensions
             Assert.AreEqual(tpMaggie, result.First());
             Assert.AreEqual(tpMarge, result.ElementAt(1));
         }
-
-
+        
         [TestMethod]
         public void MoveToFirst_Throws_Exception_For_Null_Source()
         {

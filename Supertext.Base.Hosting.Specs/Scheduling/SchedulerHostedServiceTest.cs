@@ -118,7 +118,7 @@ namespace Supertext.Base.Hosting.Specs.Scheduling
         public async Task ScheduleJob_WorkitemThrowsException_EmailIsSent()
         {
             EmailInfo sentEmailInfo = null!;
-            A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
+            A.CallTo(() => _mailService.SendAsync(A<EmailInfo>._, CancellationToken.None)).Invokes(invocation => sentEmailInfo = invocation.GetArgument<EmailInfo>(0)!);
             var jobScheduler = _container.Resolve<IJobScheduler<Guid>>();
 
             var job = new Job<Guid>(Guid.NewGuid(),

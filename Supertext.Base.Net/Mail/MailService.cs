@@ -2,12 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Email;
 using Aspose.Email.Clients;
 using Aspose.Email.Clients.Smtp;
 using Microsoft.Extensions.Logging;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using Supertext.Base.Exceptions;
+using Attachment = Aspose.Email.Attachment;
 
 namespace Supertext.Base.Net.Mail
 {
@@ -22,43 +26,87 @@ namespace Supertext.Base.Net.Mail
             _mailServiceConfig = mailServiceConfig;
         }
 
-        public async Task SendAsync(EmailInfo mail)
+        public async Task SendAsync(EmailInfo mail, CancellationToken ct = default)
         {
             try
             {
-                await SendInternal(mail,
-                             message =>
-                             {
-                                 message.IsBodyHtml = false;
-                                 message.Body = mail.Message;
-                             }).ConfigureAwait(false);
+                await SendInternalAsync(mail,
+                                        message =>
+                                        {
+                                            message.IsBodyHtml = false;
+                                            message.Body = mail.Message;
+                                        },
+                                        ct)
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
                 throw;
             }
         }
 
-        public async Task SendAsHtmlAsync(EmailInfo mail)
+        public async Task SendUsingTemplateAsync<TDynamicTemplateData>(EmailInfoTemplates<TDynamicTemplateData> mailInfo, CancellationToken ct = default)
         {
             try
             {
-                await SendInternal(mail,
-                                   (message) =>
-                                   {
-                                       message.IsBodyHtml = true;
-                                       message.HtmlBody = mail.Message;
-                                   }).ConfigureAwait(false);
+                _logger.LogDebug($"{nameof(SendUsingTemplateAsync)} - TemplateData: {mailInfo.DynamicTemplateData}");
+                var options = new SendGridClientOptions
+                              {
+                                  ApiKey = _mailServiceConfig.SendGridPassword
+                              };
+                var client = new SendGridClient(options);
+                var message = new SendGridMessage
+                              {
+                                  TemplateId = mailInfo.TemplateId,
+                                  From = ConvertToSendGridEmailAddress(mailInfo.From),
+                              };
+                message.SetTemplateData(mailInfo.DynamicTemplateData);
+                message.AddTos(mailInfo.Recipients.Select(ConvertToSendGridEmailAddress).ToList());
+
+                var response = await client.SendEmailAsync(message, ct).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Couldn't send email via SendGrid API. Status code: {response.StatusCode}, error: {await response.Body.ReadAsStringAsync()}");
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mailInfo.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}");
+                throw;
+            }
+
+            EmailAddress ConvertToSendGridEmailAddress(PersonInfo personInfo)
+            {
+                return new EmailAddress(personInfo.Email, personInfo.Name);
+            }
+        }
+
+        public async Task SendAsHtmlAsync(EmailInfo mail, CancellationToken ct = default)
+        {
+            try
+            {
+                await SendInternalAsync(mail,
+                                        (message) =>
+                                        {
+                                            message.IsBodyHtml = true;
+                                            message.HtmlBody = mail.Message;
+                                        },
+                                        ct)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogError(ex, $"{nameof(SendAsHtmlAsync)}: Couldn't send email. To={recipients}; Subject={mail.Subject}");
                 throw;
             }
         }
 
-        private async Task SendInternal(EmailInfo mail, Action<MailMessage> handleHtml)
+        private async Task SendInternalAsync(EmailInfo mail, Action<MailMessage> handleHtml, CancellationToken ct = default)
         {
             using (var msg = new MailMessage())
             {
@@ -76,18 +124,21 @@ namespace Supertext.Base.Net.Mail
                         client.PickupDirectoryLocation = _mailServiceConfig.LocalEmailDirectory;
                     }
 
-                    var attachmentStreams = mail.Attachments.Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name)).ToList();
+                    var attachmentStreams = mail.Attachments
+                                                .Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name))
+                                                .ToList();
                     try
                     {
                         foreach (var namedStream in attachmentStreams)
                         {
                             msg.AddAttachment(new Attachment(namedStream.Item1, namedStream.Item2));
                         }
-                        await client.SendAsync(msg).ConfigureAwait(false);
+                        await client.SendAsync(msg, ct).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Sending an email to {mail.To.Email} with subject '{mail.Subject}' failed");
+                        var to = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                        _logger.LogError(ex, $"Sending an email to {to} with subject '{mail.Subject}' failed");
                     }
                     finally
                     {
@@ -105,7 +156,8 @@ namespace Supertext.Base.Net.Mail
                     }
                 }
 
-                _logger.LogInformation($"Email sent. To={mail.To.Email}; Subject={mail.Subject}");
+                var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
+                _logger.LogInformation($"Email sent. To={recipients}; Subject={mail.Subject}");
             }
         }
 
@@ -117,8 +169,10 @@ namespace Supertext.Base.Net.Mail
             msg.Subject = mail.Subject;
             msg.SubjectEncoding = Encoding.UTF8;
 
-
-            msg.To.Add(new MailAddress(mail.To.Email, mail.To.Name));
+            foreach (var recipient in mail.Recipients)
+            {
+                msg.To.Add(new MailAddress(recipient.Email, recipient.Name));
+            }
 
             if (!String.IsNullOrEmpty(mail.BccEmail))
             {

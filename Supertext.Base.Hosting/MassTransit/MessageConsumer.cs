@@ -27,12 +27,13 @@ namespace Supertext.Base.Hosting.MassTransit
         public async Task Consume(ConsumeContext<TMessage> context)
         {
             _logger.LogDebug($"Consuming message of type {typeof(TMessage).Name} with correlation ID {context.CorrelationId}.");
+            var correlationId = context.CorrelationId.HasValue
+                                    ? Option<Guid>.Some(context.CorrelationId.Value)
+                                    : Option<Guid>.None();
+
             var consumerTasks = new List<Task>();
             foreach (var consumer in _consumers)
             {
-                var correlationId = context.CorrelationId.HasValue
-                                               ? Option<Guid>.Some(context.CorrelationId.Value)
-                                               : Option<Guid>.None();
                 if (correlationId.IsSome)
                 {
                     _tracingInitializer.SetNewCorrelationId(correlationId.Value);

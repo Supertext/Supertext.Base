@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Supertext.Base.Core.Configuration;
@@ -13,7 +13,7 @@ namespace Supertext.Base.Dal.SqlServer.Tests.Utils;
 [TestClass]
 public class DalExtensionsTest
 {
-    private const string ExpectedConnectionString = "Data Source=.;Initial Catalog=myDatabase;Integrated Security=False;User ID=myUser;MultipleActiveResultSets=True;Connect Timeout=500";
+    private const string ExpectedConnectionString = "Data Source=.;Initial Catalog=myDatabase;Integrated Security=False;User ID=myUser;Multiple Active Result Sets=True;Connect Timeout=500";
     private IHostEnvironment _environment;
     private IConfigurationRoot _configuration;
 

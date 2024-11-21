@@ -51,7 +51,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
         return builder;
     }
 
-    public IHttpRequestMessageBuilder UseBearerToken(string clientId, string sub = "")
+    public IHttpRequestMessageBuilder UseBearerToken(string clientId, string sub = "", string httpClientName = "")
     {
         Validate.NotNull(clientId, nameof(clientId));
         const int executionOrder = 2;
@@ -59,7 +59,7 @@ internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
         builder._actions.Add(executionOrder,
                      async request =>
                      {
-                         var token = await builder._tokenProvider.RetrieveAccessTokenAsync(clientId, sub).ConfigureAwait(false);
+                         var token = await builder._tokenProvider.RetrieveAccessTokenAsync(clientId, sub, httpClientName).ConfigureAwait(false);
                          request.SetBearerToken(token);
 
                          return request;

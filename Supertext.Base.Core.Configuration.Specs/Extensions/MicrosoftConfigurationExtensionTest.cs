@@ -37,6 +37,18 @@ namespace Supertext.Base.Core.Configuration.Specs.Extensions
             config.Value.Should().Be("any Value");
             config.SomeInt.Should().Be(4711);
             config.DoubleValue.Should().Be(34.5);
+
+            config.ConnStrings.Should().NotBeNullOrEmpty()
+                                       .And.HaveCount(3)
+                                       .And.ContainKey("storageConnStrCom")
+                                       .And.ContainKey("storageConnStrDe")
+                                       .And.ContainKey("storageConnStrSn");
+
+            config.StorageStrings.ConnStrings.Should().NotBeNullOrEmpty()
+                                                      .And.HaveCount(3)
+                                                      .And.ContainKey("storageConnStrCom")
+                                                      .And.ContainKey("storageConnStrDe")
+                                                      .And.ContainKey("storageConnStrSn");
         }
 
         [TestMethod]
