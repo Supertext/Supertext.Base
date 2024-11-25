@@ -53,13 +53,26 @@ namespace Supertext.Base.Hosting.Specs.Middleware
         }
 
         [TestMethod]
+        public async Task Get_InvokedWithCorrelationIdInHeaderNotReformatted_ItIsUsed()
+        {
+            const string correlationId = "B6B03A9F-2D0E-4BA4-A47D-FFFC38AB1079";
+            _testee!.DefaultRequestHeaders.Add(CorrelationIdHeader, correlationId);
+
+            var response = await _testee!.GetAsync("/api/test/4711");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            result.Should().Be(Guid.Parse(correlationId).ToString());
+        }
+
+        [TestMethod]
         public async Task GetAsync_InvokedWithoutCorrelationIdInHeader_CorrelationIdIsInResponseHeader()
         {
             var response = await _testee!.GetAsync("/api/test/4711");
 
             var correlationId = response.Headers.GetValues(CorrelationIdHeader).Single();
 
-            correlationId.Should().Be(Guid.Parse(Startup.Guid).ToString("N").ToLowerInvariant());
+            correlationId.Should().Be(Guid.Parse(Startup.Guid).ToString().ToLowerInvariant());
         }
     }
 }
