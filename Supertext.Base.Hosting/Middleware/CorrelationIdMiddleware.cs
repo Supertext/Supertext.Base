@@ -10,7 +10,6 @@ namespace Supertext.Base.Hosting.Middleware;
 
 public class CorrelationIdMiddleware
 {
-    private const string GuidDigitsFormat = "N";
     private static readonly string DefaultCorrelationId = Guid.Empty.ToString();
     private static readonly string DefaultCorrelationIdDigitsOnly = DefaultCorrelationId.Replace("-", "");
     private readonly RequestDelegate _next;
@@ -50,7 +49,7 @@ public class CorrelationIdMiddleware
         }
         else
         {
-            var newCorrelationId = _guidFactory.Create().ToString(GuidDigitsFormat);
+            var newCorrelationId = _guidFactory.Create().ToString();
             context.TraceIdentifier = newCorrelationId;
             context.Request.Headers.Remove(_options.Header);
             context.Request.Headers.Append(_options.Header, new StringValues(newCorrelationId));
