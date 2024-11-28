@@ -6,6 +6,10 @@ namespace Supertext.Base.Security.Cryptography
     {
         string Encrypt(string reference);
 
+        string Encrypt(string text, params string[] passwordInputs);
+
         string Decrypt(string encryptedReference);
+
+        string Decrypt(string encryptedReference, params string[] passwordInputs);
     }
 }
