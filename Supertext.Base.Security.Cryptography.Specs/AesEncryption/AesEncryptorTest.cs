@@ -31,6 +31,46 @@ namespace Supertext.Base.Security.Cryptography.Tests.AesEncryption
         }
 
         [TestMethod]
+        public void Encrypt_ReferenceIsGivenWithPasswordAndIsEncrypted_WhenTheResultIsDecryptedWithSamePassword_ReturnsTheSameAsTheOriginalMessage()
+        {
+            var userId = 1;
+            var userFirstName = "Test";
+            var userAge = 25;
+
+            var encryptedReference = _testee.Encrypt(_referenceId,
+                                                     userId.ToString(),
+                                                     userFirstName,
+                                                     userAge.ToString());
+
+            var decryptedReference = _testee.Decrypt(encryptedReference,
+                                                     userId.ToString(),
+                                                     userFirstName,
+                                                     userAge.ToString());
+            decryptedReference.Should().Be(_referenceId);
+        }
+
+        [TestMethod]
+        public void Encrypt_ReferenceIsGivenWithPasswordAndIsEncrypted_WhenTheResultIsDecryptedWithDifferentPassword_ReturnsEmptyString()
+        {
+            var userId = 1;
+            var userFirstName = "Test";
+            var wrongUserFirstName = "User";
+            var userAge = 25;
+
+            var encryptedReference = _testee.Encrypt(_referenceId,
+                                                     userId.ToString(),
+                                                     userFirstName,
+                                                     userAge.ToString());
+
+            var decryptedReference = _testee.Decrypt(encryptedReference,
+                                                     userId.ToString(),
+                                                     wrongUserFirstName,
+                                                     userAge.ToString());
+
+            decryptedReference.Should().Be("");
+        }
+
+        [TestMethod]
         public void Decrypt_IVisDifferentThanTheOneUsedForEncryption_ReturnsEmptyString()
         {
             var encryptedReference = _testee.Encrypt(_referenceId);

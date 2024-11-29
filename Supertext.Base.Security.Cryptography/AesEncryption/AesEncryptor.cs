@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -7,10 +8,12 @@ namespace Supertext.Base.Security.Cryptography.AesEncryption
     internal class AesEncryptor : IAesEncryptor
     {
         private readonly Aes _aes;
+        private readonly EncryptionConfig _config;
         private const int InputOffset = 0;
 
         public AesEncryptor(EncryptionConfig config)
         {
+            _config = config;
             _aes = Aes.Create();
             _aes.BlockSize = 128;
             _aes.KeySize = 128;
@@ -26,6 +29,13 @@ namespace Supertext.Base.Security.Cryptography.AesEncryption
             var encryptedBytes = transform.TransformFinalBlock(Encoding.UTF8.GetBytes(text), InputOffset, text.Length);
 
             return Convert.ToBase64String(encryptedBytes);
+        }
+
+        public string Encrypt(string text, params string[] passwordInputs)
+        {
+            var password = GeneratePassword(_config.Key, passwordInputs);
+            _aes.Key = DeriveKey(password, Encoding.UTF8.GetBytes(_config.Key));
+            return Encrypt(text);
         }
 
         public string Decrypt(string encryptedText)
@@ -45,9 +55,43 @@ namespace Supertext.Base.Security.Cryptography.AesEncryption
             return Encoding.UTF8.GetString(decryptedBytes);
         }
 
+        public string Decrypt(string encryptedText, params string[] passwordInputs)
+        {
+            var password = GeneratePassword(_config.Key, passwordInputs);
+            _aes.Key = DeriveKey(password, Encoding.UTF8.GetBytes(_config.Key));
+            return Decrypt(encryptedText);
+        }
+
         public void Dispose()
         {
             _aes?.Dispose();
+        }
+
+        private byte[] DeriveKey(string password, byte[] salt)
+        {
+            const int numberOfBytesForAesKey = 32; // 32 bytes for AES-256 key
+            const int numberOfIterations = 10000;
+
+            var derivedKey = KeyDerivation.Pbkdf2(password,
+                                                  salt,
+                                                  KeyDerivationPrf.HMACSHA256,
+                                                  numberOfIterations,
+                                                  numberOfBytesForAesKey);
+
+            return derivedKey;
+        }
+
+        private string GeneratePassword(string uniqueSalt, params string[] userInputs)
+        {
+            var combinedString = new StringBuilder();
+            combinedString.Append(uniqueSalt);
+
+            foreach (var input in userInputs)
+            {
+                combinedString.Append(input);
+            }
+
+            return combinedString.ToString();
         }
     }
 }
