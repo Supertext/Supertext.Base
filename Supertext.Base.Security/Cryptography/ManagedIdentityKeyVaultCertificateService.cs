@@ -68,7 +68,8 @@ namespace Supertext.Base.Security.Cryptography
             KeyVaultSecret secret = await secretClient.GetSecretAsync(secretName, version);
 
             var privateKeyBytes = Convert.FromBase64String(secret.Value);
-            return X509CertificateLoader.LoadCertificate(privateKeyBytes);
+
+            return X509CertificateLoader.LoadPkcs12(privateKeyBytes, "");
         }
     }
 }
