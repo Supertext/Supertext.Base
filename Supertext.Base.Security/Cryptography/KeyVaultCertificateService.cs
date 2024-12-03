@@ -42,7 +42,7 @@ namespace Supertext.Base.Security.Cryptography
             var secret = secretResponse.Value;
             var privateKeyBytes = Convert.FromBase64String(secret.Value);
 
-            return X509CertificateLoader.LoadCertificate(privateKeyBytes);
+            return X509CertificateLoader.LoadPkcs12(privateKeyBytes, "");
         }
     }
 }
