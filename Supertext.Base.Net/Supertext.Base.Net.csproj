@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Aspose.Email" Version="24.11.0" />
+	<PackageReference Include="Aspose.Email" Version="24.12.0" />
 	<PackageReference Include="Autofac" Version="8.1.1" />
 	<PackageReference Include="IdentityModel" Version="7.0.0" />
 	<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
