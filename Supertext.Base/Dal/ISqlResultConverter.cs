@@ -4,7 +4,6 @@ namespace Supertext.Base.Dal
 {
     public interface ISqlResultConverter
     {
-        IDictionary<string, object> InterpretUtcDates(IDictionary<string, object> row);
         TEntity InterpretUtcDates<TEntity>(TEntity entity) where TEntity : class;
         IDictionary<string, object> DecodeStructure(IDictionary<string, object> row);
     }

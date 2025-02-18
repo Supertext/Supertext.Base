@@ -9,9 +9,19 @@ namespace Supertext.Base.Dal.SqlServer.Utils
 {
     public class SqlResultConverter : ISqlResultConverter
     {
-        public IDictionary<string, object> InterpretUtcDates(IDictionary<string, object> row)
+        public TEntity InterpretUtcDates<TEntity>(TEntity entity) where TEntity : class
         {
-            return InterpretDictionaryUtcDates(row);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            if (entity is IDictionary<string, object> dictionary)
+            {
+                return InterpretDictionaryUtcDates(dictionary) as TEntity;
+            }
+
+            return InterpretUtcDatesRecursive(entity);
         }
 
         public IDictionary<string, object> DecodeStructure(IDictionary<string, object> row)
@@ -55,21 +65,6 @@ namespace Supertext.Base.Dal.SqlServer.Utils
                 }
             }
             return result;
-        }
-
-        public TEntity InterpretUtcDates<TEntity>(TEntity entity) where TEntity : class
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            if (entity is IDictionary<string, object> dictionary)
-            {
-                return InterpretDictionaryUtcDates(dictionary) as TEntity;
-            }
-
-            return InterpretUtcDatesRecursive(entity);
         }
 
         private IDictionary<string, object> InterpretDictionaryUtcDates(IDictionary<string, object> row)
