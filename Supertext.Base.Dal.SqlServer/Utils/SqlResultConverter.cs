@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Supertext.Base.Dal.SqlServer.Utils
 {
     public class SqlResultConverter : ISqlResultConverter
     {
-        public IDictionary<string, object> InterpretUtcDates(IDictionary<string, object> row)
+        public TEntity InterpretUtcDates<TEntity>(TEntity entity) where TEntity : class
         {
-            return row.ToDictionary(
-                field => field.Key,
-                field => field.Value is DateTime date ? DateTime.SpecifyKind(date, DateTimeKind.Utc) : field.Value);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            if (entity is IDictionary<string, object> dictionary)
+            {
+                return InterpretDictionaryUtcDates(dictionary) as TEntity;
+            }
+
+            return InterpretUtcDatesRecursive(entity);
         }
 
         public IDictionary<string, object> DecodeStructure(IDictionary<string, object> row)
@@ -57,5 +67,75 @@ namespace Supertext.Base.Dal.SqlServer.Utils
             return result;
         }
 
+        private IDictionary<string, object> InterpretDictionaryUtcDates(IDictionary<string, object> row)
+        {
+            return row.ToDictionary(field => field.Key,
+                                    field => field.Value is DateTime date ? DateTime.SpecifyKind(date, DateTimeKind.Utc) : field.Value);
+        }
+
+        private TEntity InterpretUtcDatesRecursive<TEntity>(TEntity entity) where TEntity : class
+        {
+            var properties = entity.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+                {
+                    ProcessDateTimeProperty(property, entity);
+                }
+                else if (property.PropertyType.IsClass && property.PropertyType != typeof(string))
+                {
+                    var nestedObject = property.GetValue(entity);
+                    if (nestedObject != null)
+                    {
+                        var updatedNestedObject = InterpretUtcDatesRecursive(nestedObject);
+                        property.SetValue(entity, updatedNestedObject);
+                    }
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && property.PropertyType != typeof(string))
+                {
+                    if (property.GetValue(entity) is IEnumerable collection)
+                    {
+                        foreach (var item in collection)
+                        {
+                            if (item is DateTime)
+                            {
+                                ProcessDateTimeProperty(property, entity);
+                            }
+                            else if (item != null && item.GetType().IsClass && item.GetType() != typeof(string))
+                            {
+                                InterpretUtcDatesRecursive(item);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return entity;
+        }
+
+        private void ProcessDateTimeProperty<TEntity>(PropertyInfo property, TEntity entity)
+        {
+            var currentValue = property.GetValue(entity);
+
+            if (currentValue != null && property.PropertyType == typeof(DateTime))
+            {
+                var dateTime = (DateTime)currentValue;
+                if (dateTime.Kind != DateTimeKind.Utc)
+                {
+                    var utcValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+                    property.SetValue(entity, utcValue);
+                }
+            }
+            else if (property.PropertyType == typeof(DateTime?))
+            {
+                var nullableDateTime = (DateTime?)currentValue;
+                if (nullableDateTime.HasValue && nullableDateTime.Value.Kind != DateTimeKind.Utc)
+                {
+                    var utcValue = DateTime.SpecifyKind(nullableDateTime.Value, DateTimeKind.Utc);
+                    property.SetValue(entity, utcValue);
+                }
+            }
+        }
     }
 }
