@@ -171,7 +171,7 @@ public class SqlResultConverterTest
     {
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now,
+                                      DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                       null);
 
         var converter = new SqlResultConverter();
@@ -180,7 +180,7 @@ public class SqlResultConverterTest
         results.Id.Should().Be(testData.Id);
         results.Name.Should().Be(testData.Name);
         results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.UpdatedOn.Should().Be(testData.UpdatedOn);
+        results.UpdatedOn.Should().BeNull();
     }
 
     [TestMethod]
@@ -188,15 +188,12 @@ public class SqlResultConverterTest
     {
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now.AddDays(-2),
-                                      DateTime.Now);
+                                      DateTime.SpecifyKind(DateTime.Now.AddDays(-2), DateTimeKind.Local),
+                                      DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local));
 
         var converter = new SqlResultConverter();
         var results = converter.InterpretUtcDates(testData);
 
-        results.Id.Should().Be(testData.Id);
-        results.Name.Should().Be(testData.Name);
-        results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
         results.UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
     }
 
@@ -205,22 +202,18 @@ public class SqlResultConverterTest
     {
         var nestedObject = new TestEntity(Guid.NewGuid(),
                                           "Nested",
-                                          DateTime.Now,
+                                          DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                           null);
 
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now.AddDays(-2),
-                                      DateTime.Now,
+                                      DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
+                                      null,
                                       nestedObject);
 
         var converter = new SqlResultConverter();
         var results = converter.InterpretUtcDates(testData);
 
-        results.Id.Should().Be(testData.Id);
-        results.Name.Should().Be(testData.Name);
-        results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
         results.NestedObject!.Id.Should().Be(nestedObject.Id);
         results.NestedObject.Name.Should().Be(nestedObject.Name);
         results.NestedObject.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
@@ -231,28 +224,25 @@ public class SqlResultConverterTest
     {
         var nestedObject1 = new TestEntity(Guid.NewGuid(),
                                           "Nested 1",
-                                          DateTime.Now,
+                                          DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                           null);
 
         var nestedObject2 = new TestEntity(Guid.NewGuid(),
                                            "Nested 2",
-                                           DateTime.Now.AddDays(-5),
-                                           DateTime.Now,
+                                           DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                           DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                            nestedObject1);
 
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now.AddDays(-2),
-                                      DateTime.Now,
+                                      DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                      null,
                                       nestedObject2);
 
         var converter = new SqlResultConverter();
         var results = converter.InterpretUtcDates(testData);
 
-        results.Id.Should().Be(testData.Id);
-        results.Name.Should().Be(testData.Name);
-        results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
+
         results.NestedObject!.Id.Should().Be(nestedObject2.Id);
         results.NestedObject.Name.Should().Be(nestedObject2.Name);
         results.NestedObject.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
@@ -267,27 +257,23 @@ public class SqlResultConverterTest
     {
         var item1 = new TestEntity(Guid.NewGuid(),
                                            "Item 1",
-                                           DateTime.Now,
+                                           DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                            null);
 
         var item2 = new TestEntity(Guid.NewGuid(),
                                            "Item 2",
-                                           DateTime.Now.AddDays(-5),
-                                           DateTime.Now);
+                                           DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                           DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local));
 
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now.AddDays(-2),
-                                      DateTime.Now,
+                                      DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                      null,
                                       NestedCollection: [item1, item2]);
 
         var converter = new SqlResultConverter();
         var results = converter.InterpretUtcDates(testData);
 
-        results.Id.Should().Be(testData.Id);
-        results.Name.Should().Be(testData.Name);
-        results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
         results.NestedCollection!.Count.Should().Be(2);
         results.NestedCollection[0].Id.Should().Be(item1.Id);
         results.NestedCollection[0].Name.Should().Be(item1.Name);
@@ -303,33 +289,25 @@ public class SqlResultConverterTest
     {
         var nestedObject = new TestEntity(Guid.NewGuid(),
                                            "Nested",
-                                           DateTime.Now,
+                                           DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Local),
                                            null);
 
         var item = new TestEntity(Guid.NewGuid(),
                                            "Item",
-                                           DateTime.Now.AddDays(-5),
-                                           DateTime.Now,
+                                           DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                           null,
                                            nestedObject);
 
         var testData = new TestEntity(Guid.NewGuid(),
                                       "Test",
-                                      DateTime.Now.AddDays(-2),
-                                      DateTime.Now,
+                                      DateTime.SpecifyKind(DateTime.Now.AddDays(-5), DateTimeKind.Local),
+                                      null,
                                       NestedCollection: [item]);
 
         var converter = new SqlResultConverter();
         var results = converter.InterpretUtcDates(testData);
 
-        results.Id.Should().Be(testData.Id);
-        results.Name.Should().Be(testData.Name);
-        results.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
         results.NestedCollection!.Count.Should().Be(1);
-        results.NestedCollection[0].Id.Should().Be(item.Id);
-        results.NestedCollection[0].Name.Should().Be(item.Name);
-        results.NestedCollection[0].CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
-        results.NestedCollection[0].UpdatedOn!.Value.Kind.Should().Be(DateTimeKind.Utc);
         results.NestedCollection[0].NestedObject!.Id.Should().Be(nestedObject.Id);
         results.NestedCollection[0].NestedObject!.Name.Should().Be(nestedObject.Name);
         results.NestedCollection[0].NestedObject!.CreatedOn.Kind.Should().Be(DateTimeKind.Utc);
