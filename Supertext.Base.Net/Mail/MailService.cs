@@ -124,40 +124,33 @@ namespace Supertext.Base.Net.Mail
                         client.PickupDirectoryLocation = _mailServiceConfig.LocalEmailDirectory;
                     }
 
-                    var attachmentStreams = mail.Attachments
-                                                .Select(att => new Tuple<Stream, string>(ConvertToStream(att.Content), att.Name))
-                                                .ToList();
                     try
                     {
-                        foreach (var namedStream in attachmentStreams)
+                        foreach (var att in mail.Attachments)
                         {
-                            msg.AddAttachment(new Attachment(namedStream.Item1, namedStream.Item2));
+                            var attachment = ConvertAttachmentInfoToAttachment(att);
+                            msg.Attachments.Add(attachment);
                         }
+
                         await client.SendAsync(msg, ct).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
                         var to = String.Join("; ", mail.Recipients.Select(r => r.Email));
-                        _logger.LogError(ex, $"Sending an email to {to} with subject '{mail.Subject}' failed");
+                        _logger.LogError(ex, $"Sending an email to {to} with subject '{mail.Subject}' failed.");
+                        throw;
                     }
-                    finally
-                    {
-                        // dispose of each of the attachment streams
-                        foreach (var attachFileStreamWithName in attachmentStreams)
-                        {
-                            attachFileStreamWithName.Item1.Dispose();
-                        }
 
-                        // dispose of each attachment
-                        foreach (var attachment in msg.Attachments)
-                        {
-                            attachment.Dispose();
-                        }
-                    }
+                    // We are deliberately not explicitly disposing of the Attachment objects.
+                    // - Aspose.Email.Clients.Smtp.SendAsync spawns a new thread and sends the email there, which means
+                    //   we can't be certain that the attachments and their underlying streams have been fully consumed
+                    //   at this point. We had occurrences of 'corrupted' attachments which couldn't be opened, despite
+                    //   the blob (in the storage container) being valid.
+                    //   So our solution is to leave the Attachment objects to the Garbage Collector.
                 }
 
                 var recipients = String.Join("; ", mail.Recipients.Select(r => r.Email));
-                _logger.LogInformation($"Email sent. To={recipients}; Subject={mail.Subject}");
+                _logger.LogInformation($"Email sent. To={recipients}; Subject={mail.Subject}.");
             }
         }
 
@@ -214,6 +207,12 @@ namespace Supertext.Base.Net.Mail
                 Console.WriteLine("The SendGrid 'username' property was not set in the mailServiceConfig's AppSettings.");
                 throw new ConfigurationException("The SendGrid 'username' property was not set in the mailServiceConfig's AppSettings.");
             }
+        }
+
+        private static Attachment ConvertAttachmentInfoToAttachment(AttachmentInfo attachmentInfo)
+        {
+            var stream = ConvertToStream(attachmentInfo.Content);
+            return new Attachment(stream, attachmentInfo.Name);
         }
 
         private static Stream ConvertToStream(byte[] content)
