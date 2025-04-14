@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Supertext.Base.Core.Configuration\Supertext.Base.Core.Configuration.csproj" />
     <ProjectReference Include="..\Supertext.Base.Net\Supertext.Base.Net.csproj" />
   </ItemGroup>
 
