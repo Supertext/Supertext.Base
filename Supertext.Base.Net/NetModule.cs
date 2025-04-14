@@ -13,13 +13,20 @@ namespace Supertext.Base.Net
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MailService>().As<IMailService>();
+            builder.RegisterType<SendGridMailService>().Keyed<IMailService>(true);
+            builder.RegisterType<FileSystemMailService>().Keyed<IMailService>(false);
 #pragma warning disable CS0618
             builder.RegisterType<ProtectedHttpRequestMessageFactory>().As<IProtectedHttpRequestMessageFactory>();
 #pragma warning restore CS0618
             builder.RegisterType<HttpRequestMessageBuilder>().As<IHttpRequestMessageBuilder>();
             builder.RegisterType<TokenProvider>().As<ITokenProvider>();
             builder.RegisterType<UriBuilder>().As<IUriBuilder>().As<IHostInitializer>().InstancePerLifetimeScope();
+
+            builder.Register(ctx => {
+                                        var config = ctx.Resolve<MailServiceConfig>();
+                                        var keyedService = ctx.ResolveKeyed<IMailService>(config.SendGridEnabled);
+                                        return keyedService;
+                                    });
         }
     }
 }
