@@ -13,7 +13,7 @@ namespace Supertext.Base.Net.Mail
         private static ILogger<IMailService> _logger;
         private readonly MailServiceConfig _mailServiceConfig;
 
-        public FileSystemMailService(ILogger<IMailService> logger, MailServiceConfig mailServiceConfig)
+        public FileSystemMailService(ILogger<FileSystemMailService> logger, MailServiceConfig mailServiceConfig)
         {
             _logger = logger;
             _mailServiceConfig = mailServiceConfig;
