@@ -8,24 +8,33 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Supertext.Base.Factory;
 using Supertext.Base.Tracing;
+using System.Collections.Concurrent;
+using Supertext.Base.Common;
 
 namespace Supertext.Base.Net.Http
 {
     internal class TokenProvider : ITokenProvider
     {
+        private static readonly ConcurrentDictionary<string, CachedToken> TokenCache = new();
+        private const int TokenExpirationOffsetInSeconds = 300;
+        private const int MinValidityForCachingInSeconds = 450;
+
         private readonly Authentication.Identity _identity;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IFactory<ITracingProvider> _tracingProviderFactory;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger<TokenProvider> _logger;
 
         public TokenProvider(Authentication.Identity identity,
                              IHttpClientFactory httpClientFactory,
                              IFactory<ITracingProvider> tracingProviderFactory,
+                             IDateTimeProvider dateTimeProvider,
                              ILogger<TokenProvider> logger)
         {
             _identity = identity;
             _httpClientFactory = httpClientFactory;
             _tracingProviderFactory = tracingProviderFactory;
+            _dateTimeProvider = dateTimeProvider;
             _logger = logger;
         }
 
@@ -35,21 +44,15 @@ namespace Supertext.Base.Net.Http
                                                            AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                            IDictionary<string, string> claimsForToken = null)
         {
-            if (String.IsNullOrWhiteSpace(delegationSub))
-            {
-                return (await RequestClientCredentialsTokenAsync(clientId,
-                                                                 httpClientName,
-                                                                 alternativeAuthorityDetails,
-                                                                 claimsForToken)
-                            .ConfigureAwait(false)).AccessToken;
-            }
+            var token = await RetrieveTokensAsync(clientId,
+                                                  delegationSub,
+                                                  httpClientName,
+                                                  alternativeAuthorityDetails,
+                                                  claimsForToken)
+                            .ConfigureAwait(false);
 
-            return (await RequestDelegationTokenAsync(clientId,
-                                                      delegationSub,
-                                                      httpClientName,
-                                                      alternativeAuthorityDetails,
-                                                      claimsForToken)
-                        .ConfigureAwait(false)).AccessToken;
+
+            return token.AccessToken;
         }
 
         public async Task<TokenResponseDto> RetrieveTokensAsync(string clientId,
@@ -58,22 +61,68 @@ namespace Supertext.Base.Net.Http
                                                                 AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                 IDictionary<string, string> claimsForToken = null)
         {
-            if (String.IsNullOrWhiteSpace(delegationSub))
+            var cacheKey = BuildCacheKey(clientId,
+                                         delegationSub,
+                                         httpClientName,
+                                         alternativeAuthorityDetails,
+                                         claimsForToken);
+
+            if (TokenCache.TryGetValue(cacheKey, out var cachedToken))
             {
-                var credentialsResponse = await RequestClientCredentialsTokenAsync(clientId,
-                                                                                   httpClientName,
-                                                                                   alternativeAuthorityDetails,
-                                                                                   claimsForToken)
-                                              .ConfigureAwait(false);
-                return MapTokenResponse(credentialsResponse);
+                if (cachedToken.ExpiresAt > _dateTimeProvider.UtcNow.AddSeconds(TokenExpirationOffsetInSeconds))
+                {
+                    return cachedToken.Token;
+                }
             }
 
-            var response = await RequestDelegationTokenAsync(clientId,
-                                                             delegationSub,
-                                                             httpClientName,
-                                                             alternativeAuthorityDetails,
-                                                             claimsForToken)
-                               .ConfigureAwait(false);
+            var token = await RequestTokenAsync(clientId,
+                                                delegationSub,
+                                                httpClientName,
+                                                alternativeAuthorityDetails,
+                                                claimsForToken)
+                            .ConfigureAwait(false);
+
+            if (string.IsNullOrWhiteSpace(token.AccessToken) && token.ExpiresIn <= MinValidityForCachingInSeconds)
+            {
+                _logger.LogWarning("Token retrieval returned no access token or is about to expire soon. Not caching the token.");
+                return token;
+            }
+
+            var expiresAt = _dateTimeProvider.UtcNow.AddSeconds(token.ExpiresIn);
+            TokenCache[cacheKey] = new TokenProvider.CachedToken
+                                    {
+                                        Token = token,
+                                        ExpiresAt = expiresAt
+                                    };
+
+            _logger.LogInformation($"Token for client '{clientId}' cached until {expiresAt} UTC with key '{cacheKey}'.");
+
+            return token;
+        }
+
+        public void InvalidateCachedTokens()
+        {
+            TokenCache.Clear();
+            _logger.LogInformation("All cached tokens have been invalidated.");
+        }
+
+        private async Task<TokenResponseDto> RequestTokenAsync(string clientId,
+                                                               string delegationSub,
+                                                               string httpClientName,
+                                                               AlternativeAuthorityDetails alternativeAuthorityDetails,
+                                                               IDictionary<string, string> claimsForToken)
+        {
+            var response = await (String.IsNullOrWhiteSpace(delegationSub)
+                                      ? RequestClientCredentialsTokenAsync(clientId,
+                                                                           httpClientName,
+                                                                           alternativeAuthorityDetails,
+                                                                           claimsForToken)
+                                      : RequestDelegationTokenAsync(clientId,
+                                                                    delegationSub,
+                                                                    httpClientName,
+                                                                    alternativeAuthorityDetails,
+                                                                    claimsForToken)).ConfigureAwait(false);
+
             return MapTokenResponse(response);
         }
 
@@ -83,7 +132,7 @@ namespace Supertext.Base.Net.Http
                                                                              IDictionary<string, string> claimsForToken = null)
         {
             var client = _httpClientFactory.CreateClient(httpClientName);
-            var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
+            var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new ClientCredentialsTokenRequest
@@ -179,6 +228,19 @@ namespace Supertext.Base.Net.Http
             return disco;
         }
 
+        private static string BuildCacheKey(string clientId,
+                                            string delegationSub,
+                                            string httpClientName,
+                                            AlternativeAuthorityDetails alternativeAuthorityDetails,
+                                            IDictionary<string, string> claimsForToken)
+        {
+            var claimsKey = claimsForToken != null
+                                ? string.Join(";", claimsForToken.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}={kv.Value}"))
+                                : string.Empty;
+            var authorityKey = alternativeAuthorityDetails?.Authority ?? string.Empty;
+            return $"{clientId}|{delegationSub}|{httpClientName}|{authorityKey}|{claimsKey}";
+        }
+
         private static TokenResponseDto MapTokenResponse(TokenResponse response)
         {
             return new TokenResponseDto
@@ -192,6 +254,13 @@ namespace Supertext.Base.Net.Http
                        Scope = response.Scope,
                        TokenType = response.TokenType
                    };
+        }
+
+        private class CachedToken
+        {
+            public TokenResponseDto Token { get; set; }
+
+            public DateTime ExpiresAt { get; set; }
         }
     }
 }
