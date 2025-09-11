@@ -15,7 +15,9 @@ namespace Supertext.Base.Net.Http
 {
     internal class TokenProvider : ITokenProvider
     {
+        private static readonly ConcurrentDictionary<string, string> TokenEndpointCache = new();
         private static readonly ConcurrentDictionary<string, CachedToken> TokenCache = new();
+
         private const int TokenExpirationOffsetInSeconds = 120;
         private const int MinValidityForCachingInSeconds = 300;
 
@@ -132,12 +134,12 @@ namespace Supertext.Base.Net.Http
                                                                              IDictionary<string, string> claimsForToken = null)
         {
             var client = _httpClientFactory.CreateClient(httpClientName);
-            var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
+            var tokenEndpoint = await GetTokenEndpointAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new ClientCredentialsTokenRequest
                                       {
-                                          Address = disco.TokenEndpoint,
+                                          Address = tokenEndpoint,
                                           ClientId = clientId,
                                           ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
                                           Scope = apiResourceDefinition.Value.Scope
@@ -165,12 +167,12 @@ namespace Supertext.Base.Net.Http
                                                                       IDictionary<string, string> claimsForToken = null)
         {
             var client = _httpClientFactory.CreateClient(httpClientName);
-            var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
+            var tokenEndpoint = await GetTokenEndpointAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
 
             using (var tokenRequest = new TokenRequest
                                       {
-                                          Address = disco.TokenEndpoint,
+                                          Address = tokenEndpoint,
                                           ClientId = clientId,
                                           GrantType = "delegation",
                                           ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
@@ -213,6 +215,22 @@ namespace Supertext.Base.Net.Http
             {
                 _logger.LogInformation(e, "Exception occurred while trying to retrieve correlation id and adding the http header.");
             }
+        }
+
+        private async Task<string> GetTokenEndpointAsync(HttpClient client, AlternativeAuthorityDetails alternativeAuthorityDetails = null)
+        {
+            var cacheKey = alternativeAuthorityDetails?.Authority ?? _identity.Authority;
+
+            if (TokenEndpointCache.TryGetValue(cacheKey, out var cachedTokenEndpoint))
+            {
+                return cachedTokenEndpoint;
+            }
+
+            var discoveryDocument = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
+
+            TokenEndpointCache[cacheKey] = discoveryDocument.TokenEndpoint;
+
+            return discoveryDocument.TokenEndpoint;
         }
 
         private async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(HttpClient client, AlternativeAuthorityDetails alternativeAuthorityDetails = null)
