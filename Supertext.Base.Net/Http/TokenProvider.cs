@@ -16,8 +16,8 @@ namespace Supertext.Base.Net.Http
     internal class TokenProvider : ITokenProvider
     {
         private static readonly ConcurrentDictionary<string, CachedToken> TokenCache = new();
-        private const int TokenExpirationOffsetInSeconds = 300;
-        private const int MinValidityForCachingInSeconds = 450;
+        private const int TokenExpirationOffsetInSeconds = 120;
+        private const int MinValidityForCachingInSeconds = 300;
 
         private readonly Authentication.Identity _identity;
         private readonly IHttpClientFactory _httpClientFactory;
