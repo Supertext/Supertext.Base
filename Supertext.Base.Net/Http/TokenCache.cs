@@ -58,6 +58,8 @@ namespace Supertext.Base.Net.Http
                                      AlternativeAuthorityDetails alternativeAuthorityDetails,
                                      IDictionary<string, string> claimsForToken)
         {
+            CleanupExpiredTokens();
+
             var cacheKey = BuildCacheKey(clientId,
                                          delegationSub,
                                          httpClientName,
@@ -90,6 +92,20 @@ namespace Supertext.Base.Net.Http
         {
             _tokens.Clear();
             _logger.LogInformation("All cached tokens have been invalidated.");
+        }
+
+        public void CleanupExpiredTokens()
+        {
+            var now = _dateTimeProvider.UtcNow;
+
+            foreach (var kvp in _tokens.ToArray())
+            {
+                if (kvp.Value.ExpiresAt <= now)
+                {
+                    _tokens.TryRemove(kvp.Key, out _);
+                    _logger.LogDebug("Removed expired token with key '{CacheKey}' from cache.", kvp.Key);
+                }
+            }
         }
 
         private static string BuildCacheKey(string clientId,
