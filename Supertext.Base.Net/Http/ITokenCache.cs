@@ -15,7 +15,7 @@ internal interface ITokenCache
     void AddOrUpdateToken(TokenResponseDto token,
                           string clientId,
                           string delegationSub,
-                          string httpClientName ,
+                          string httpClientName,
                           AlternativeAuthorityDetails alternativeAuthorityDetails,
                           IDictionary<string, string> claimsForToken);
 

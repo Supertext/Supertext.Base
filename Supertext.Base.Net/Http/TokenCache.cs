@@ -66,7 +66,6 @@ namespace Supertext.Base.Net.Http
                                          alternativeAuthorityDetails,
                                          claimsForToken);
 
-
             var expiresAt = _dateTimeProvider.UtcNow.AddSeconds(token.ExpiresIn);
             var minValidityAt = _dateTimeProvider.UtcNow.AddSeconds(MinValidityForCachingInSeconds);
 
