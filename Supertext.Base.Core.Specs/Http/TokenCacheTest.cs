@@ -293,13 +293,39 @@ namespace Supertext.Base.Net.Specs.Http
         }
 
         [TestMethod]
-        public void AddOrUpdateToken_TokenWithNoAccessTokenAndShortExpiry_IsNotCached()
+        public void AddOrUpdateToken_TokenWithShortExpiry_IsNotCached()
         {
             // Arrange
             var token = new TokenResponseDto
                         {
-                            AccessToken = "",
+                            AccessToken = "awegawegaw",
                             ExpiresIn = 100 // Less than MinValidityForCachingInSeconds
+                        };
+            A.CallTo(() => _dateTimeProvider.UtcNow).Returns(DateTime.UtcNow);
+            // Act
+            _testee.AddOrUpdateToken(token,
+                                     TestClientId,
+                                     TestDelegationSub,
+                                     TestHttpClientName,
+                                     null,
+                                     new Dictionary<string, string>());
+            var result = _testee.GetToken(TestClientId,
+                                          TestDelegationSub,
+                                          TestHttpClientName,
+                                          null,
+                                          new Dictionary<string, string>());
+            // Assert
+            Assert.IsTrue(result.IsNone);
+        }
+
+        [TestMethod]
+        public void AddOrUpdateToken_TokenWithNoAccessToken_IsNotCached()
+        {
+            // Arrange
+            var token = new TokenResponseDto
+                        {
+                            AccessToken = null,
+                            ExpiresIn = 3600
                         };
             A.CallTo(() => _dateTimeProvider.UtcNow).Returns(DateTime.UtcNow);
             // Act
