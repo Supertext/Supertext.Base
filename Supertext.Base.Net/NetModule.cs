@@ -20,6 +20,8 @@ namespace Supertext.Base.Net
 #pragma warning restore CS0618
             builder.RegisterType<HttpRequestMessageBuilder>().As<IHttpRequestMessageBuilder>();
             builder.RegisterType<TokenProvider>().As<ITokenProvider>();
+            builder.RegisterType<TokenCache>().As<ITokenCache>().SingleInstance();
+            builder.RegisterType<TokenEndpointProvider>().As<ITokenEndpointProvider>().SingleInstance();
             builder.RegisterType<UriBuilder>().As<IUriBuilder>().As<IHostInitializer>().InstancePerLifetimeScope();
 
             builder.Register(ctx => {

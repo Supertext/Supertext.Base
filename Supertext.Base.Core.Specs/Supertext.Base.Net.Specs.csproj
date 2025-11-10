@@ -23,8 +23,4 @@
     <ProjectReference Include="..\Supertext.Base.Net\Supertext.Base.Net.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Http\" />
-  </ItemGroup>
-
 </Project>

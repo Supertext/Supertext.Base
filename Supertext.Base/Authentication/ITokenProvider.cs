@@ -32,5 +32,7 @@ namespace Supertext.Base.Authentication
                                                    string httpClientName = nameof(ITokenProvider),
                                                    AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                    IDictionary<string, string> claimsForToken = null);
+
+        void InvalidateCachedTokens();
     }
 }

@@ -16,16 +16,22 @@ namespace Supertext.Base.Net.Http
         private readonly Authentication.Identity _identity;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IFactory<ITracingProvider> _tracingProviderFactory;
+        private readonly ITokenCache _tokenCache;
+        private readonly ITokenEndpointProvider _tokenEndpointProvider;
         private readonly ILogger<TokenProvider> _logger;
 
         public TokenProvider(Authentication.Identity identity,
                              IHttpClientFactory httpClientFactory,
                              IFactory<ITracingProvider> tracingProviderFactory,
+                             ITokenCache tokenCache,
+                             ITokenEndpointProvider tokenEndpointProvider,
                              ILogger<TokenProvider> logger)
         {
             _identity = identity;
             _httpClientFactory = httpClientFactory;
             _tracingProviderFactory = tracingProviderFactory;
+            _tokenCache = tokenCache;
+            _tokenEndpointProvider = tokenEndpointProvider;
             _logger = logger;
         }
 
@@ -35,21 +41,14 @@ namespace Supertext.Base.Net.Http
                                                            AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                            IDictionary<string, string> claimsForToken = null)
         {
-            if (String.IsNullOrWhiteSpace(delegationSub))
-            {
-                return (await RequestClientCredentialsTokenAsync(clientId,
-                                                                 httpClientName,
-                                                                 alternativeAuthorityDetails,
-                                                                 claimsForToken)
-                            .ConfigureAwait(false)).AccessToken;
-            }
+            var token = await RetrieveTokensAsync(clientId,
+                                                  delegationSub,
+                                                  httpClientName,
+                                                  alternativeAuthorityDetails,
+                                                  claimsForToken)
+                            .ConfigureAwait(false);
 
-            return (await RequestDelegationTokenAsync(clientId,
-                                                      delegationSub,
-                                                      httpClientName,
-                                                      alternativeAuthorityDetails,
-                                                      claimsForToken)
-                        .ConfigureAwait(false)).AccessToken;
+            return token.AccessToken;
         }
 
         public async Task<TokenResponseDto> RetrieveTokensAsync(string clientId,
@@ -58,22 +57,56 @@ namespace Supertext.Base.Net.Http
                                                                 AlternativeAuthorityDetails alternativeAuthorityDetails = null,
                                                                 IDictionary<string, string> claimsForToken = null)
         {
-            if (String.IsNullOrWhiteSpace(delegationSub))
+            var cachedToken = _tokenCache.GetToken(clientId,
+                                                   delegationSub,
+                                                   httpClientName,
+                                                   alternativeAuthorityDetails,
+                                                   claimsForToken);
+
+            if (cachedToken.IsSome)
             {
-                var credentialsResponse = await RequestClientCredentialsTokenAsync(clientId,
-                                                                                   httpClientName,
-                                                                                   alternativeAuthorityDetails,
-                                                                                   claimsForToken)
-                                              .ConfigureAwait(false);
-                return MapTokenResponse(credentialsResponse);
+                return cachedToken.Value;
             }
 
-            var response = await RequestDelegationTokenAsync(clientId,
-                                                             delegationSub,
-                                                             httpClientName,
-                                                             alternativeAuthorityDetails,
-                                                             claimsForToken)
-                               .ConfigureAwait(false);
+            var token = await RequestTokenAsync(clientId,
+                                                delegationSub,
+                                                httpClientName,
+                                                alternativeAuthorityDetails,
+                                                claimsForToken)
+                            .ConfigureAwait(false);
+
+            _tokenCache.AddOrUpdateToken(token,
+                                         clientId,
+                                         delegationSub,
+                                         httpClientName,
+                                         alternativeAuthorityDetails,
+                                         claimsForToken);
+
+            return token;
+        }
+
+        public void InvalidateCachedTokens()
+        {
+            _tokenCache.InvalidateCachedTokens();
+        }
+
+        private async Task<TokenResponseDto> RequestTokenAsync(string clientId,
+                                                               string delegationSub,
+                                                               string httpClientName,
+                                                               AlternativeAuthorityDetails alternativeAuthorityDetails,
+                                                               IDictionary<string, string> claimsForToken)
+        {
+            var response = await (String.IsNullOrWhiteSpace(delegationSub)
+                                      ? RequestClientCredentialsTokenAsync(clientId,
+                                                                           httpClientName,
+                                                                           alternativeAuthorityDetails,
+                                                                           claimsForToken)
+                                      : RequestDelegationTokenAsync(clientId,
+                                                                    delegationSub,
+                                                                    httpClientName,
+                                                                    alternativeAuthorityDetails,
+                                                                    claimsForToken)).ConfigureAwait(false);
+
             return MapTokenResponse(response);
         }
 
@@ -83,16 +116,17 @@ namespace Supertext.Base.Net.Http
                                                                              IDictionary<string, string> claimsForToken = null)
         {
             var client = _httpClientFactory.CreateClient(httpClientName);
-            var disco = await GetDiscoveryDocumentAsync(client).ConfigureAwait(false);
+            var tokenEndpoint = await _tokenEndpointProvider.GetTokenEndpointAsync(_identity, client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
+            var tokenRequest = new ClientCredentialsTokenRequest
+                               {
+                                   Address = tokenEndpoint,
+                                   ClientId = clientId,
+                                   ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
+                                   Scope = apiResourceDefinition.Value.Scope
+                               };
 
-            using (var tokenRequest = new ClientCredentialsTokenRequest
-                                      {
-                                          Address = disco.TokenEndpoint,
-                                          ClientId = clientId,
-                                          ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
-                                          Scope = apiResourceDefinition.Value.Scope
-                                      })
+            using (tokenRequest)
             {
                 AddClaimsForTokenAsParameters(tokenRequest, claimsForToken);
                 EnhanceHeaderWithCorrelationId(tokenRequest);
@@ -116,17 +150,18 @@ namespace Supertext.Base.Net.Http
                                                                       IDictionary<string, string> claimsForToken = null)
         {
             var client = _httpClientFactory.CreateClient(httpClientName);
-            var disco = await GetDiscoveryDocumentAsync(client, alternativeAuthorityDetails).ConfigureAwait(false);
+            var tokenEndpoint = await _tokenEndpointProvider.GetTokenEndpointAsync(_identity, client, alternativeAuthorityDetails).ConfigureAwait(false);
             var apiResourceDefinition = _identity.GetApiResourceDefinition(clientId);
+            var tokenRequest = new TokenRequest
+                               {
+                                   Address = tokenEndpoint,
+                                   ClientId = clientId,
+                                   GrantType = "delegation",
+                                   ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
+                                   Parameters = { { "sub", sub } }
+                               };
 
-            using (var tokenRequest = new TokenRequest
-                                      {
-                                          Address = disco.TokenEndpoint,
-                                          ClientId = clientId,
-                                          GrantType = "delegation",
-                                          ClientSecret = alternativeAuthorityDetails?.ClientSecret ?? apiResourceDefinition.Value.ClientSecret,
-                                          Parameters = { { "sub", sub } }
-                                      })
+            using (tokenRequest)
             {
                 AddClaimsForTokenAsParameters(tokenRequest, claimsForToken);
                 EnhanceHeaderWithCorrelationId(tokenRequest);
@@ -164,19 +199,6 @@ namespace Supertext.Base.Net.Http
             {
                 _logger.LogInformation(e, "Exception occurred while trying to retrieve correlation id and adding the http header.");
             }
-        }
-
-        private async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(HttpClient client, AlternativeAuthorityDetails alternativeAuthorityDetails = null)
-        {
-            var authority = alternativeAuthorityDetails?.Authority ?? _identity.Authority;
-            var disco = await client.GetDiscoveryDocumentAsync(authority).ConfigureAwait(false);
-            if (disco.IsError)
-            {
-                _logger.LogError(disco.Error);
-                throw new Exception($"Discovering oidc document on {authority} for retrieving token failed: {disco.Error}");
-            }
-
-            return disco;
         }
 
         private static TokenResponseDto MapTokenResponse(TokenResponse response)
