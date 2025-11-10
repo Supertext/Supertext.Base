@@ -70,7 +70,7 @@ namespace Supertext.Base.Net.Http
             var expiresAt = _dateTimeProvider.UtcNow.AddSeconds(token.ExpiresIn);
             var minValidityAt = _dateTimeProvider.UtcNow.AddSeconds(MinValidityForCachingInSeconds);
 
-            if (String.IsNullOrWhiteSpace(token.AccessToken) && expiresAt <= minValidityAt)
+            if (String.IsNullOrWhiteSpace(token.AccessToken) || expiresAt <= minValidityAt)
             {
                 _logger.LogWarning("Token has no access token or is about to expire soon. Not caching the token.");
                 return;
