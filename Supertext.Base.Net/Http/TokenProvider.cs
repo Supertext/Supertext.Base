@@ -48,7 +48,6 @@ namespace Supertext.Base.Net.Http
                                                   claimsForToken)
                             .ConfigureAwait(false);
 
-
             return token.AccessToken;
         }
 
