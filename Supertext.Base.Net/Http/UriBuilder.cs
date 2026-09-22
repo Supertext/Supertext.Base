@@ -25,7 +25,9 @@ namespace Supertext.Base.Net.Http
         public void AddHost(string host)
         {
             _currentHost = host;
-            _currentDomain = String.Join(".", host.Split('.').Reverse().Take(2).Reverse());
+            // AsEnumerable keeps this on LINQ's Reverse: under C# 14 the span conversion
+            // would otherwise bind string[] to MemoryExtensions.Reverse, which returns void.
+            _currentDomain = String.Join(".", host.Split('.').AsEnumerable().Reverse().Take(2).Reverse());
         }
     }
 }

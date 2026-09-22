@@ -49,9 +49,12 @@ namespace Supertext.Base.Extensions
                 return null;
             }
 
-            return new string(input.ToCharArray()
-                                   .Reverse()
-                                   .ToArray());
+            // Array.Reverse, not LINQ: under C# 14 the span conversion makes
+            // MemoryExtensions.Reverse (void) win overload resolution on char[].
+            var chars = input.ToCharArray();
+            Array.Reverse(chars);
+
+            return new string(chars);
         }
 
         /// <summary>
